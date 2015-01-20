@@ -5,5 +5,6 @@
     <string name="title_section1">Setup</string>
     <string name="title_section2">Map</string>
     <string name="action_settings">Settings</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
