@@ -6,5 +6,10 @@
     <string name="title_section1">Setup</string>
     <string name="title_section2">Map</string>
     <string name="action_settings">Settings</string>
+    <string name="about">About</string>
+    <string name="button_on">Turn On</string>
+    <string name="button_off">Turn Off</string>
+    <string name="button_search">Search for Devices</string>
+    <string name="button_paired">View Paired Devices</string>
 
 </resources>
