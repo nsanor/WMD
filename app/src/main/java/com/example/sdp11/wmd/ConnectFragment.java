@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SetupFragment extends Fragment{
+public class ConnectFragment extends Fragment{
 
     private Button on, off, search, paired;
     View view;
@@ -31,7 +31,7 @@ public class SetupFragment extends Fragment{
     private ListView lv;
 
 
-    public SetupFragment() {
+    public ConnectFragment() {
         // Required empty public constructor
     }
 
@@ -39,7 +39,7 @@ public class SetupFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_setup, container, false);
+        view = inflater.inflate(R.layout.fragment_connect, container, false);
 
         on = (Button)view.findViewById(R.id.TurnOn);
         on.setOnClickListener(new View.OnClickListener() {
@@ -91,8 +91,11 @@ public class SetupFragment extends Fragment{
     }
 
     public void off(View view){
-        BA.disable();
-        Toast.makeText(getActivity(), "Bluetooth Off!", Toast.LENGTH_SHORT).show();
+        if(!BA.isEnabled());
+        else {
+            BA.disable();
+            Toast.makeText(getActivity(), "Bluetooth Off!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void list(View view){

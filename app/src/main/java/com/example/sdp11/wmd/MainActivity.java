@@ -10,14 +10,8 @@ import android.app.FragmentTransaction;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 
@@ -132,15 +126,16 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             Fragment fragment = null;
-            if(position==0) fragment = new SetupFragment();
-            if(position==1) fragment = new MapFragment();
+            if(position==0) fragment = new ConnectFragment();
+            if(position==1) fragment = new DataFragment();
+            if(position==2) fragment = new MapFragment();
             return fragment;
         }
 
         @Override
         public int getCount() {
             // Setup and Map tabs
-            return 2;
+            return 3;
         }
 
         @Override
@@ -151,6 +146,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                     return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_section2).toUpperCase(l);
+                case 2:
+                    return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
         }
