@@ -41,27 +41,11 @@ public class ConnectFragment extends Fragment{
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_connect, container, false);
 
-        on = (Button)view.findViewById(R.id.TurnOn);
+        on = (Button)view.findViewById(R.id.Toggle);
         on.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                on(view);
-            }
-        });
-
-        off = (Button)view.findViewById(R.id.TurnOff);
-        off.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                off(view);
-            }
-        });
-
-        search = (Button)view.findViewById(R.id.Search);
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                visible(view);
+                toggle(view);
             }
         });
 
@@ -79,22 +63,20 @@ public class ConnectFragment extends Fragment{
         return view;
     }
 
-    public void on(View view){
+    public void toggle(View view){
         if(!BA.isEnabled()){
-            Intent TurnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(TurnOn, 0);
-            Toast.makeText(getActivity(), "Bluetooth On!", Toast.LENGTH_SHORT).show();
+            //Intent TurnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            //startActivityForResult(TurnOn, 0);
+            BA.enable();
+            while (BA.getState() != BluetoothAdapter.STATE_ON);
+            Toast.makeText(getActivity(), "Bluetooth is now on!", Toast.LENGTH_SHORT).show();
         }
         else {
-            Toast.makeText(getActivity(), "Bluetooth is already on!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void off(View view){
-        if(!BA.isEnabled());
-        else {
+            //Intent TurnOn = new Intent(BluetoothAdapter.ACTION_);
+            //startActivityForResult(TurnOn, 0);
             BA.disable();
-            Toast.makeText(getActivity(), "Bluetooth Off!", Toast.LENGTH_SHORT).show();
+            while (BA.getState() != BluetoothAdapter.STATE_OFF);
+            Toast.makeText(getActivity(), "Bluetooth is now off!", Toast.LENGTH_SHORT).show();
         }
     }
 
