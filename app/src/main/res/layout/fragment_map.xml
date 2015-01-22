@@ -6,15 +6,8 @@
     android:padding="20dp"
     tools:context=".MapFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Map Page"
-        android:id="@+id/maptextView"
-        android:layout_below="@+id/section_label"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textAlignment="gravity"
-        android:textColor="#000000" />
+    <com.google.android.gms.maps.MapView android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
 </FrameLayout>
