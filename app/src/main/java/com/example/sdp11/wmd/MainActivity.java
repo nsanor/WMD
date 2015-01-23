@@ -20,8 +20,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
-public class MainActivity extends Activity implements ActionBar.TabListener, LocationListener {
+
+public class MainActivity extends Activity implements ActionBar.TabListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -38,12 +42,16 @@ public class MainActivity extends Activity implements ActionBar.TabListener, Loc
      */
     ViewPager mViewPager;
 
+    GoogleApiClient apiClient;
+
+    Location lastLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        buildGoogleApiClient();
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
@@ -79,12 +87,53 @@ public class MainActivity extends Activity implements ActionBar.TabListener, Loc
                             .setTabListener(this));
         }
 
-        ContentResolver contentResolver = getBaseContext().getContentResolver();
-        boolean gpsStatus = Settings.Secure
-                .isLocationProviderEnabled(contentResolver,
-                        LocationManager.GPS_PROVIDER);
     }
 
+    public Location getLastLocation() {
+        return lastLocation;
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            Fragment fragment = null;
+            if(position==0) fragment = new ConnectFragment();
+            if(position==1) fragment = new DataFragment();
+            if(position==2) fragment = new MapFragment();
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            // Setup and Map tabs
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            Locale l = Locale.getDefault();
+            switch (position) {
+                case 0:
+                    return getString(R.string.title_section1).toUpperCase(l);
+                case 1:
+                    return getString(R.string.title_section2).toUpperCase(l);
+                case 2:
+                    return getString(R.string.title_section3).toUpperCase(l);
+            }
+            return null;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -129,60 +178,25 @@ public class MainActivity extends Activity implements ActionBar.TabListener, Loc
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-
+    protected synchronized void buildGoogleApiClient() {
+       apiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addApi(LocationServices.API)
+                .build();
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
+    public void onConnected(Bundle bundle) {
+        lastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                apiClient);
+        //if (lastLocation != null) {
+        //    Toast.makeText(getApplicationContext(), Double.toString(lastLocation.getLatitude()), Toast.LENGTH_SHORT).show();
+        //}
     }
 
     @Override
-    public void onProviderEnabled(String s) {
+    public void onConnectionSuspended(int i) {
 
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            Fragment fragment = null;
-            if(position==0) fragment = new ConnectFragment();
-            if(position==1) fragment = new DataFragment();
-            if(position==2) fragment = new MapFragment();
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            // Setup and Map tabs
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
-        }
     }
 }
