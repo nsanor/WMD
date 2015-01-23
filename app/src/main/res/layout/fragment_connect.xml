@@ -6,15 +6,16 @@
     android:padding="20dp"
     tools:context=".SetupFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
     <Button
         android:id="@+id/Toggle"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/button_toggle"/>
 
     <Button
@@ -22,13 +23,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_paired"
-        android:layout_gravity="center_vertical" />
+        android:layout_toRightOf="@+id/Toggle" />
 
     <ListView
         android:id="@+id/devices"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Toggle"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </FrameLayout>
