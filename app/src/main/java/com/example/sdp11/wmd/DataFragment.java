@@ -1,6 +1,7 @@
 package com.example.sdp11.wmd;
 
 
+import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -27,14 +28,23 @@ public class DataFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_data, container, false);
+        Location location = ((MainActivity)getActivity()).getLastLocation();
         TableLayout tl = (TableLayout) view.findViewById(R.id.DataTable);
-        addData(view, tl);
+        TextView textView = new TextView(getActivity());
+        if (location != null) {
+            textView.setText(Double.toString(location.getLatitude()));
+        }
+
+
+        TableRow row = new TableRow(getActivity());
+        row.addView(textView);
+        tl.addView(row);
         return view;
     }
 
     public void addData(View view, TableLayout tl){
         TextView textView = new TextView(getActivity());
-        textView.setText("I'm in the table");
+        //textView.setText(Double.toString(location.getLatitude()));
 
         TableRow row = new TableRow(getActivity());
         row.addView(textView);
