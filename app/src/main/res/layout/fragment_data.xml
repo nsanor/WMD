@@ -6,11 +6,17 @@
     android:padding="20dp"
     tools:context=".DataFragment">
 
-    <TableLayout
-        android:id="@+id/DataTable"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    </TableLayout>
+        <ListView
+            android:id="@+id/DataPoints"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            </ListView>
+
+        </LinearLayout>
 
 </FrameLayout>
