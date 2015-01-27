@@ -7,9 +7,12 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.util.List;
 
 
 /**
@@ -28,17 +31,17 @@ public class DataFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_data, container, false);
-        Location location = ((MainActivity)getActivity()).getLastLocation();
-        TableLayout tl = (TableLayout) view.findViewById(R.id.DataTable);
-        TextView textView = new TextView(getActivity());
-        if (location != null) {
-            textView.setText(Double.toString(location.getLatitude()));
-        }
 
+        ThrowsDataSource dataSource = new ThrowsDataSource(getActivity());
+        dataSource.createThrow(1, 1, 1, 1, 1, 1);
+        dataSource.createThrow(1, 1, 1, 1, 1, 1);
+        dataSource.createThrow(1, 1, 1, 1, 1, 1);
 
-        TableRow row = new TableRow(getActivity());
-        row.addView(textView);
-        tl.addView(row);
+        List<Throw> values = dataSource.getAllComments();
+
+        ArrayAdapter<Throw> adapter = new ArrayAdapter<Throw>(this,
+                R.layout.fragment_data, values);
+        setListAdapter(adapter);
         return view;
     }
 
