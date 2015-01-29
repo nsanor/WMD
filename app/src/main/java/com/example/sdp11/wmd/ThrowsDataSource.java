@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import org.w3c.dom.Comment;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,41 +51,46 @@ public class ThrowsDataSource {
                 allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
-        Throw newThrow = cursorToComment(cursor);
+        Throw newThrow = cursorToThrow(cursor);
         cursor.close();
         return newThrow;
 
     }
 
-    public void deleteThrow(Throw throw) {
-        long id = throw.getId();
+    public void deleteThrow(Throw t) {
+        long id = t.getId();
         System.out.println("Comment deleted with id: " + id);
         database.delete(DBHelper.TABLE_THROWS, DBHelper.COLUMN_ID
                 + " = " + id, null);
     }
 
     public List<Throw> getAllThrows() {
-        List<Throw> throws = new ArrayList<Throw>();
+        List<Throw> ts = new ArrayList<Throw>();
 
         Cursor cursor = database.query(DBHelper.TABLE_THROWS,
                 allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Throw throw = cursorToThrow(cursor);
-            throws.add(throws);
+            Throw t = cursorToThrow(cursor);
+            ts.add(t);
             cursor.moveToNext();
         }
         // make sure to close the cursor
         cursor.close();
-        return throws;
+        return ts;
     }
 
     private Throw cursorToThrow(Cursor cursor) {
-        Throw throw = new Throw();
-        throw.setId(cursor.getLong(0));
-        throw.set(cursor.getString(1));
-        return throw;
+        Throw t = new Throw();
+        t.setId(cursor.getLong(0));
+        t.setStartLat(cursor.getDouble(1));
+        t.setStartLong(cursor.getDouble(2));
+        t.setEndLat(cursor.getDouble(3));
+        t.setEndLong(cursor.getDouble(4));
+        t.setStartXAccel(cursor.getDouble(5));
+        t.setStartYAccel(cursor.getDouble(6));
+        return t;
     }
 
 }

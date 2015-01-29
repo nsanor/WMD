@@ -12,15 +12,15 @@ public class Throw {
     private double start_x_accel;
     private double start_y_accel;
 
-    Throw() {
-        id = -1;
-        start_lat = -1;
-        start_long = -1;
-        end_lat = -1;
-        end_long = -1;
-        start_x_accel = -1;
-        start_y_accel = -1;
-    }
+//    public Throw() {
+//        this.id = -1;
+//        this.start_lat = -1;
+//        this.start_long = -1;
+//        this.end_lat = -1;
+//        this.end_long = -1;
+//        this.start_x_accel = -1;
+//        this.start_y_accel = -1;
+//    }
     public long getId() {
         return id;
     }
