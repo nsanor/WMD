@@ -3,9 +3,12 @@ package com.example.sdp11.wmd;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,14 @@ public class ConnectFragment extends Fragment{
     private Set<BluetoothDevice> pairedDevices;
     private ListView lv;
 
+    private boolean mScanning;
+    private Handler mHandler;
+
+    // Stops scanning after 10 seconds.
+    private static final long SCAN_PERIOD = 10000;
+
+
+
 
     public ConnectFragment() {
         // Required empty public constructor
@@ -40,6 +51,9 @@ public class ConnectFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_connect, container, false);
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
+        BA = bluetoothManager.getAdapter();
 
         on = (Button)view.findViewById(R.id.Toggle);
         on.setOnClickListener(new View.OnClickListener() {
@@ -58,9 +72,46 @@ public class ConnectFragment extends Fragment{
         });
 
         lv = (ListView)view.findViewById(R.id.devices);
-        BA = BluetoothAdapter.getDefaultAdapter();
 
         return view;
+    }
+
+    private DeviceListAdapter mLeDeviceListAdapter;
+
+    // Device scan callback.
+    private BluetoothAdapter.LeScanCallback mLeScanCallback =
+            new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(final BluetoothDevice device, int rssi,
+                                     byte[] scanRecord) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mLeDeviceListAdapter.addDevice(device);
+                            mLeDeviceListAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            };
+
+    private void scanLeDevice(final boolean enable) {
+        if (enable) {
+            // Stops scanning after a pre-defined scan period.
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mScanning = false;
+                    BA.stopLeScan(mLeScanCallback);
+                }
+            }, SCAN_PERIOD);
+
+            mScanning = true;
+            BA.startLeScan(mLeScanCallback);
+        } else {
+            mScanning = false;
+            BA.stopLeScan(mLeScanCallback);
+        }
+
     }
 
     public void toggle(View view){
