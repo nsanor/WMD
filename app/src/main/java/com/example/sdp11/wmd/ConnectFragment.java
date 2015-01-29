@@ -3,12 +3,17 @@ package com.example.sdp11.wmd;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,23 +81,41 @@ public class ConnectFragment extends Fragment{
         return view;
     }
 
-    private DeviceListAdapter mLeDeviceListAdapter;
+    private BluetoothAdapter.LeScanCallback mScanCallback = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+            //For the device we want, make a connection
+            device.connectGatt(getActivity(), true, mGattCallback);
+        }
+    };
 
-    // Device scan callback.
-    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-            new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(final BluetoothDevice device, int rssi,
-                                     byte[] scanRecord) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mLeDeviceListAdapter.addDevice(device);
-                            mLeDeviceListAdapter.notifyDataSetChanged();
-                        }
-                    });
-                }
-            };
+    private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            //Connection established
+            if (status == BluetoothGatt.GATT_SUCCESS
+                    && newState == BluetoothProfile.STATE_CONNECTED) {
+
+                //Discover services
+                gatt.discoverServices();
+
+            } else if (status == BluetoothGatt.GATT_SUCCESS
+                    && newState == BluetoothProfile.STATE_DISCONNECTED) {
+
+                //Handle a disconnect event
+
+            }
+        }
+
+        @Override
+        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+
+                Log.i("ConnectFragment", "Connected to: " + gatt.getDevice());
+            }
+        }
+    };
+
 
     private void scanLeDevice(final boolean enable) {
         if (enable) {
@@ -101,15 +124,15 @@ public class ConnectFragment extends Fragment{
                 @Override
                 public void run() {
                     mScanning = false;
-                    BA.stopLeScan(mLeScanCallback);
+                    BA.stopLeScan(mScanCallback);
                 }
             }, SCAN_PERIOD);
 
             mScanning = true;
-            BA.startLeScan(mLeScanCallback);
+            BA.startLeScan(mScanCallback);
         } else {
             mScanning = false;
-            BA.stopLeScan(mLeScanCallback);
+            BA.stopLeScan(mScanCallback);
         }
 
     }
