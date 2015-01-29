@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -15,9 +16,6 @@ import android.widget.TextView;
 import java.util.List;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class DataFragment extends Fragment {
 
     View view;
@@ -30,29 +28,21 @@ public class DataFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_data, container, false);
+        View v = inflater.inflate(R.layout.fragment_data, container, false);
 
         ThrowsDataSource dataSource = new ThrowsDataSource(getActivity());
         dataSource.createThrow(1, 1, 1, 1, 1, 1);
         dataSource.createThrow(1, 1, 1, 1, 1, 1);
         dataSource.createThrow(1, 1, 1, 1, 1, 1);
 
-        List<Throw> values = dataSource.getAllComments();
+        ListView lis = (ListView)v.findViewById(R.id.DataPoints);
 
-        ArrayAdapter<Throw> adapter = new ArrayAdapter<Throw>(this,
+        List<Throw> values = dataSource.getAllThrows();
+
+        ArrayAdapter<Throw> adapter = new ArrayAdapter<Throw>(getActivity(),
                 R.layout.fragment_data, values);
-        setListAdapter(adapter);
+        lis.setAdapter(adapter);
         return view;
     }
-
-    public void addData(View view, TableLayout tl){
-        TextView textView = new TextView(getActivity());
-        //textView.setText(Double.toString(location.getLatitude()));
-
-        TableRow row = new TableRow(getActivity());
-        row.addView(textView);
-        tl.addView(row);
-    }
-
 
 }
