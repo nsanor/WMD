@@ -8,13 +8,12 @@
 - Calculate flight statistics. 
 - Provide player with best throw and angle adjustments.
 
-**Third Party Libraries**: 
+**APIs**: 
 - Google Maps Android v2
 - Google Play Services
 
 **TODO**: 
-- Add database support.
-- Decide on table structure to hold throw data.
+- Refine table structure to hold throw data and calculated data.
 - Default map to current location.
 - Add ability to add cursors to map.
 - Add statistics methods.
