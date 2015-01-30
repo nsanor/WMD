@@ -69,19 +69,22 @@ public class ThrowsDataSource {
                 + " = " + id, null);
     }
 
+    public void deleteAllThrows() {
+        //database.rawQuery("delete from sqlite_sequence where name = 'throws'", null);
+        database.delete(DBHelper.TABLE_THROWS, null,null);
+    }
+
     public List<Throw> getAllThrows() {
         List<Throw> ts = new ArrayList<Throw>();
-        String allquery = "SELECT * FROM " + DBHelper.TABLE_THROWS;
+        //String allquery = "SELECT * FROM " + DBHelper.TABLE_THROWS;
 
-        Cursor cursor = database.rawQuery(allquery, null);
-//                database.query(DBHelper.TABLE_THROWS,
-//                allColumns, null, null, null, null, null);
+        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
+                allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Throw t = cursorToThrow(cursor);
             ts.add(t);
-            Log.e("Data Fragment", t.getStartLat() + ", ");
             cursor.moveToNext();
         }
         // make sure to close the cursor

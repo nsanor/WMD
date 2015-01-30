@@ -1,6 +1,7 @@
 package com.example.sdp11.wmd;
 
 
+import android.app.ListFragment;
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -20,29 +21,35 @@ public class DataFragment extends Fragment {
 
     View view;
     ThrowsDataSource dataSource;
+    ArrayAdapter adapter;
 
     public DataFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_data, container, false);
+        view = inflater.inflate(R.layout.fragment_data, container, false);
 
         dataSource = new ThrowsDataSource(getActivity());
         dataSource.open();
-        dataSource.createThrow(1, 1, 1, 1, 1, 1, 1, 1);
-//        dataSource.createThrow(1, 1, 1, 1, 1, 1);
-//        dataSource.createThrow(1, 1, 1, 1, 1, 1);
+        dataSource.deleteAllThrows();
+        dataSource.createThrow(1, 2, 3, 1, 1, 1, 1, 1);
+//        dataSource.createThrow(4, 5, 6, 1, 1, 1, 1, 1);
+//        dataSource.createThrow(7, 8, 9, 1, 1, 1, 1, 1);
 
-        ListView lis = (ListView)v.findViewById(R.id.DataPoints);
+        ListView lis = (ListView)view.findViewById(R.id.list);
 
         List<Throw> values = dataSource.getAllThrows();
 
-        ArrayAdapter<Throw> adapter = new ArrayAdapter<Throw>(getActivity(),
-                R.layout.fragment_data, values);
+        adapter = new ArrayAdapter<Throw>(getActivity(),
+                android.R.layout.simple_list_item_1, values);
         lis.setAdapter(adapter);
         return view;
     }

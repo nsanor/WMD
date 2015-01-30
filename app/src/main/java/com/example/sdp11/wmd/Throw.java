@@ -86,9 +86,13 @@ public class Throw {
         this.start_y_accel = start_y_accel;
     }
 
+    public String getAllFields() {
+        return throw_id + ", " + hole_id + ", " + game_id + ", " + start_lat + ", " + start_long + ", " + start_x_accel + ", " + start_y_accel + ", " + end_lat + ", " + end_long;
+    }
+
     //Will be used by the ArrayAdapter in the ListView
     @Override
     public String toString() {
-        return "test";
+        return getAllFields();
     }
 }
