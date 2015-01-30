@@ -19,6 +19,7 @@ import java.util.List;
 public class DataFragment extends Fragment {
 
     View view;
+    ThrowsDataSource dataSource;
 
     public DataFragment() {
         // Required empty public constructor
@@ -30,10 +31,11 @@ public class DataFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_data, container, false);
 
-        ThrowsDataSource dataSource = new ThrowsDataSource(getActivity());
-        dataSource.createThrow(1, 1, 1, 1, 1, 1);
-        dataSource.createThrow(1, 1, 1, 1, 1, 1);
-        dataSource.createThrow(1, 1, 1, 1, 1, 1);
+        dataSource = new ThrowsDataSource(getActivity());
+        dataSource.open();
+        dataSource.createThrow(1, 1, 1, 1, 1, 1, 1, 1);
+//        dataSource.createThrow(1, 1, 1, 1, 1, 1);
+//        dataSource.createThrow(1, 1, 1, 1, 1, 1);
 
         ListView lis = (ListView)v.findViewById(R.id.DataPoints);
 
@@ -43,6 +45,18 @@ public class DataFragment extends Fragment {
                 R.layout.fragment_data, values);
         lis.setAdapter(adapter);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        dataSource.open();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        dataSource.close();
+        super.onPause();
     }
 
 }

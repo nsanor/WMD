@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,9 @@ import java.util.List;
 public class ThrowsDataSource {
     private SQLiteDatabase database;
     private DBHelper dbHelper;
-    private String[] allColumns = { DBHelper.COLUMN_ID,
+    private String[] allColumns = { DBHelper.COLUMN_THROW_ID,
+            DBHelper.COLUMN_HOLE_ID,
+            DBHelper.COLUMN_GAME_ID,
             DBHelper.COLUMN_START_LAT,
             DBHelper.COLUMN_START_LONG,
             DBHelper.COLUMN_END_LAT,
@@ -35,8 +38,11 @@ public class ThrowsDataSource {
         dbHelper.close();
     }
 
-    public Throw createThrow(double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel) {
+    public void createThrow(long hole_id, long game_id, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel) {
+//
         ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_HOLE_ID, start_lat);
+        values.put(DBHelper.COLUMN_GAME_ID, start_lat);
         values.put(DBHelper.COLUMN_START_LAT, start_lat);
         values.put(DBHelper.COLUMN_START_LONG, start_long);
         values.put(DBHelper.COLUMN_END_LAT, end_lat);
@@ -44,36 +50,38 @@ public class ThrowsDataSource {
         values.put(DBHelper.COLUMN_START_ACCEL_X, start_x_accel);
         values.put(DBHelper.COLUMN_START_ACCEL_Y, start_y_accel);
 
-        long insertId = database.insert(DBHelper.TABLE_THROWS, null,
-                values);
+        long insertId = database.insert(DBHelper.TABLE_THROWS, null,values);
 
-        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
-                allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
-                null, null, null);
-        cursor.moveToFirst();
-        Throw newThrow = cursorToThrow(cursor);
-        cursor.close();
-        return newThrow;
+//        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
+//                allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
+//                null, null, null);
+//        cursor.moveToFirst();s
+//        Throw newThrow = cursorToThrow(cursor);
+//        cursor.close();
+//        return newThrow;
 
     }
 
     public void deleteThrow(Throw t) {
-        long id = t.getId();
+        long id = t.getThrowId();
         System.out.println("Comment deleted with id: " + id);
-        database.delete(DBHelper.TABLE_THROWS, DBHelper.COLUMN_ID
+        database.delete(DBHelper.TABLE_THROWS, DBHelper.COLUMN_THROW_ID
                 + " = " + id, null);
     }
 
     public List<Throw> getAllThrows() {
         List<Throw> ts = new ArrayList<Throw>();
+        String allquery = "SELECT * FROM " + DBHelper.TABLE_THROWS;
 
-        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
-                allColumns, null, null, null, null, null);
+        Cursor cursor = database.rawQuery(allquery, null);
+//                database.query(DBHelper.TABLE_THROWS,
+//                allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Throw t = cursorToThrow(cursor);
             ts.add(t);
+            Log.e("Data Fragment", t.getStartLat() + ", ");
             cursor.moveToNext();
         }
         // make sure to close the cursor
@@ -83,13 +91,15 @@ public class ThrowsDataSource {
 
     private Throw cursorToThrow(Cursor cursor) {
         Throw t = new Throw();
-        t.setId(cursor.getLong(0));
-        t.setStartLat(cursor.getDouble(1));
-        t.setStartLong(cursor.getDouble(2));
-        t.setEndLat(cursor.getDouble(3));
-        t.setEndLong(cursor.getDouble(4));
-        t.setStartXAccel(cursor.getDouble(5));
-        t.setStartYAccel(cursor.getDouble(6));
+        t.setThrowId(cursor.getLong(0));
+        t.setHoleId(cursor.getLong(1));
+        t.setGameId(cursor.getLong(2));
+        t.setStartLat(cursor.getDouble(3));
+        t.setStartLong(cursor.getDouble(4));
+        t.setEndLat(cursor.getDouble(5));
+        t.setEndLong(cursor.getDouble(6));
+        t.setStartXAccel(cursor.getDouble(7));
+        t.setStartYAccel(cursor.getDouble(8));
         return t;
     }
 

@@ -10,7 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_THROWS = "throws";
-    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_THROW_ID = "throw_id";
+    public static final String COLUMN_HOLE_ID = "hole_id";
+    public static final String COLUMN_GAME_ID = "game_id";
     public static final String COLUMN_START_LAT = "starting_latitude";
     public static final String COLUMN_START_LONG = "starting_longitude";
     public static final String COLUMN_END_LAT = "ending_latitude";
@@ -23,23 +25,27 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "
-            + TABLE_THROWS + "(" + COLUMN_ID
+            + TABLE_THROWS + " ( "
+            + COLUMN_THROW_ID
             + " integer primary key autoincrement, "
-            + COLUMN_START_LAT + " double not null,"
-            + COLUMN_START_LONG + "double not null,"
-            + COLUMN_END_LAT + "double not null,"
-            + COLUMN_END_LONG + "double not null,"
-            + COLUMN_START_ACCEL_X + "double not null,"
-            + COLUMN_START_ACCEL_Y + "double not null,"
-            ;
+            + COLUMN_HOLE_ID + " integer not null, "
+            + COLUMN_GAME_ID + " integer not null, "
+            + COLUMN_START_LAT + " double not null, "
+            + COLUMN_START_LONG + " double not null, "
+            + COLUMN_END_LAT + " double not null, "
+            + COLUMN_END_LONG + " double not null, "
+            + COLUMN_START_ACCEL_X + " double not null, "
+            + COLUMN_START_ACCEL_Y + " double not null"
+            + ");";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase database) {
-        database.execSQL(DATABASE_CREATE);
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_THROWS);
+        db.execSQL(DATABASE_CREATE);
     }
 
     @Override

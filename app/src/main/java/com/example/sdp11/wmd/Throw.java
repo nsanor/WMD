@@ -4,7 +4,9 @@ package com.example.sdp11.wmd;
  * Created by Student on 1/27/2015.
  */
 public class Throw {
-    private long id;
+    private long throw_id;
+    private long hole_id;
+    private long game_id;
     private double start_lat;
     private double start_long;
     private double end_lat;
@@ -12,21 +14,28 @@ public class Throw {
     private double start_x_accel;
     private double start_y_accel;
 
-//    public Throw() {
-//        this.id = -1;
-//        this.start_lat = -1;
-//        this.start_long = -1;
-//        this.end_lat = -1;
-//        this.end_long = -1;
-//        this.start_x_accel = -1;
-//        this.start_y_accel = -1;
-//    }
-    public long getId() {
-        return id;
+    public long getThrowId() {
+        return throw_id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setThrowId(long throw_id) {
+        this.throw_id = throw_id;
+    }
+
+    public long getHoleId() {
+        return hole_id;
+    }
+
+    public void setHoleId(long hole_id) {
+        this.hole_id = hole_id;
+    }
+
+    public long getGameId() {
+        return game_id;
+    }
+
+    public void setGameId(long game_id) {
+        this.game_id = game_id;
     }
 
     public double getStartLat() {
