@@ -28,25 +28,22 @@ import com.google.android.gms.location.LocationServices;
 public class MainActivity extends Activity implements ActionBar.TabListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
-
     ViewPager mViewPager;
-
     GoogleApiClient mGoogleApiClient;
-
     static Location mCurrentLocation;
-
     String mLastUpdateTime;
-
     Boolean mRequestingLocationUpdates = true;
-
     LocationRequest mLocationRequest;
 
-    //static final String REQUESTING_LOCATION_UPDATES_KEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        if( savedInstanceState != null ){
+//            getActionBar().selectTab(savedInstanceState.getInt(tabState));
+//        }
 
         buildGoogleApiClient();
         createLocationRequest();
@@ -86,37 +83,23 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("Connected?", String.valueOf(mGoogleApiClient.isConnected()));
+        //Log.e("Connected?", String.valueOf(mGoogleApiClient.isConnected()));
         mGoogleApiClient.connect();
     }
 
-
-    //TODO implement savedinstancestate
+//    public int getSelectedTab() {
+//        return getActionBar().getSelectedTab().getPosition();
+//    }
+//
+//
 //    private void updateValuesFromBundle(Bundle savedInstanceState) {
 //        if (savedInstanceState != null) {
-//            // Update the value of mRequestingLocationUpdates from the Bundle, and
-//            // make sure that the Start Updates and Stop Updates buttons are
-//            // correctly enabled or disabled.
-//            if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
-//                mRequestingLocationUpdates = savedInstanceState.getBoolean(
-//                        REQUESTING_LOCATION_UPDATES_KEY);
-//                setButtonsEnabledState();
+//            if (savedInstanceState.keySet().contains("tabState")) {
+//                //getActionBar().set(savedInstanceState.getInt("tabState"));
 //            }
 //
-//            // Update the value of mCurrentLocation from the Bundle and update the
-//            // UI to show the correct latitude and longitude.
-//            if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
-//                // Since LOCATION_KEY was found in the Bundle, we can be sure that
-//                // mCurrentLocationis not null.
-//                mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
-//            }
 //
-//            // Update the value of mLastUpdateTime from the Bundle and update the UI.
-//            if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
-//                mLastUpdateTime = savedInstanceState.getString(
-//                        LAST_UPDATED_TIME_STRING_KEY);
-//            }
-//            updateUI();
+//            //updateUI();
 //        }
 //    }
 
@@ -139,17 +122,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
     }
 
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY,
-//                mRequestingLocationUpdates);
-//        savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
-//        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
-//        super.onSaveInstanceState(savedInstanceState);
-//    }
-//
-//    public Location getLastLocation() {
-//        return lastLocation;
-//    }
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        //savedInstanceState.putInt("tabState", getSelectedTab());
+    }
+
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {

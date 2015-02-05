@@ -18,6 +18,8 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Map;
@@ -28,7 +30,9 @@ import java.util.Map;
  */
 public class MapFragment extends Fragment {
 
-    Activity parentActivity = getActivity();
+    double latitude = 41.13747;
+    double longitude = -81.47430700000001;
+    LatLngBounds bounds;
 
     public MapFragment() {
         // Required empty public constructor
@@ -53,9 +57,6 @@ public class MapFragment extends Fragment {
 
         GoogleMap googleMap = mapView.getMap();
 
-        double latitude = 41.13747;
-        double longitude = -81.47430700000001;
-
         Location mCurrentLocation = MainActivity.getmCurrentLocation();
 
         // latitude and longitude
@@ -64,6 +65,7 @@ public class MapFragment extends Fragment {
             longitude = mCurrentLocation.getLongitude();
         }
 
+        calculateBounds();
 
         // create marker
         MarkerOptions marker = new MarkerOptions().position(
@@ -77,11 +79,26 @@ public class MapFragment extends Fragment {
         googleMap.addMarker(marker);
 
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        //CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude)).zoom(13).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
+        //googleMap.animateCamera(cu);
 
         return view;
+    }
+
+    private void calculateBounds() {
+        //Add formula to calculate distance between lat and long lines at current location
+        //Want ~5 mile bounds (8.4 km)
+        //About 69km between lines on average
+        //About .12 degrees for bounds, 0.6 on either side
+        LatLng northeast = new LatLng(latitude + 0.06, longitude + 0.06);
+        LatLng southwest = new LatLng(latitude - 0.06, longitude - 0.06);
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(northeast);
+        builder.include(southwest);
+        bounds = builder.build();
     }
 }
