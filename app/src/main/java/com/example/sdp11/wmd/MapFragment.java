@@ -1,6 +1,8 @@
 package com.example.sdp11.wmd;
 
 
+import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import java.util.Map;
  */
 public class MapFragment extends Fragment {
 
+    Activity parentActivity = getActivity();
 
     public MapFragment() {
         // Required empty public constructor
@@ -50,13 +53,21 @@ public class MapFragment extends Fragment {
 
         GoogleMap googleMap = mapView.getMap();
 
-        // latitude and longitude
         double latitude = 41.13747;
         double longitude = -81.47430700000001;
 
+        Location mCurrentLocation = MainActivity.getmCurrentLocation();
+
+        // latitude and longitude
+        if(mCurrentLocation != null) {
+            latitude = mCurrentLocation.getLatitude();
+            longitude = mCurrentLocation.getLongitude();
+        }
+
+
         // create marker
         MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(latitude, longitude)).title("Home Yo!");
+                new LatLng(latitude, longitude)).title("You Are Here");
 
         // Changing marker icon
         marker.icon(BitmapDescriptorFactory
