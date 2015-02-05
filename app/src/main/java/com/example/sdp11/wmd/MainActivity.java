@@ -16,12 +16,14 @@ import android.provider.Settings;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 
@@ -175,6 +177,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     public void onConnected(Bundle bundle) {
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 apiClient);
+        if (lastLocation != null) {
+            Log.e("Main Activity", String.valueOf(lastLocation.getLatitude()) + String.valueOf(lastLocation.getLongitude()));
+        }
+        else Log.e("Main Activity", "Error Occurred");
         //if (lastLocation != null) {
         //    Toast.makeText(getApplicationContext(), Double.toString(lastLocation.getLatitude()), Toast.LENGTH_SHORT).show();
         //}
@@ -184,4 +190,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     public void onConnectionSuspended(int i) {
 
     }
+
+//    protected void createLocationRequest() {
+//        LocationRequest mLocationRequest = new LocationRequest();
+//        mLocationRequest.setInterval(10000);
+//        mLocationRequest.setFastestInterval(5000);
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+//    }
 }

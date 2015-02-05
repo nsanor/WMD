@@ -20,6 +20,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_START_ACCEL_X = "starting_x_acceleration";
     public static final String COLUMN_START_ACCEL_Y = "starting_y_acceleration";
 
+    public static final String TABLE_CALC = "calc_data";
+
+
     private static final String DATABASE_NAME = "throws.db";
     private static final int DATABASE_VERSION = 1;
 
