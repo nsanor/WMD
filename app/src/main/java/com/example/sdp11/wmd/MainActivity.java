@@ -1,5 +1,7 @@
 package com.example.sdp11.wmd;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -7,12 +9,8 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
-import android.provider.Settings;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -27,15 +25,23 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 
-public class MainActivity extends Activity implements ActionBar.TabListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends Activity implements ActionBar.TabListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     ViewPager mViewPager;
 
-    GoogleApiClient apiClient;
+    GoogleApiClient mGoogleApiClient;
 
-    Location lastLocation;
+    static Location mCurrentLocation;
+
+    String mLastUpdateTime;
+
+    Boolean mRequestingLocationUpdates = true;
+
+    LocationRequest mLocationRequest;
+
+    //static final String REQUESTING_LOCATION_UPDATES_KEY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         setContentView(R.layout.activity_main);
 
         buildGoogleApiClient();
+        createLocationRequest();
 
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -76,12 +83,104 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     }
 
-    public Location getLastLocation() {
-        return lastLocation;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("Connected?", String.valueOf(mGoogleApiClient.isConnected()));
+        mGoogleApiClient.connect();
     }
+
+
+    //TODO implement savedinstancestate
+//    private void updateValuesFromBundle(Bundle savedInstanceState) {
+//        if (savedInstanceState != null) {
+//            // Update the value of mRequestingLocationUpdates from the Bundle, and
+//            // make sure that the Start Updates and Stop Updates buttons are
+//            // correctly enabled or disabled.
+//            if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+//                mRequestingLocationUpdates = savedInstanceState.getBoolean(
+//                        REQUESTING_LOCATION_UPDATES_KEY);
+//                setButtonsEnabledState();
+//            }
+//
+//            // Update the value of mCurrentLocation from the Bundle and update the
+//            // UI to show the correct latitude and longitude.
+//            if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
+//                // Since LOCATION_KEY was found in the Bundle, we can be sure that
+//                // mCurrentLocationis not null.
+//                mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
+//            }
+//
+//            // Update the value of mLastUpdateTime from the Bundle and update the UI.
+//            if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
+//                mLastUpdateTime = savedInstanceState.getString(
+//                        LAST_UPDATED_TIME_STRING_KEY);
+//            }
+//            updateUI();
+//        }
+//    }
+
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        stopLocationUpdates();
+//    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
+    }
+
+//    public void onSaveInstanceState(Bundle savedInstanceState) {
+//        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY,
+//                mRequestingLocationUpdates);
+//        savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
+//        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
+//        super.onSaveInstanceState(savedInstanceState);
+//    }
+//
+//    public Location getLastLocation() {
+//        return lastLocation;
+//    }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mCurrentLocation = location;
+        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        updateUI();
+    }
+
+    private void updateUI() {
+        Log.e("Main Activity", String.valueOf(mCurrentLocation.getLatitude()));
+        Log.e("Main Activity", String.valueOf(mCurrentLocation.getLongitude()));
+        Log.e("Main Activity", mLastUpdateTime);
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
 
     }
 
@@ -166,7 +265,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     }
 
     protected synchronized void buildGoogleApiClient() {
-       apiClient = new GoogleApiClient.Builder(this)
+       mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
                 .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
                 .addApi(LocationServices.API)
@@ -175,15 +274,19 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     @Override
     public void onConnected(Bundle bundle) {
-        lastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                apiClient);
-        if (lastLocation != null) {
-            Log.e("Main Activity", String.valueOf(lastLocation.getLatitude()) + String.valueOf(lastLocation.getLongitude()));
+//        if (mRequestingLocationUpdates) {
+//            startLocationUpdates();
+//        }
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mCurrentLocation != null) {
+            Log.e("Main Activity", String.valueOf(mCurrentLocation.getLatitude()) + String.valueOf(mCurrentLocation.getLongitude()));
         }
         else Log.e("Main Activity", "Error Occurred");
-        //if (lastLocation != null) {
-        //    Toast.makeText(getApplicationContext(), Double.toString(lastLocation.getLatitude()), Toast.LENGTH_SHORT).show();
-        //}
+    }
+
+    public static Location getmCurrentLocation() {
+        return mCurrentLocation;
     }
 
     @Override
@@ -191,10 +294,14 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     }
 
-//    protected void createLocationRequest() {
-//        LocationRequest mLocationRequest = new LocationRequest();
-//        mLocationRequest.setInterval(10000);
-//        mLocationRequest.setFastestInterval(5000);
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
-//    }
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+    }
+
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+    }
 }
