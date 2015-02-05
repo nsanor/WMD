@@ -6,11 +6,49 @@
     android:padding="20dp"
     tools:context=".DataFragment">
 
-    <ListView
-        android:id="@+id/list"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        </ListView>
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/wallet_highlighted_text_holo_light"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="Throw ID"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:text="Total Distance"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:text="Throw Integrity"/>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/header"/>
+
+        </RelativeLayout>
+
+
 
 </FrameLayout>

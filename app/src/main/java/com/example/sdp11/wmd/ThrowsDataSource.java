@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,13 @@ public class ThrowsDataSource {
             DBHelper.COLUMN_END_LONG,
             DBHelper.COLUMN_START_ACCEL_X,
             DBHelper.COLUMN_START_ACCEL_Y};
+
+    private String[] mainColumns = { DBHelper.COLUMN_THROW_ID,
+            DBHelper.COLUMN_INITIAL_DIRECTION,
+            DBHelper.COLUMN_FINAL_DIRECTION,
+            DBHelper.COLUMN_TOTAL_DISTANCE,
+            DBHelper.COLUMN_THROW_INTEGRITY,
+            DBHelper.COLUMN_TOTAL_TIME};
 
     public ThrowsDataSource(Context context) {
         dbHelper = new DBHelper(context);
@@ -62,7 +68,7 @@ public class ThrowsDataSource {
 
     }
 
-    public void deleteThrow(Throw t) {
+    public void deleteThrow(RawThrowData t) {
         long id = t.getThrowId();
         System.out.println("Comment deleted with id: " + id);
         database.delete(DBHelper.TABLE_THROWS, DBHelper.COLUMN_THROW_ID
@@ -74,16 +80,15 @@ public class ThrowsDataSource {
         database.delete(DBHelper.TABLE_THROWS, null,null);
     }
 
-    public List<Throw> getAllThrows() {
-        List<Throw> ts = new ArrayList<Throw>();
-        //String allquery = "SELECT * FROM " + DBHelper.TABLE_THROWS;
+    public List<RawThrowData> getAllThrows() {
+        List<RawThrowData> ts = new ArrayList<RawThrowData>();
 
         Cursor cursor = database.query(DBHelper.TABLE_THROWS,
                 allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Throw t = cursorToThrow(cursor);
+            RawThrowData t = cursorToThrow(cursor);
             ts.add(t);
             cursor.moveToNext();
         }
@@ -92,8 +97,25 @@ public class ThrowsDataSource {
         return ts;
     }
 
-    private Throw cursorToThrow(Cursor cursor) {
-        Throw t = new Throw();
+    public List<CalculatedThrowData> getAllThrowsShort() {
+        List<CalculatedThrowData> ts = new ArrayList<CalculatedThrowData>();
+
+        Cursor cursor = database.query(DBHelper.TABLE_CALC,
+                allColumns, null, null, null, null, null);
+
+        cursor.moveToFirst();
+//        while (!cursor.isAfterLast()) {
+//            RawThrowData t = cursorToThrow(cursor);
+//            ts.add(t);
+//            cursor.moveToNext();
+//        }
+        // make sure to close the cursor
+        cursor.close();
+        return ts;
+    }
+
+    private RawThrowData cursorToThrow(Cursor cursor) {
+        RawThrowData t = new RawThrowData();
         t.setThrowId(cursor.getLong(0));
         t.setHoleId(cursor.getLong(1));
         t.setGameId(cursor.getLong(2));

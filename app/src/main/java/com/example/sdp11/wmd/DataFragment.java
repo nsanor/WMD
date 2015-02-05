@@ -1,8 +1,6 @@
 package com.example.sdp11.wmd;
 
 
-import android.app.ListFragment;
-import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -46,9 +41,9 @@ public class DataFragment extends Fragment {
 
         ListView lis = (ListView)view.findViewById(R.id.list);
 
-        List<Throw> values = dataSource.getAllThrows();
+        List<RawThrowData> values = dataSource.getAllThrows();
 
-        adapter = new ArrayAdapter<Throw>(getActivity(),
+        adapter = new ArrayAdapter<RawThrowData>(getActivity(),
                 android.R.layout.simple_list_item_1, values);
         lis.setAdapter(adapter);
         return view;
