@@ -1,5 +1,10 @@
 package com.example.sdp11.wmd;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Created by Student on 1/27/2015.
  */
@@ -13,22 +18,23 @@ public class RawThrowData {
     private double endLong;
     private double startXAccel;
     private double startYAccel;
-    private double startTime;
-    private double endTime;
+    private long startTime;
+    private long endTime;
+    private long syncTime;
 
-    public double getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(double endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
-    public double getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(double startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
@@ -104,8 +110,25 @@ public class RawThrowData {
         this.startYAccel = start_y_accel;
     }
 
+    public long getSyncTime() {
+        return syncTime;
+    }
+
+    public void setSyncTime(long syncTime) {
+        this.syncTime = syncTime;
+    }
+
+    //Convert from epoch to string
+    public String convertDate(long d) {
+        Date date = new Date(d);
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+        String formatted = format.format(date);
+        return formatted;
+    }
+
     public String getAllFields() {
-        return throwId + ", " + holeId + ", " + gameId + ", " + startLat + ", " + startLong + ", " + startXAccel + ", " + startYAccel + ", " + endLat + ", " + endLong;
+        return String.valueOf(syncTime) + ", "  + convertDate(syncTime);//throwId + ", " + holeId + ", " + gameId + ", " + startLat + ", " + startLong + ", " + startXAccel + ", " + startYAccel + ", " + endLat + ", " + endLong;
     }
 
     //Will be used by the ArrayAdapter in the ListView
@@ -113,4 +136,5 @@ public class RawThrowData {
     public String toString() {
         return getAllFields();
     }
+
 }

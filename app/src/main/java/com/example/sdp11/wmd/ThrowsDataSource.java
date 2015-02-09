@@ -5,9 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by Student on 1/27/2015.
@@ -23,7 +28,10 @@ public class ThrowsDataSource {
             DBHelper.COLUMN_END_LAT,
             DBHelper.COLUMN_END_LONG,
             DBHelper.COLUMN_START_ACCEL_X,
-            DBHelper.COLUMN_START_ACCEL_Y};
+            DBHelper.COLUMN_START_ACCEL_Y,
+            DBHelper.COLUMN_START_TIME,
+            DBHelper.COLUMN_END_TIME,
+            DBHelper.COLUMN_SYNC_TIME};
 
     private String[] mainColumns = { DBHelper.COLUMN_THROW_ID,
             DBHelper.COLUMN_INITIAL_DIRECTION,
@@ -44,17 +52,24 @@ public class ThrowsDataSource {
         dbHelper.close();
     }
 
-    public void createThrow(long hole_id, long game_id, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel) {
-//
+    public void createThrow(long hole_id, long game_id, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime) {
+
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_HOLE_ID, start_lat);
-        values.put(DBHelper.COLUMN_GAME_ID, start_lat);
+        values.put(DBHelper.COLUMN_HOLE_ID, 1);
+        values.put(DBHelper.COLUMN_GAME_ID, 1);
         values.put(DBHelper.COLUMN_START_LAT, start_lat);
         values.put(DBHelper.COLUMN_START_LONG, start_long);
         values.put(DBHelper.COLUMN_END_LAT, end_lat);
         values.put(DBHelper.COLUMN_END_LONG, end_long);
         values.put(DBHelper.COLUMN_START_ACCEL_X, start_x_accel);
         values.put(DBHelper.COLUMN_START_ACCEL_Y, start_y_accel);
+        values.put(DBHelper.COLUMN_START_TIME, startTime);
+        values.put(DBHelper.COLUMN_END_TIME, endTime);
+
+        //Calculate unix time from current time
+        long now = System.currentTimeMillis()/1000L;
+        Log.e("Throws Data Source", String.valueOf(now));
+        values.put(DBHelper.COLUMN_SYNC_TIME, now);
 
         long insertId = database.insert(DBHelper.TABLE_THROWS, null,values);
 
@@ -125,6 +140,9 @@ public class ThrowsDataSource {
         t.setEndLong(cursor.getDouble(6));
         t.setStartXAccel(cursor.getDouble(7));
         t.setStartYAccel(cursor.getDouble(8));
+        t.setStartTime(cursor.getLong(9));
+        t.setEndTime(cursor.getLong(10));
+        t.setSyncTime(cursor.getLong(11));
         return t;
     }
 

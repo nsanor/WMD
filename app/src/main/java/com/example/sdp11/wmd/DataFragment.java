@@ -35,7 +35,7 @@ public class DataFragment extends Fragment {
         dataSource = new ThrowsDataSource(getActivity());
         dataSource.open();
         dataSource.deleteAllThrows();
-        dataSource.createThrow(1, 2, 3, 1, 1, 1, 1, 1);
+        for (int i = 0; i < 25; i++) dataSource.createThrow(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 //        dataSource.createThrow(4, 5, 6, 1, 1, 1, 1, 1);
 //        dataSource.createThrow(7, 8, 9, 1, 1, 1, 1, 1);
 

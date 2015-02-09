@@ -39,12 +39,17 @@ public class DBHelper extends SQLiteOpenHelper {
             + TABLE_THROWS + " ( "
             + COLUMN_THROW_ID
             + " integer primary key autoincrement, "
+            + COLUMN_HOLE_ID + " integer not null, "
+            + COLUMN_GAME_ID+ " integer not null, "
             + COLUMN_START_LAT + " double not null, "
             + COLUMN_START_LONG + " double not null, "
             + COLUMN_END_LAT + " double not null, "
             + COLUMN_END_LONG + " double not null, "
             + COLUMN_START_ACCEL_X + " double not null, "
-            + COLUMN_START_ACCEL_Y + " double not null"
+            + COLUMN_START_ACCEL_Y + " double not null, "
+            + COLUMN_START_TIME + " integer not null, "
+            + COLUMN_END_TIME + " integer not null, "
+            + COLUMN_SYNC_TIME + " integer not null"
             + ");";
 
     private static final String CALC_DATABASE_CREATE = "create table "
