@@ -10,5 +10,8 @@
     <string name="about">About</string>
     <string name="button_toggle">Toggle Bluetooth</string>
     <string name="button_paired">View Paired Devices</string>
+    <string name="throw_id_header">Throw ID</string>
+    <string name="total_distance_header">Total Distance</string>
+    <string name="throw_integrity_header">Throw Integrity</string>
 
 </resources>
