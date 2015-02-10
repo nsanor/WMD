@@ -11,6 +11,10 @@ public class CalculatedThrowData {
     private double totalDistance;
     private double totalTime;
 
+    public CalculatedThrowData() {
+
+    }
+
     public CalculatedThrowData(RawThrowData t) {
         this.throwId = t.getThrowId();
         this.totalDistance = calculateDistance(t.getStartLat(), t.getStartLong(), t.getEndLat(), t.getEndLong());
