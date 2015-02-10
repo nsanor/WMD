@@ -73,6 +73,10 @@ public class ThrowsDataSource {
 
         long insertId = database.insert(DBHelper.TABLE_THROWS, null,values);
 
+        //Create new entry in CalculatedThrowData here.
+
+        //Update globals in TotalsData here.
+
 //        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
 //                allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
 //                null, null, null);
