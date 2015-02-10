@@ -121,7 +121,7 @@ public class RawThrowData {
     //Convert from epoch to string
     public String convertDate(long d) {
         Date date = new Date(d);
-        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         String formatted = format.format(date);
         return formatted;
