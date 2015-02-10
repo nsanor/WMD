@@ -67,7 +67,7 @@ public class ThrowsDataSource {
         values.put(DBHelper.COLUMN_END_TIME, endTime);
 
         //Calculate unix time from current time
-        long now = System.currentTimeMillis()/1000L;
+        long now = System.currentTimeMillis();
         Log.e("Throws Data Source", String.valueOf(now));
         values.put(DBHelper.COLUMN_SYNC_TIME, now);
 
@@ -76,7 +76,7 @@ public class ThrowsDataSource {
 //        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
 //                allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
 //                null, null, null);
-//        cursor.moveToFirst();s
+//        cursor.moveToFirst();
 //        Throw newThrow = cursorToThrow(cursor);
 //        cursor.close();
 //        return newThrow;
