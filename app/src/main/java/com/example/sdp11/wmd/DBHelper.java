@@ -1,6 +1,7 @@
 package com.example.sdp11.wmd;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -80,4 +81,5 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_THROWS);
         onCreate(db);
     }
+
 }

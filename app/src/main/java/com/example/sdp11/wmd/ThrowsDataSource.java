@@ -7,12 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by Student on 1/27/2015.
@@ -68,12 +64,15 @@ public class ThrowsDataSource {
 
         //Calculate unix time from current time
         long now = System.currentTimeMillis();
-        Log.e("Throws Data Source", String.valueOf(now));
         values.put(DBHelper.COLUMN_SYNC_TIME, now);
 
         long insertId = database.insert(DBHelper.TABLE_THROWS, null,values);
 
+        //Need to get new max throw id to create calc data
+        Log.e("TEST", database.toString());
+        Log.e("ID Test", String.valueOf(getMaxThrowId(database)));
         //Create new entry in CalculatedThrowData here.
+        //CalculatedThrowData calc = new CalculatedThrowData(throwId, start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime);
 
         //Update globals in TotalsData here.
 
@@ -81,11 +80,13 @@ public class ThrowsDataSource {
 //                allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
 //                null, null, null);
 //        cursor.moveToFirst();
-//        Throw newThrow = cursorToThrow(cursor);
+//        Throw newThrow = cursorToRawThrow(cursor);
 //        cursor.close();
 //        return newThrow;
 
     }
+
+
 
     public void deleteThrow(RawThrowData t) {
         long id = t.getThrowId();
@@ -107,7 +108,7 @@ public class ThrowsDataSource {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            RawThrowData t = cursorToThrow(cursor);
+            RawThrowData t = cursorToRawThrow(cursor);
             ts.add(t);
             cursor.moveToNext();
         }
@@ -120,20 +121,20 @@ public class ThrowsDataSource {
         List<CalculatedThrowData> ts = new ArrayList<CalculatedThrowData>();
 
         Cursor cursor = database.query(DBHelper.TABLE_CALC,
-                allColumns, null, null, null, null, null);
+                mainColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            RawThrowData t = cursorToThrow(cursor);
-//            ts.add(t);
-//            cursor.moveToNext();
-//        }
+        while (!cursor.isAfterLast()) {
+            CalculatedThrowData t = cursorToThrow(cursor);
+            ts.add(t);
+            cursor.moveToNext();
+        }
         // make sure to close the cursor
         cursor.close();
         return ts;
     }
 
-    private RawThrowData cursorToThrow(Cursor cursor) {
+    private RawThrowData cursorToRawThrow(Cursor cursor) {
         RawThrowData t = new RawThrowData();
         t.setThrowId(cursor.getLong(0));
         t.setHoleId(cursor.getLong(1));
@@ -150,4 +151,22 @@ public class ThrowsDataSource {
         return t;
     }
 
+    private CalculatedThrowData cursorToThrow(Cursor cursor) {
+        CalculatedThrowData t = new CalculatedThrowData();
+        t.setThrowId(cursor.getLong(0));
+        t.setInitialDirection(cursor.getDouble(1));
+        t.setFinalDirection(cursor.getDouble(2));
+        t.setThrowIntegrity(cursor.getDouble(3));
+        t.setTotalDistance(cursor.getDouble(4));
+        t.setTotalTime(cursor.getInt(5));
+        return t;
+    }
+
+    public long getMaxThrowId(SQLiteDatabase db) {
+        Cursor c = db.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_THROWS, new String[] {"throw_id"});
+        c.moveToFirst();
+        //int index = c.getColumnIndex("throw_id");
+       // Log.e("TEST", String.valueOf(index));
+        return c.getInt(0);
+    }
 }

@@ -15,6 +15,13 @@ public class CalculatedThrowData {
 
     }
 
+    public CalculatedThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime) {
+        this.throwId =throwId;
+        this.totalDistance = calculateDistance(start_lat, start_long, end_lat, end_long);
+        this.totalTime = endTime - startTime;
+        this.throwIntegrity = 1;
+    }
+
     public CalculatedThrowData(RawThrowData t) {
         this.throwId = t.getThrowId();
         this.totalDistance = calculateDistance(t.getStartLat(), t.getStartLong(), t.getEndLat(), t.getEndLong());

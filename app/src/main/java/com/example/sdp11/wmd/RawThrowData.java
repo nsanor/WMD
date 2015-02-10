@@ -22,6 +22,24 @@ public class RawThrowData {
     private long endTime;
     private long syncTime;
 
+    public RawThrowData() {}
+
+    public RawThrowData(long throwId, long holeId, long gameId, double startLat, double startLong, double endLat, double endLong, double startXAccel, double startYAccel, long startTime, long endTime, long syncTime) {
+        this.throwId = throwId;
+        this.holeId = holeId;
+        this.gameId = gameId;
+        this.startLat = startLat;
+        this.startLong = startLong;
+        this.endLat = endLat;
+        this.endLong = endLong;
+        this.startXAccel = startXAccel;
+        this.startYAccel = startYAccel;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.syncTime = syncTime;
+    }
+
+
     public long getEndTime() {
         return endTime;
     }
