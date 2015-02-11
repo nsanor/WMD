@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdate;
@@ -54,6 +55,17 @@ public class MapFragment extends Fragment {
         mapView.onCreate(savedInstanceState);
 
         mapView.onResume();
+
+//        Button mode = (Button) view.findViewById(R.id.button_mode);
+//        final Button place = (Button) view.findViewById(R.id.button_place);
+//        final Button commit = (Button) view.findViewById(R.id.button_commit);
+//        mode.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                place.setVisibility(View.VISIBLE);
+//                commit.setVisibility(View.VISIBLE);
+//            }
+//        });
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());

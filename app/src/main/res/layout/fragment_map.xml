@@ -6,8 +6,48 @@
     android:padding="20dp"
     tools:context=".MapFragment">
 
-    <com.google.android.gms.maps.MapView android:id="@+id/mapview"
+<!--    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:text="Change Mode"/>
+
+            <Button
+                android:id="@+id/button_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:text="Place Marker"
+                android:visibility="invisible"/>
+
+            <Button
+                android:id="@+id/button_commit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:text="Commit Marker"
+                android:visibility="invisible"/>
+
+        </LinearLayout> -->
+
+        <com.google.android.gms.maps.MapView android:id="@+id/mapview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+      <!--  </LinearLayout> -->
+
+
 
 </FrameLayout>
