@@ -17,6 +17,10 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -33,6 +37,8 @@ public class MapFragment extends Fragment {
     double latitude = 41.13747;
     double longitude = -81.47430700000001;
     LatLngBounds bounds;
+
+    private GoogleMap googleMap;
 
     public MapFragment() {
         // Required empty public constructor
@@ -55,7 +61,7 @@ public class MapFragment extends Fragment {
             e.printStackTrace();
         }
 
-        GoogleMap googleMap = mapView.getMap();
+        googleMap = mapView.getMap();
 
         Location mCurrentLocation = MainActivity.getmCurrentLocation();
 
@@ -67,16 +73,22 @@ public class MapFragment extends Fragment {
 
         calculateBounds();
 
-        // create marker
-        MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(latitude, longitude)).title("You Are Here");
+        //test data
+//        plotPoint(mCurrentLocation.getLatitude() + 0.5, mCurrentLocation.getLongitude() + 0.5);
+//        plotPoint(mCurrentLocation.getLatitude() - 0.5, mCurrentLocation.getLongitude() - 0.5);
 
-        // Changing marker icon
-        marker.icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        plotPoint(latitude, longitude);
+        plotRadius(latitude, longitude, 1000);
 
-        // adding marker
-        googleMap.addMarker(marker);
+        //Need ability to disable this when needed.
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng point) {
+                //lstLatLngs.add(point);
+                googleMap.addMarker(new MarkerOptions().position(point));
+            }
+        });
 
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         //CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
@@ -100,5 +112,27 @@ public class MapFragment extends Fragment {
         builder.include(northeast);
         builder.include(southwest);
         bounds = builder.build();
+    }
+
+    private void plotPoint(double lat, double lng) {
+        // create marker
+        MarkerOptions marker = new MarkerOptions().position(
+                new LatLng(lat, lng));
+
+        // Changing marker icon
+        marker.icon(BitmapDescriptorFactory
+                .defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
+        googleMap.addMarker(marker);
+    }
+
+    private void plotRadius(double lat, double lng, double radius) {
+        // Instantiates a new CircleOptions object and defines the center and radius
+        CircleOptions circleOptions = new CircleOptions()
+                .center(new LatLng(lat, lng))
+                .radius(radius); // In meters
+
+// Get back the mutable Circle
+        Circle circle = googleMap.addCircle(circleOptions);
     }
 }
