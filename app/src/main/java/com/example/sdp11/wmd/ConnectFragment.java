@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -37,6 +38,7 @@ public class ConnectFragment extends Fragment{
     private BluetoothAdapter BA;
     private Set<BluetoothDevice> pairedDevices;
     private ListView lv;
+    private ArrayAdapter listAdapter;
 
     private boolean mScanning;
     private Handler mHandler;
@@ -72,11 +74,12 @@ public class ConnectFragment extends Fragment{
         paired.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                list(view);
+                BA.startLeScan(mScanCallback);
             }
         });
 
         lv = (ListView)view.findViewById(R.id.devices);
+
 
         return view;
     }
@@ -85,7 +88,11 @@ public class ConnectFragment extends Fragment{
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
             //For the device we want, make a connection
-            device.connectGatt(getActivity(), true, mGattCallback);
+            //device.connectGatt(getActivity(), true, mGattCallback);
+            List values = new ArrayList();
+            values.add(device.getName());
+            listAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, values);
+            lv.setAdapter(listAdapter);
         }
     };
 
@@ -163,9 +170,9 @@ public class ConnectFragment extends Fragment{
 
         Toast.makeText(getActivity(),"Showing Paired Devices",
                 Toast.LENGTH_SHORT).show();
-        final ArrayAdapter adapter = new ArrayAdapter
-                (getActivity(),android.R.layout.simple_list_item_1, list);
-        lv.setAdapter(adapter);
+//        final ArrayAdapter adapter = new ArrayAdapter
+//                (getActivity(), R.layout.simple_list_item_1, list);
+//        lv.setAdapter(adapter);
     }
 
     public void visible(View view){
