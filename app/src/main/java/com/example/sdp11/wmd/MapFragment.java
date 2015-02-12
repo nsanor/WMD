@@ -1,17 +1,17 @@
 package com.example.sdp11.wmd;
 
 
-import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -20,14 +20,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Map;
+import java.util.Stack;
 
 
 /**
@@ -39,10 +37,22 @@ public class MapFragment extends Fragment {
     double longitude = -81.47430700000001;
     LatLngBounds bounds;
 
+    private MapView mapView;
     private GoogleMap googleMap;
+    private CameraPosition cp;
+    private Button mode;
+    private Button undo;
+    private TextView label;
+
+    private boolean planning = false;
 
     public MapFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
 
@@ -51,21 +61,46 @@ public class MapFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         // Gets the MapView from the XML layout and creates it
-        MapView mapView = (MapView) view.findViewById(R.id.mapview);
+        mapView = (MapView) view.findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
-
         mapView.onResume();
 
-//        Button mode = (Button) view.findViewById(R.id.button_mode);
-//        final Button place = (Button) view.findViewById(R.id.button_place);
-//        final Button commit = (Button) view.findViewById(R.id.button_commit);
-//        mode.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                place.setVisibility(View.VISIBLE);
-//                commit.setVisibility(View.VISIBLE);
-//            }
-//        });
+        final Stack<Marker> markerStack = new Stack<Marker>();
+
+        mode = (Button) view.findViewById(R.id.button_mode);
+        undo = (Button) view.findViewById(R.id.button_undo);
+        label = (TextView) view.findViewById(R.id.mode_label);
+
+        if(planning) {
+            undo.setVisibility(View.VISIBLE);
+            label.setText("Planning Mode");
+        }
+
+        mode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!planning) {
+                    undo.setVisibility(View.VISIBLE);
+                    label.setText("Planning Mode");
+                    planning = true;
+                }
+                else {
+                    undo.setVisibility(View.INVISIBLE);
+                    label.setText("Normal Mode");
+                    planning = false;
+                }
+            }
+        });
+
+        undo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!markerStack.empty()) {
+                    Marker marker = markerStack.pop();
+                    marker.remove();
+                }
+            }
+        });
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -74,7 +109,6 @@ public class MapFragment extends Fragment {
         }
 
         googleMap = mapView.getMap();
-
         Location mCurrentLocation = MainActivity.getmCurrentLocation();
 
         // latitude and longitude
@@ -98,7 +132,10 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapClick(LatLng point) {
                 //lstLatLngs.add(point);
-                googleMap.addMarker(new MarkerOptions().position(point));
+                if(planning) {
+                    Marker marker = googleMap.addMarker(new MarkerOptions().position(point));
+                    markerStack.push(marker);
+                }
             }
         });
 
@@ -111,6 +148,37 @@ public class MapFragment extends Fragment {
         //googleMap.animateCamera(cu);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        mapView.onResume();
+
+        MapsInitializer.initialize(getActivity());
+
+        if (cp != null) {
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
+            cp = null;
+        }
+        else Log.e("", "Not saved");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onPause() {
+        mapView.onPause();
+        super.onPause();
+
+        cp = googleMap.getCameraPosition();
+//        googleMap = null;
+
+
     }
 
     private void calculateBounds() {

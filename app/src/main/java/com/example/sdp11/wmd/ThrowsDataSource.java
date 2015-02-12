@@ -69,8 +69,8 @@ public class ThrowsDataSource {
         long insertId = database.insert(DBHelper.TABLE_THROWS, null,values);
 
         //Need to get new max throw id to create calc data
-        Log.e("TEST", database.toString());
-        Log.e("ID Test", String.valueOf(getMaxThrowId(database)));
+//        Log.e("TEST", database.toString());
+//        Log.e("ID Test", String.valueOf(getMaxThrowId(database)));
         //Create new entry in CalculatedThrowData here.
         //CalculatedThrowData calc = new CalculatedThrowData(throwId, start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime);
 
