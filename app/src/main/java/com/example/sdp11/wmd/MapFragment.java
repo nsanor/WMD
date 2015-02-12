@@ -36,6 +36,7 @@ public class MapFragment extends Fragment {
     double latitude = 41.13747;
     double longitude = -81.47430700000001;
     LatLngBounds bounds;
+    private Circle circle;
 
     private MapView mapView;
     private GoogleMap googleMap;
@@ -96,8 +97,18 @@ public class MapFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (!markerStack.empty()) {
+
+                    //Remove last marker that was placed
                     Marker marker = markerStack.pop();
                     marker.remove();
+                    //Remove the circle for that marker
+                    if(circle != null) circle.remove();
+                    //Get the next to last marker and re-add circle
+                    if (!markerStack.empty()) {
+                        marker = markerStack.pop();
+                        plotRadius(marker.getPosition(), TotalsData.getAverageDistance());
+                        markerStack.push(marker);
+                    }
                 }
             }
         });
@@ -123,8 +134,8 @@ public class MapFragment extends Fragment {
 //        plotPoint(mCurrentLocation.getLatitude() + 0.5, mCurrentLocation.getLongitude() + 0.5);
 //        plotPoint(mCurrentLocation.getLatitude() - 0.5, mCurrentLocation.getLongitude() - 0.5);
 
-        plotPoint(latitude, longitude);
-        plotRadius(latitude, longitude, 1000);
+//        plotPoint(new LatLng(latitude, longitude));
+//        plotRadius(new LatLng(latitude, longitude), 1000);
 
         //Need ability to disable this when needed.
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -133,7 +144,7 @@ public class MapFragment extends Fragment {
             public void onMapClick(LatLng point) {
                 //lstLatLngs.add(point);
                 if(planning) {
-                    Marker marker = googleMap.addMarker(new MarkerOptions().position(point));
+                    Marker marker = plotPoint(point);
                     markerStack.push(marker);
                 }
             }
@@ -142,7 +153,7 @@ public class MapFragment extends Fragment {
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         //CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(latitude, longitude)).zoom(13).build();
+                .target(new LatLng(latitude, longitude)).zoom(14).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
         //googleMap.animateCamera(cu);
@@ -194,25 +205,30 @@ public class MapFragment extends Fragment {
         bounds = builder.build();
     }
 
-    private void plotPoint(double lat, double lng) {
+    private Marker plotPoint(LatLng point) {
         // create marker
-        MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(lat, lng));
+        MarkerOptions marker = new MarkerOptions().position(point);
 
         // Changing marker icon
         marker.icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
-        googleMap.addMarker(marker);
+        Marker newMarker = googleMap.addMarker(marker);
+
+        if(circle != null) circle.remove();
+
+        plotRadius(point, TotalsData.getAverageDistance());
+
+        return newMarker;
     }
 
-    private void plotRadius(double lat, double lng, double radius) {
+    private void plotRadius(LatLng point, double radius) {
         // Instantiates a new CircleOptions object and defines the center and radius
         CircleOptions circleOptions = new CircleOptions()
-                .center(new LatLng(lat, lng))
+                .center(point)
                 .radius(radius); // In meters
 
 // Get back the mutable Circle
-        Circle circle = googleMap.addCircle(circleOptions);
+        circle = googleMap.addCircle(circleOptions);
     }
 }
