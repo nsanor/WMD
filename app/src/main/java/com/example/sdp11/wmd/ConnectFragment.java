@@ -36,18 +36,15 @@ public class ConnectFragment extends Fragment{
     View view;
 
     private BluetoothAdapter BA;
-    private Set<BluetoothDevice> pairedDevices;
     private ListView lv;
     private ArrayAdapter listAdapter;
+    private List values;
 
     private boolean mScanning;
     private Handler mHandler;
 
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
-
-
-
 
     public ConnectFragment() {
         // Required empty public constructor
@@ -74,67 +71,34 @@ public class ConnectFragment extends Fragment{
         paired.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BA.startLeScan(mScanCallback);
+                if(BA.getState() == BluetoothAdapter.STATE_ON) scanLeDevice(true);
             }
         });
 
         lv = (ListView)view.findViewById(R.id.devices);
 
+        //BA.startLeScan(mScanCallback);
+
+        listAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, 0);
+        lv.setAdapter(listAdapter);
 
         return view;
     }
 
-    private BluetoothAdapter.LeScanCallback mScanCallback = new BluetoothAdapter.LeScanCallback() {
-        @Override
-        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            //For the device we want, make a connection
-            //device.connectGatt(getActivity(), true, mGattCallback);
-            List values = new ArrayList();
-            values.add(device.getName());
-            listAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, values);
-            lv.setAdapter(listAdapter);
-        }
-    };
-
-    private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            //Connection established
-            if (status == BluetoothGatt.GATT_SUCCESS
-                    && newState == BluetoothProfile.STATE_CONNECTED) {
-
-                //Discover services
-                gatt.discoverServices();
-
-            } else if (status == BluetoothGatt.GATT_SUCCESS
-                    && newState == BluetoothProfile.STATE_DISCONNECTED) {
-
-                //Handle a disconnect event
-
-            }
-        }
-
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-
-                Log.i("ConnectFragment", "Connected to: " + gatt.getDevice());
-            }
-        }
-    };
-
-
     private void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
+            mHandler = new Handler();
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mScanning = false;
                     BA.stopLeScan(mScanCallback);
+                    Log.e("", "Stop Scanning");
                 }
             }, SCAN_PERIOD);
 
+            Log.e("", "Now Scanning");
             mScanning = true;
             BA.startLeScan(mScanCallback);
         } else {
@@ -143,6 +107,50 @@ public class ConnectFragment extends Fragment{
         }
 
     }
+
+    private BluetoothAdapter.LeScanCallback mScanCallback = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listAdapter.add(device.getName());
+                    listAdapter.notifyDataSetChanged();
+                    Log.e("", device.getName());
+                }
+            });
+        }
+    };
+
+//    private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+//        @Override
+//        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+//            //Connection established
+//            if (status == BluetoothGatt.GATT_SUCCESS
+//                    && newState == BluetoothProfile.STATE_CONNECTED) {
+//
+//                //Discover services
+//                gatt.discoverServices();
+//
+//            } else if (status == BluetoothGatt.GATT_SUCCESS
+//                    && newState == BluetoothProfile.STATE_DISCONNECTED) {
+//
+//                //Handle a disconnect event
+//
+//            }
+//        }
+//
+//        @Override
+//        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+//            if (status == BluetoothGatt.GATT_SUCCESS) {
+//
+//                Log.i("ConnectFragment", "Connected to: " + gatt.getDevice());
+//            }
+//        }
+//    };
+
+
+
 
     public void toggle(View view){
         if(!BA.isEnabled()){
@@ -159,26 +167,5 @@ public class ConnectFragment extends Fragment{
             while (BA.getState() != BluetoothAdapter.STATE_OFF);
             Toast.makeText(getActivity(), "Bluetooth is now off!", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void list(View view){
-        pairedDevices = BA.getBondedDevices();
-        ArrayList list = new ArrayList();
-
-        for(BluetoothDevice bt : pairedDevices)
-            list.add(bt.getName());
-
-        Toast.makeText(getActivity(),"Showing Paired Devices",
-                Toast.LENGTH_SHORT).show();
-//        final ArrayAdapter adapter = new ArrayAdapter
-//                (getActivity(), R.layout.simple_list_item_1, list);
-//        lv.setAdapter(adapter);
-    }
-
-    public void visible(View view){
-        Intent getVisible = new Intent(BluetoothAdapter.
-                ACTION_REQUEST_DISCOVERABLE);
-        startActivityForResult(getVisible, 0);
-
     }
 }
