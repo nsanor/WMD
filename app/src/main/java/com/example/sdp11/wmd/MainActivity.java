@@ -286,6 +286,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     private void loadTotalsData() {
         //Update to load from DB
-        TotalsData.setAverageDistance(100);
+        TotalsData.setAverageDistance(10);
     }
 }
