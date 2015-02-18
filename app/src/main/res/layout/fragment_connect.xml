@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,25 +12,62 @@
         android:layout_height="match_parent"
         >
 
-    <Button
-        android:id="@+id/Toggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_toggle"/>
+        <LinearLayout
+            android:id="@+id/ConnectionButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/Paired"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_paired"
-        android:layout_toRightOf="@+id/Toggle" />
+            <Button
+                android:id="@+id/Toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="@string/button_toggle"/>
 
-    <ListView
-        android:id="@+id/devices"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/Toggle"/>
+            <Button
+                android:id="@+id/Paired"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_paired"
+                android:textSize="12sp"
+                android:layout_toRightOf="@+id/Toggle" />
+
+            </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ConnectionStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ConnectionButtons">
+
+
+            <TextView
+                android:id="@+id/ConnectionStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="Connection Status: "
+                android:layout_below="@+id/Toggle"/>
+
+            <ImageView
+                android:id="@+id/ConnectionStatusImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/ConnectionStatusText"
+                android:layout_below="@+id/Paired"
+                android:src="@drawable/ic_launcher"/>
+            </LinearLayout>
+
+
+
+
+        <ListView
+            android:id="@+id/devices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ConnectionStatus"/>
 
     </RelativeLayout>
 
-</FrameLayout>
+</LinearLayout>
