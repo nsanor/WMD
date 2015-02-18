@@ -48,7 +48,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         buildGoogleApiClient();
         createLocationRequest();
 
-        loadTotalsData();
+        TotalsData.loadTotalsData();
 
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -268,10 +268,5 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     protected void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
-    }
-
-    private void loadTotalsData() {
-        //Update to load from DB
-        TotalsData.setAverageDistance(10);
     }
 }

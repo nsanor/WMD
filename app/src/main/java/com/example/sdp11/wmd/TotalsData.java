@@ -11,6 +11,10 @@ public class TotalsData {
     static private double averageAngle;
     static private int syncCount;
 
+    public static void loadTotalsData() {
+        averageDistance = 10;
+    }
+
     public static double getAverageDistance() {
         return averageDistance;
     }
