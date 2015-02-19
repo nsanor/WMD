@@ -25,6 +25,7 @@
     <string name="sync_status_label">Sync Status: </string>
     <string name="connection_status_text">Connected</string>
     <string name="sync_status_text">Synced</string>
+    <string name="unknown_device">Unknown Device</string>
 
 
 </resources>
