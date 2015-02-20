@@ -146,7 +146,7 @@ public class RawThrowData {
     }
 
     public String getAllFields() {
-        return String.valueOf(syncTime) + ", "  + convertDate(syncTime);//throwId + ", " + holeId + ", " + gameId + ", " + startLat + ", " + startLong + ", " + startXAccel + ", " + startYAccel + ", " + endLat + ", " + endLong;
+        return throwId + ", " + holeId + ", " + gameId + ", " + startLat + ", " + startLong + ", " + startXAccel + ", " + startYAccel + ", " + endLat + ", " + endLong;
     }
 
     //Will be used by the ArrayAdapter in the ListView
