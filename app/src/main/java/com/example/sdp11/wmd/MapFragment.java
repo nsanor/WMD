@@ -122,11 +122,16 @@ public class MapFragment extends Fragment {
         googleMap = mapView.getMap();
         Location mCurrentLocation = MainActivity.getmCurrentLocation();
 
+
+
         // latitude and longitude
         if(mCurrentLocation != null) {
             latitude = mCurrentLocation.getLatitude();
             longitude = mCurrentLocation.getLongitude();
         }
+
+        MarkerOptions locMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title("You are here");
+        googleMap.addMarker(locMarker);
 
         //calculateBounds();
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -141,89 +146,13 @@ public class MapFragment extends Fragment {
             }
         });
 
-//        plotPoint(new LatLng(41.075850, -81.513317), false);
-//        plotPoint(new LatLng(41.075867, -81.513300), false);
-//        plotPoint(new LatLng(41.075867, -81.513300), false);
-//        plotPoint(new LatLng(41.075850, -81.513283), false);
-//        plotPoint(new LatLng(41.075867, -81.513267), false);
-//        plotPoint(new LatLng(41.075850, -81.513267), false);
-//        plotPoint(new LatLng(41.075850, -81.513250), false);
-//        plotPoint(new LatLng(41.075850, -81.513233), false);
-//        plotPoint(new LatLng(41.075867, -81.513233), false);
-//        plotPoint(new LatLng(41.075867, -81.513233), false);
-
-//        41.075850, -81.513233
-//        41.075850, -81.513233
-//        41.075867, -81.513250
-//        41.075850, -81.513233
-//        41.075850, -81.513250
-//        41.075867, -81.513250
-//        41.075867, -81.513250
-//        41.075867, -81.513250
-//        41.075867, -81.513250
-//        41.075867, -81.513250
-//        41.075867, -81.513250
-//        41.075867, -81.513250
-//        41.075867, -81.513250
-//        41.075867, -81.513250
-//        41.075867, -81.513267
-//        41.075867, -81.513267
-//        41.075867, -81.513283
-//        41.075867, -81.513283
-//        41.075867, -81.513300
-//        41.075867, -81.513317
-//        41.075850, -81.513317
-//        41.075850, -81.513333
-//        41.075850, -81.513350
-//        41.075850, -81.513367
-//        41.075850, -81.513383
-//        41.075850, -81.513383
-//        41.075850, -81.513400
-//        41.075850, -81.513417
-//        41.075833, -81.513433
-//        41.075833, -81.513450
-//        41.075850, -81.513467
-//        41.075850, -81.513467
-//        41.075850, -81.513483
-//        41.075850, -81.513500
-//        41.075850, -81.513517
-//        41.075850, -81.513517
-//        41.075850, -81.513533
-//        41.075850, -81.513550
-//        41.075850, -81.513550
-//        41.075850, -81.513567
-//        41.075850, -81.513567
-//        41.075850, -81.513583
-//        41.075833, -81.513583
-//        41.075850, -81.513600
-//        41.075850, -81.513600
-//        41.075850, -81.513617
-//        41.075833, -81.513617
-//        41.075850, -81.513633
-//        41.075850, -81.513633
-//        41.075850, -81.513633
-//        41.075850, -81.513633
-//        41.075867, -81.513650
-//        41.075850, -81.513650
-//        41.075850, -81.513667
-//        41.075833, -81.513667
-//        41.075817, -81.513667
-//        41.075817, -81.513667
-//        41.075800, -81.513667
-//        41.075783, -81.513667
-//        41.075767, -81.513667
-//        41.075750, -81.513667
-//        41.075750, -81.513683
-//        41.075733, -81.513683
-//        41.075717, -81.513683
-//        41.075700, -81.513683
 
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         //CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
 //        CameraPosition cameraPosition = new CameraPosition.Builder()
 //                .target(new LatLng(latitude, longitude)).zoom(14).build();
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(41.075850, -81.513317)).zoom(googleMap.getMaxZoomLevel()).build();
+                .target(new LatLng(latitude, longitude)).zoom(googleMap.getMaxZoomLevel() - 2).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
