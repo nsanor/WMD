@@ -44,7 +44,7 @@ public class ConnectFragment extends Fragment{
 
     private boolean mConnected = false;
 
-    private BluetoothLeService mBluetoothLeService;
+    private BluetoothLEService mBluetoothLEService;
 
     private String mDeviceName;
     private String mDeviceAddress;
@@ -94,9 +94,9 @@ public class ConnectFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBluetoothLeService = new BluetoothLeService();
+        mBluetoothLEService = new BluetoothLEService();
         //getActivity().bindService(mBluetoothLeService);
-        Intent gattServiceIntent = new Intent(getActivity(), BluetoothLeService.class);
+        Intent gattServiceIntent = new Intent(getActivity(), BluetoothLEService.class);
         getActivity().bindService(gattServiceIntent, mServiceConnection, getActivity().BIND_AUTO_CREATE);
     }
 
@@ -136,7 +136,7 @@ public class ConnectFragment extends Fragment{
             public void onItemClick(AdapterView<?> aView, View v, int position, long id) {
                 //Log.e(String.valueOf(position), "Connect here.");
                 BluetoothDevice device = listAdapter.getDevice(position);
-                mBluetoothGatt = device.connectGatt(getActivity(), false, mBluetoothLeService.getGattCallback());
+                mBluetoothGatt = device.connectGatt(getActivity(), false, mBluetoothLEService.getGattCallback());
             }
         });
 
@@ -147,8 +147,8 @@ public class ConnectFragment extends Fragment{
     public void onResume() {
         super.onResume();
         getActivity().registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        if (mBluetoothLeService != null) {
-            final boolean result = mBluetoothLeService.connect(mDeviceAddress);
+        if (mBluetoothLEService != null) {
+            final boolean result = mBluetoothLEService.connect(mDeviceAddress);
             Log.d(TAG, "Connect request result=" + result);
         }
     }
@@ -163,25 +163,25 @@ public class ConnectFragment extends Fragment{
     public void onDestroy() {
         super.onDestroy();
         getActivity().unbindService(mServiceConnection);
-        mBluetoothLeService = null;
+        mBluetoothLEService = null;
     }
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
-            if (!mBluetoothLeService.initialize()) {
+            mBluetoothLEService = ((BluetoothLEService.LocalBinder) service).getService();
+            if (!mBluetoothLEService.initialize()) {
                 Log.e("", "Unable to initialize Bluetooth");
                 getActivity().finish();
             }
             // Automatically connects to the device upon successful start-up initialization.
-            mBluetoothLeService.connect(mDeviceAddress);
+            mBluetoothLEService.connect(mDeviceAddress);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLeService = null;
+            mBluetoothLEService = null;
         }
     };
 
@@ -298,24 +298,24 @@ public class ConnectFragment extends Fragment{
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if (mBluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+            if (mBluetoothLEService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 //updateConnectionState(R.string.connected);
                 mConnectionState = STATE_CONNECTED;
                 getActivity().invalidateOptionsMenu();
-            } else if (mBluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+            } else if (mBluetoothLEService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 //updateConnectionState(R.string.disconnected);
                 mConnectionState = STATE_DISCONNECTED;
                 getActivity().invalidateOptionsMenu();
                 //clearUI();
-            } else if (mBluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+            } else if (mBluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics button_toggle the
                 // user interface.
                 displayGattServices(getSupportedGattServices());
-            } else if (mBluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+            } else if (mBluetoothLEService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //displayData(intent.getStringExtra(EXTRA_DATA));
-                Log.e("", intent.getStringExtra(mBluetoothLeService.EXTRA_DATA));
+                Log.e("", intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
             }
         }
     };
@@ -393,10 +393,10 @@ public class ConnectFragment extends Fragment{
 
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        intentFilter.addAction(BluetoothLEService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(BluetoothLEService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(BluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(BluetoothLEService.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
 }
