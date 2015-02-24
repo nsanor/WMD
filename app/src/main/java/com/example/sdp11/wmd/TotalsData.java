@@ -10,9 +10,15 @@ public class TotalsData {
     static private double averageDistance;
     static private double averageAngle;
     static private int syncCount;
+    static private long lastThrowId;
+    static private long lastHoleId;
+    static private long lastGameId;
 
     public static void loadTotalsData() {
         averageDistance = 10;
+        lastGameId = 1;
+        lastHoleId = 1;
+        lastThrowId = 1;
     }
 
     public static double getAverageDistance() {
@@ -37,5 +43,29 @@ public class TotalsData {
 
     public static void setSyncCount(int syncCount) {
         TotalsData.syncCount = syncCount;
+    }
+
+    public static long getLastThrowId() {
+        return lastThrowId;
+    }
+
+    public static void setLastThrowId(long lastThrowId) {
+        TotalsData.lastThrowId = lastThrowId;
+    }
+
+    public static long getLastHoleId() {
+        return lastHoleId;
+    }
+
+    public static void setLastHoleId(long lastHoleId) {
+        TotalsData.lastHoleId = lastHoleId;
+    }
+
+    public static long getLastGameId() {
+        return lastGameId;
+    }
+
+    public static void setLastGameId(long lastGameId) {
+        TotalsData.lastGameId = lastGameId;
     }
 }
