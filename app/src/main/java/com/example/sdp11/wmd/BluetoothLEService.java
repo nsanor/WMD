@@ -52,6 +52,7 @@ public class BluetoothLEService extends Service {
             if (status == BluetoothGatt.GATT_SUCCESS
                     && newState == BluetoothProfile.STATE_CONNECTED) {
 
+                Log.w(TAG, "Connected Successfully");
                 //Discover services
                 gatt.discoverServices();
 

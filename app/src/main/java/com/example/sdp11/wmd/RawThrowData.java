@@ -39,25 +39,7 @@ public class RawThrowData {
         this.syncTime = syncTime;
     }
 
-    public double[] parseGPS(String GPSData) {
-        String gps[] = GPSData.split(",");
-        double time, latDeg, latMin, latitude, lonDeg, lonMin, longitude;
-        longitude = latitude = -1;
-        if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
-            time = Double.parseDouble(gps[1]);
-            latDeg =Double.parseDouble(gps[3].substring(0, 2));
-            latMin =Double.parseDouble(gps[3].substring(2, 8));
-            latitude = latDeg + (latMin / 60);
-            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
-            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
-            lonMin =Double.parseDouble(gps[5].substring(3, 9));
-            longitude = lonDeg + (lonMin / 60);
-            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
-        }
 
-        double[] retvals = {latitude, longitude};
-        return retvals;
-    }
 
 
     public long getEndTime() {

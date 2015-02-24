@@ -1,7 +1,6 @@
 package com.example.sdp11.wmd;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -32,11 +31,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_THROW_INTEGRITY = "throw_integrity";
     public static final String COLUMN_TOTAL_TIME = "total_time";
 
+    public static final String TABLE_GPS = "gps_data";
+
+    public static final String COLUMN_LATITUDE = "latitude";
+    public static final String COLUMN_LONGITUDE = "longitude";
+    public static final String COLUMN_TIME= "time";
 
     private static final String DATABASE_NAME = "throw_data.db";
     private static final int DATABASE_VERSION = 1;
 
-    private static final String THROWS_DATABASE_CREATE = "create table "
+    private static final String THROWS_TABLE_CREATE = "create table "
             + TABLE_THROWS + " ( "
             + COLUMN_THROW_ID
             + " integer primary key autoincrement, "
@@ -53,7 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + COLUMN_SYNC_TIME + " integer not null"
             + ");";
 
-    private static final String CALC_DATABASE_CREATE = "create table "
+    private static final String CALC_TABLE_CREATE = "create table "
             + TABLE_CALC + " ( "
             + COLUMN_THROW_ID
             + " integer primary key autoincrement, "
@@ -64,6 +68,15 @@ public class DBHelper extends SQLiteOpenHelper {
             + COLUMN_TOTAL_TIME + " double not null"
             + ");";
 
+    private static final String GPS_TABLE_CREATE = "create table "
+            + TABLE_GPS + " ( "
+            + COLUMN_THROW_ID
+            + " integer primary key autoincrement, "
+            + COLUMN_LATITUDE + " double not null, "
+            + COLUMN_LONGITUDE + " double not null, "
+            + COLUMN_TIME + " integer not null "
+            + ");";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -71,9 +84,11 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_THROWS);
-        db.execSQL(THROWS_DATABASE_CREATE);
+        db.execSQL(THROWS_TABLE_CREATE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CALC);
-        db.execSQL(CALC_DATABASE_CREATE);
+        db.execSQL(CALC_TABLE_CREATE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GPS);
+        db.execSQL(GPS_TABLE_CREATE);
     }
 
     @Override

@@ -162,8 +162,8 @@ public class ThrowsDataSource {
         return t;
     }
 
-    public long getMaxThrowId(SQLiteDatabase db) {
-        Cursor c = db.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_THROWS, new String[] {"throw_id"});
+    public long getMaxThrowId() {
+        Cursor c = database.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_THROWS, new String[] {"throw_id"});
         c.moveToFirst();
         //int index = c.getColumnIndex("throw_id");
        // Log.e("TEST", String.valueOf(index));

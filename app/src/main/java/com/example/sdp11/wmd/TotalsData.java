@@ -14,11 +14,11 @@ public class TotalsData {
     static private long lastHoleId;
     static private long lastGameId;
 
-    public static void loadTotalsData() {
+    public static void loadTotalsData(long throwId) {
         averageDistance = 10;
         lastGameId = 1;
         lastHoleId = 1;
-        lastThrowId = 1;
+        lastThrowId = throwId;
     }
 
     public static double getAverageDistance() {

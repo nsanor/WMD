@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.IBinder;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.internal.da;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
@@ -49,7 +51,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     Boolean mRequestingLocationUpdates = true;
     LocationRequest mLocationRequest;
 
-    private BluetoothLEService mBluetoothLEService;
+    public static ThrowsDataSource dataSource;
+    public static SQLiteDatabase throwsDB;
+
+    public static BluetoothLEService mBluetoothLEService;
     private BluetoothGatt mBluetoothGatt;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics;
 
@@ -80,7 +85,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         buildGoogleApiClient();
         createLocationRequest();
 
-        TotalsData.loadTotalsData();
+        dataSource = new ThrowsDataSource(this);
+        dataSource.open();
+        TotalsData.loadTotalsData(dataSource.getMaxThrowId());
 
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);

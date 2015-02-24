@@ -14,9 +14,9 @@ import java.util.List;
 
 public class DataFragment extends Fragment {
 
-    View view;
-    ThrowsDataSource dataSource;
-    ArrayAdapter adapter;
+    private View view;
+    private ThrowsDataSource dataSource;
+    private ArrayAdapter adapter;
 
     public DataFragment() {
         // Required empty public constructor
@@ -25,19 +25,17 @@ public class DataFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dataSource = MainActivity.dataSource;
+
+        //Test
+        dataSource.deleteAllThrows();
+        for (int i = 0; i < 25; i++) dataSource.createThrow(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_data, container, false);
-
-        dataSource = new ThrowsDataSource(getActivity());
-        dataSource.open();
-        dataSource.deleteAllThrows();
-        for (int i = 0; i < 25; i++) dataSource.createThrow(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-//        dataSource.createThrow(4, 5, 6, 1, 1, 1, 1, 1);
-//        dataSource.createThrow(7, 8, 9, 1, 1, 1, 1, 1);
 
         ListView lis = (ListView)view.findViewById(R.id.list);
 

@@ -3,11 +3,11 @@ package com.example.sdp11.wmd;
 /**
  * Created by nsanor on 2/10/2015.
  */
-public class IMUDataString {
+public class IMUDataPoint {
     private long throwId;
     private String IMUString;
 
-    public IMUDataString(String IMUString) {
+    public IMUDataPoint(String IMUString) {
         this.throwId = TotalsData.getLastThrowId();
         this.IMUString = IMUString;
     }
