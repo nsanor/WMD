@@ -58,7 +58,7 @@ public class BluetoothLEService extends Service {
 
             } else if (status == BluetoothGatt.GATT_SUCCESS
                     && newState == BluetoothProfile.STATE_DISCONNECTED) {
-
+                Log.w(TAG, "Disconnected");
                 //Handle a disconnect event
 
 
@@ -69,9 +69,10 @@ public class BluetoothLEService extends Service {
         // New services discovered
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.w(TAG, "Services discovered");
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             } else {
-                Log.w("", "onServicesDiscovered received: " + status);
+                Log.w(TAG, "Error, onServicesDiscovered received status: " + status);
             }
         }
 

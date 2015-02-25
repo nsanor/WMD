@@ -265,7 +265,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLEService = ((BluetoothLEService.LocalBinder) service).getService();
             if (!mBluetoothLEService.initialize()) {
-                Log.e("", "Unable to initialize Bluetooth");
+                Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
             // Automatically connects to the device upon successful start-up initialization.
