@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -120,9 +121,7 @@ public class MapFragment extends Fragment {
         }
 
         googleMap = mapView.getMap();
-        Location mCurrentLocation = MainActivity.getmCurrentLocation();
-
-
+        final Location mCurrentLocation = MainActivity.getmCurrentLocation();
 
         // latitude and longitude
         if(mCurrentLocation != null) {
@@ -132,6 +131,7 @@ public class MapFragment extends Fragment {
 
         MarkerOptions locMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title("You are here");
         googleMap.addMarker(locMarker);
+        plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
 
         //calculateBounds();
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -139,9 +139,30 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapClick(LatLng point) {
                 //lstLatLngs.add(point);
-                if(planning) {
-                    Marker marker = plotUserPoint(point);
-                    markerStack.push(marker);
+                Location location = new Location("");
+                location.setLatitude(point.latitude);
+                location.setLongitude(point.longitude);
+                if(!planning) {
+                    Toast.makeText(getActivity(), "Please turn on planning mode", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (markerStack.empty()) {
+                    if(mCurrentLocation.distanceTo(location) <= TotalsData.getAverageDistance()){
+                        Marker marker = plotUserPoint(point);
+                        markerStack.push(marker);
+                    }
+                    else Toast.makeText(getActivity(), "Please select within radius", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Location location2 = new Location("");
+                    location2.setLatitude(markerStack.peek().getPosition().latitude);
+                    location2.setLongitude(markerStack.peek().getPosition().longitude);
+
+                    if(location.distanceTo(location2) <= TotalsData.getAverageDistance()) {
+                        Marker marker = plotUserPoint(point);
+                        markerStack.push(marker);
+                    }
+                    else Toast.makeText(getActivity(), "Please select within radius", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -152,7 +173,7 @@ public class MapFragment extends Fragment {
 //        CameraPosition cameraPosition = new CameraPosition.Builder()
 //                .target(new LatLng(latitude, longitude)).zoom(14).build();
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(latitude, longitude)).zoom(googleMap.getMaxZoomLevel() - 2).build();
+                .target(new LatLng(latitude, longitude)).zoom(googleMap.getMaxZoomLevel() - 1).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
