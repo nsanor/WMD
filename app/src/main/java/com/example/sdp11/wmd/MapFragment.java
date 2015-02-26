@@ -78,6 +78,32 @@ public class MapFragment extends Fragment {
             label.setText("Planning Mode");
         }
 
+
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        googleMap = mapView.getMap();
+        //for demo purposes, don't default to current location
+        final Location mCurrentLocation = new Location(""); //MainActivity.getmCurrentLocation();
+        mCurrentLocation.setLatitude(41.075017);
+        mCurrentLocation.setLongitude(-81.510883);
+
+        // latitude and longitude
+        if(mCurrentLocation != null) {
+            latitude = mCurrentLocation.getLatitude();
+            longitude = mCurrentLocation.getLongitude();
+        }
+
+        final MarkerOptions locMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title("You are here");
+        googleMap.addMarker(locMarker);
+        plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
+
+        plotDemoData();
+
         mode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,27 +137,10 @@ public class MapFragment extends Fragment {
                         markerStack.push(marker);
                     }
                 }
+                if(markerStack.empty()) plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
             }
         });
 
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        googleMap = mapView.getMap();
-        final Location mCurrentLocation = MainActivity.getmCurrentLocation();
-
-        // latitude and longitude
-        if(mCurrentLocation != null) {
-            latitude = mCurrentLocation.getLatitude();
-            longitude = mCurrentLocation.getLongitude();
-        }
-
-        MarkerOptions locMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title("You are here");
-        googleMap.addMarker(locMarker);
-        plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
 
         //calculateBounds();
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -173,7 +182,7 @@ public class MapFragment extends Fragment {
 //        CameraPosition cameraPosition = new CameraPosition.Builder()
 //                .target(new LatLng(latitude, longitude)).zoom(14).build();
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(latitude, longitude)).zoom(googleMap.getMaxZoomLevel() - 1).build();
+                .target(new LatLng(latitude, longitude)).zoom(googleMap.getMaxZoomLevel() - 3).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
@@ -257,5 +266,428 @@ public class MapFragment extends Fragment {
 
 // Get back the mutable Circle
         circle = googleMap.addCircle(circleOptions);
+    }
+
+    private void plotDemoData() {
+        //Plot Demo Data
+        plotPoint(new LatLng(41.075017, -81.510883), false);
+        plotPoint(new LatLng(41.075017, -81.510883), false);
+        plotPoint(new LatLng(41.075017, -81.510883), false);
+        plotPoint(new LatLng(41.075017, -81.510883), false);
+        plotPoint(new LatLng(41.075017, -81.510883), false);
+        plotPoint(new LatLng(41.075017, -81.510883), false);
+        plotPoint(new LatLng(41.075017, -81.510883), false);
+        plotPoint(new LatLng(41.075033, -81.510883), false);
+        plotPoint(new LatLng(41.075033, -81.510883), false);
+        plotPoint(new LatLng(41.075033, -81.510883), false);
+        plotPoint(new LatLng(41.075033, -81.510883), false);
+        plotPoint(new LatLng(41.075033, -81.510883), false);
+        plotPoint(new LatLng(41.075033, -81.510883), false);
+        plotPoint(new LatLng(41.075033, -81.510883), false);
+        plotPoint(new LatLng(41.075050, -81.510867), false);
+        plotPoint(new LatLng(41.075050, -81.510867), false);
+        plotPoint(new LatLng(41.075050, -81.510867), false);
+        plotPoint(new LatLng(41.075050, -81.510867), false);
+        plotPoint(new LatLng(41.075050, -81.510867), false);
+        plotPoint(new LatLng(41.075050, -81.510867), false);
+        plotPoint(new LatLng(41.075050, -81.510867), false);
+        plotPoint(new LatLng(41.075067, -81.510867), false);
+        plotPoint(new LatLng(41.075067, -81.510867), false);
+        plotPoint(new LatLng(41.075067, -81.510867), false);
+        plotPoint(new LatLng(41.075067, -81.510867), false);
+        plotPoint(new LatLng(41.075067, -81.510867), false);
+        plotPoint(new LatLng(41.075067, -81.510867), false);
+        plotPoint(new LatLng(41.075083, -81.510867), false);
+        plotPoint(new LatLng(41.075083, -81.510867), false);
+        plotPoint(new LatLng(41.075083, -81.510867), false);
+        plotPoint(new LatLng(41.075083, -81.510867), false);
+        plotPoint(new LatLng(41.075083, -81.510867), false);
+        plotPoint(new LatLng(41.075083, -81.510867), false);
+        plotPoint(new LatLng(41.075083, -81.510867), false);
+        plotPoint(new LatLng(41.075100, -81.510867), false);
+        plotPoint(new LatLng(41.075100, -81.510867), false);
+        plotPoint(new LatLng(41.075100, -81.510867), false);
+        plotPoint(new LatLng(41.075100, -81.510867), false);
+        plotPoint(new LatLng(41.075100, -81.510867), false);
+        plotPoint(new LatLng(41.075100, -81.510867), false);
+        plotPoint(new LatLng(41.075117, -81.510867), false);
+        plotPoint(new LatLng(41.075117, -81.510867), false);
+        plotPoint(new LatLng(41.075117, -81.510867), false);
+        plotPoint(new LatLng(41.075117, -81.510867), false);
+        plotPoint(new LatLng(41.075117, -81.510867), false);
+        plotPoint(new LatLng(41.075117, -81.510867), false);
+        plotPoint(new LatLng(41.075133, -81.510867), false);
+        plotPoint(new LatLng(41.075133, -81.510867), false);
+        plotPoint(new LatLng(41.075133, -81.510867), false);
+        plotPoint(new LatLng(41.075133, -81.510850), false);
+        plotPoint(new LatLng(41.075133, -81.510850), false);
+        plotPoint(new LatLng(41.075133, -81.510850), false);
+        plotPoint(new LatLng(41.075133, -81.510850), false);
+        plotPoint(new LatLng(41.075150, -81.510850), false);
+        plotPoint(new LatLng(41.075150, -81.510850), false);
+        plotPoint(new LatLng(41.075150, -81.510850), false);
+        plotPoint(new LatLng(41.075150, -81.510850), false);
+        plotPoint(new LatLng(41.075150, -81.510850), false);
+        plotPoint(new LatLng(41.075150, -81.510850), false);
+        plotPoint(new LatLng(41.075167, -81.510850), false);
+        plotPoint(new LatLng(41.075167, -81.510850), false);
+        plotPoint(new LatLng(41.075167, -81.510850), false);
+        plotPoint(new LatLng(41.075167, -81.510850), false);
+        plotPoint(new LatLng(41.075167, -81.510833), false);
+        plotPoint(new LatLng(41.075167, -81.510833), false);
+        plotPoint(new LatLng(41.075167, -81.510833), false);
+        plotPoint(new LatLng(41.075183, -81.510833), false);
+        plotPoint(new LatLng(41.075183, -81.510833), false);
+        plotPoint(new LatLng(41.075183, -81.510833), false);
+        plotPoint(new LatLng(41.075183, -81.510833), false);
+        plotPoint(new LatLng(41.075183, -81.510833), false);
+        plotPoint(new LatLng(41.075183, -81.510833), false);
+        plotPoint(new LatLng(41.075200, -81.510817), false);
+        plotPoint(new LatLng(41.075200, -81.510817), false);
+        plotPoint(new LatLng(41.075200, -81.510817), false);
+        plotPoint(new LatLng(41.075200, -81.510817), false);
+        plotPoint(new LatLng(41.075200, -81.510817), false);
+        plotPoint(new LatLng(41.075200, -81.510817), false);
+        plotPoint(new LatLng(41.075200, -81.510817), false);
+        plotPoint(new LatLng(41.075200, -81.510817), false);
+        plotPoint(new LatLng(41.075217, -81.510800), false);
+        plotPoint(new LatLng(41.075217, -81.510800), false);
+        plotPoint(new LatLng(41.075217, -81.510800), false);
+        plotPoint(new LatLng(41.075217, -81.510800), false);
+        plotPoint(new LatLng(41.075217, -81.510800), false);
+        plotPoint(new LatLng(41.075217, -81.510800), false);
+        plotPoint(new LatLng(41.075217, -81.510783), false);
+        plotPoint(new LatLng(41.075217, -81.510783), false);
+        plotPoint(new LatLng(41.075217, -81.510783), false);
+        plotPoint(new LatLng(41.075233, -81.510783), false);
+        plotPoint(new LatLng(41.075233, -81.510783), false);
+        plotPoint(new LatLng(41.075233, -81.510767), false);
+        plotPoint(new LatLng(41.075233, -81.510767), false);
+        plotPoint(new LatLng(41.075233, -81.510767), false);
+        plotPoint(new LatLng(41.075233, -81.510767), false);
+        plotPoint(new LatLng(41.075233, -81.510767), false);
+        plotPoint(new LatLng(41.075233, -81.510767), false);
+        plotPoint(new LatLng(41.075233, -81.510750), false);
+        plotPoint(new LatLng(41.075233, -81.510750), false);
+        plotPoint(new LatLng(41.075233, -81.510750), false);
+        plotPoint(new LatLng(41.075250, -81.510750), false);
+        plotPoint(new LatLng(41.075250, -81.510750), false);
+        plotPoint(new LatLng(41.075250, -81.510733), false);
+        plotPoint(new LatLng(41.075250, -81.510733), false);
+        plotPoint(new LatLng(41.075250, -81.510733), false);
+        plotPoint(new LatLng(41.075250, -81.510733), false);
+        plotPoint(new LatLng(41.075250, -81.510733), false);
+        plotPoint(new LatLng(41.075250, -81.510717), false);
+        plotPoint(new LatLng(41.075250, -81.510717), false);
+        plotPoint(new LatLng(41.075250, -81.510717), false);
+        plotPoint(new LatLng(41.075250, -81.510717), false);
+        plotPoint(new LatLng(41.075250, -81.510717), false);
+        plotPoint(new LatLng(41.075250, -81.510700), false);
+        plotPoint(new LatLng(41.075250, -81.510700), false);
+        plotPoint(new LatLng(41.075250, -81.510700), false);
+        plotPoint(new LatLng(41.075250, -81.510700), false);
+        plotPoint(new LatLng(41.075250, -81.510683), false);
+        plotPoint(new LatLng(41.075267, -81.510683), false);
+        plotPoint(new LatLng(41.075267, -81.510683), false);
+        plotPoint(new LatLng(41.075267, -81.510683), false);
+        plotPoint(new LatLng(41.075267, -81.510683), false);
+        plotPoint(new LatLng(41.075267, -81.510667), false);
+        plotPoint(new LatLng(41.075267, -81.510667), false);
+        plotPoint(new LatLng(41.075267, -81.510667), false);
+        plotPoint(new LatLng(41.075267, -81.510667), false);
+        plotPoint(new LatLng(41.075267, -81.510667), false);
+        plotPoint(new LatLng(41.075267, -81.510650), false);
+        plotPoint(new LatLng(41.075267, -81.510650), false);
+        plotPoint(new LatLng(41.075267, -81.510650), false);
+        plotPoint(new LatLng(41.075267, -81.510650), false);
+        plotPoint(new LatLng(41.075267, -81.510650), false);
+        plotPoint(new LatLng(41.075267, -81.510633), false);
+        plotPoint(new LatLng(41.075267, -81.510633), false);
+        plotPoint(new LatLng(41.075267, -81.510633), false);
+        plotPoint(new LatLng(41.075283, -81.510633), false);
+        plotPoint(new LatLng(41.075283, -81.510633), false);
+        plotPoint(new LatLng(41.075283, -81.510617), false);
+        plotPoint(new LatLng(41.075283, -81.510617), false);
+        plotPoint(new LatLng(41.075283, -81.510617), false);
+        plotPoint(new LatLng(41.075283, -81.510617), false);
+        plotPoint(new LatLng(41.075283, -81.510617), false);
+        plotPoint(new LatLng(41.075283, -81.510600), false);
+        plotPoint(new LatLng(41.075283, -81.510600), false);
+        plotPoint(new LatLng(41.075283, -81.510600), false);
+        plotPoint(new LatLng(41.075283, -81.510600), false);
+        plotPoint(new LatLng(41.075283, -81.510583), false);
+        plotPoint(new LatLng(41.075283, -81.510583), false);
+        plotPoint(new LatLng(41.075283, -81.510583), false);
+        plotPoint(new LatLng(41.075283, -81.510583), false);
+        plotPoint(new LatLng(41.075283, -81.510583), false);
+        plotPoint(new LatLng(41.075283, -81.510567), false);
+        plotPoint(new LatLng(41.075283, -81.510567), false);
+        plotPoint(new LatLng(41.075283, -81.510567), false);
+        plotPoint(new LatLng(41.075283, -81.510567), false);
+        plotPoint(new LatLng(41.075283, -81.510567), false);
+        plotPoint(new LatLng(41.075283, -81.510550), false);
+        plotPoint(new LatLng(41.075283, -81.510550), false);
+        plotPoint(new LatLng(41.075283, -81.510550), false);
+        plotPoint(new LatLng(41.075283, -81.510550), false);
+        plotPoint(new LatLng(41.075283, -81.510550), false);
+        plotPoint(new LatLng(41.075283, -81.510533), false);
+        plotPoint(new LatLng(41.075283, -81.510533), false);
+        plotPoint(new LatLng(41.075283, -81.510533), false);
+        plotPoint(new LatLng(41.075283, -81.510533), false);
+        plotPoint(new LatLng(41.075283, -81.510533), false);
+        plotPoint(new LatLng(41.075283, -81.510517), false);
+        plotPoint(new LatLng(41.075283, -81.510517), false);
+        plotPoint(new LatLng(41.075283, -81.510517), false);
+        plotPoint(new LatLng(41.075283, -81.510517), false);
+        plotPoint(new LatLng(41.075283, -81.510500), false);
+        plotPoint(new LatLng(41.075283, -81.510500), false);
+        plotPoint(new LatLng(41.075283, -81.510500), false);
+        plotPoint(new LatLng(41.075283, -81.510500), false);
+        plotPoint(new LatLng(41.075283, -81.510500), false);
+        plotPoint(new LatLng(41.075283, -81.510483), false);
+        plotPoint(new LatLng(41.075283, -81.510483), false);
+        plotPoint(new LatLng(41.075283, -81.510483), false);
+        plotPoint(new LatLng(41.075283, -81.510483), false);
+        plotPoint(new LatLng(41.075300, -81.510483), false);
+        plotPoint(new LatLng(41.075300, -81.510467), false);
+        plotPoint(new LatLng(41.075300, -81.510467), false);
+        plotPoint(new LatLng(41.075300, -81.510467), false);
+        plotPoint(new LatLng(41.075300, -81.510467), false);
+        plotPoint(new LatLng(41.075300, -81.510467), false);
+        plotPoint(new LatLng(41.075300, -81.510450), false);
+        plotPoint(new LatLng(41.075300, -81.510450), false);
+        plotPoint(new LatLng(41.075300, -81.510450), false);
+        plotPoint(new LatLng(41.075300, -81.510450), false);
+        plotPoint(new LatLng(41.075300, -81.510450), false);
+        plotPoint(new LatLng(41.075300, -81.510433), false);
+        plotPoint(new LatLng(41.075300, -81.510433), false);
+        plotPoint(new LatLng(41.075300, -81.510433), false);
+        plotPoint(new LatLng(41.075300, -81.510433), false);
+        plotPoint(new LatLng(41.075300, -81.510433), false);
+        plotPoint(new LatLng(41.075300, -81.510417), false);
+        plotPoint(new LatLng(41.075300, -81.510417), false);
+        plotPoint(new LatLng(41.075300, -81.510417), false);
+        plotPoint(new LatLng(41.075300, -81.510417), false);
+        plotPoint(new LatLng(41.075300, -81.510417), false);
+        plotPoint(new LatLng(41.075300, -81.510417), false);
+        plotPoint(new LatLng(41.075300, -81.510400), false);
+        plotPoint(new LatLng(41.075300, -81.510400), false);
+        plotPoint(new LatLng(41.075300, -81.510400), false);
+        plotPoint(new LatLng(41.075300, -81.510400), false);
+        plotPoint(new LatLng(41.075300, -81.510400), false);
+        plotPoint(new LatLng(41.075300, -81.510383), false);
+        plotPoint(new LatLng(41.075300, -81.510383), false);
+        plotPoint(new LatLng(41.075300, -81.510383), false);
+        plotPoint(new LatLng(41.075300, -81.510383), false);
+        plotPoint(new LatLng(41.075300, -81.510383), false);
+        plotPoint(new LatLng(41.075300, -81.510367), false);
+        plotPoint(new LatLng(41.075300, -81.510367), false);
+        plotPoint(new LatLng(41.075300, -81.510367), false);
+        plotPoint(new LatLng(41.075300, -81.510367), false);
+        plotPoint(new LatLng(41.075300, -81.510367), false);
+        plotPoint(new LatLng(41.075300, -81.510350), false);
+        plotPoint(new LatLng(41.075300, -81.510350), false);
+        plotPoint(new LatLng(41.075300, -81.510350), false);
+        plotPoint(new LatLng(41.075300, -81.510350), false);
+        plotPoint(new LatLng(41.075300, -81.510350), false);
+        plotPoint(new LatLng(41.075300, -81.510333), false);
+        plotPoint(new LatLng(41.075300, -81.510333), false);
+        plotPoint(new LatLng(41.075300, -81.510333), false);
+        plotPoint(new LatLng(41.075300, -81.510333), false);
+        plotPoint(new LatLng(41.075300, -81.510317), false);
+        plotPoint(new LatLng(41.075300, -81.510317), false);
+        plotPoint(new LatLng(41.075300, -81.510317), false);
+        plotPoint(new LatLng(41.075300, -81.510317), false);
+        plotPoint(new LatLng(41.075300, -81.510317), false);
+        plotPoint(new LatLng(41.075300, -81.510300), false);
+        plotPoint(new LatLng(41.075300, -81.510300), false);
+        plotPoint(new LatLng(41.075300, -81.510300), false);
+        plotPoint(new LatLng(41.075300, -81.510300), false);
+        plotPoint(new LatLng(41.075300, -81.510300), false);
+        plotPoint(new LatLng(41.075283, -81.510283), false);
+        plotPoint(new LatLng(41.075283, -81.510283), false);
+        plotPoint(new LatLng(41.075283, -81.510283), false);
+        plotPoint(new LatLng(41.075283, -81.510283), false);
+        plotPoint(new LatLng(41.075283, -81.510283), false);
+        plotPoint(new LatLng(41.075283, -81.510267), false);
+        plotPoint(new LatLng(41.075283, -81.510267), false);
+        plotPoint(new LatLng(41.075283, -81.510267), false);
+        plotPoint(new LatLng(41.075283, -81.510267), false);
+        plotPoint(new LatLng(41.075283, -81.510250), false);
+        plotPoint(new LatLng(41.075283, -81.510250), false);
+        plotPoint(new LatLng(41.075283, -81.510250), false);
+        plotPoint(new LatLng(41.075283, -81.510250), false);
+        plotPoint(new LatLng(41.075283, -81.510250), false);
+        plotPoint(new LatLng(41.075283, -81.510250), false);
+        plotPoint(new LatLng(41.075300, -81.510233), false);
+        plotPoint(new LatLng(41.075300, -81.510233), false);
+        plotPoint(new LatLng(41.075300, -81.510233), false);
+        plotPoint(new LatLng(41.075300, -81.510233), false);
+        plotPoint(new LatLng(41.075300, -81.510233), false);
+        plotPoint(new LatLng(41.075300, -81.510217), false);
+        plotPoint(new LatLng(41.075300, -81.510217), false);
+        plotPoint(new LatLng(41.075300, -81.510217), false);
+        plotPoint(new LatLng(41.075300, -81.510217), false);
+        plotPoint(new LatLng(41.075300, -81.510217), false);
+        plotPoint(new LatLng(41.075300, -81.510217), false);
+        plotPoint(new LatLng(41.075300, -81.510200), false);
+        plotPoint(new LatLng(41.075283, -81.510200), false);
+        plotPoint(new LatLng(41.075283, -81.510200), false);
+        plotPoint(new LatLng(41.075283, -81.510200), false);
+        plotPoint(new LatLng(41.075283, -81.510183), false);
+        plotPoint(new LatLng(41.075283, -81.510183), false);
+        plotPoint(new LatLng(41.075283, -81.510183), false);
+        plotPoint(new LatLng(41.075283, -81.510183), false);
+        plotPoint(new LatLng(41.075283, -81.510183), false);
+        plotPoint(new LatLng(41.075283, -81.510167), false);
+        plotPoint(new LatLng(41.075283, -81.510167), false);
+        plotPoint(new LatLng(41.075283, -81.510167), false);
+        plotPoint(new LatLng(41.075283, -81.510167), false);
+        plotPoint(new LatLng(41.075283, -81.510167), false);
+        plotPoint(new LatLng(41.075283, -81.510150), false);
+        plotPoint(new LatLng(41.075283, -81.510150), false);
+        plotPoint(new LatLng(41.075283, -81.510150), false);
+        plotPoint(new LatLng(41.075283, -81.510150), false);
+        plotPoint(new LatLng(41.075283, -81.510133), false);
+        plotPoint(new LatLng(41.075283, -81.510133), false);
+        plotPoint(new LatLng(41.075283, -81.510133), false);
+        plotPoint(new LatLng(41.075283, -81.510133), false);
+        plotPoint(new LatLng(41.075283, -81.510133), false);
+        plotPoint(new LatLng(41.075283, -81.510117), false);
+        plotPoint(new LatLng(41.075283, -81.510117), false);
+        plotPoint(new LatLng(41.075283, -81.510117), false);
+        plotPoint(new LatLng(41.075283, -81.510117), false);
+        plotPoint(new LatLng(41.075283, -81.510117), false);
+        plotPoint(new LatLng(41.075283, -81.510100), false);
+        plotPoint(new LatLng(41.075283, -81.510100), false);
+        plotPoint(new LatLng(41.075283, -81.510100), false);
+        plotPoint(new LatLng(41.075283, -81.510100), false);
+        plotPoint(new LatLng(41.075283, -81.510083), false);
+        plotPoint(new LatLng(41.075283, -81.510083), false);
+        plotPoint(new LatLng(41.075283, -81.510083), false);
+        plotPoint(new LatLng(41.075283, -81.510083), false);
+        plotPoint(new LatLng(41.075283, -81.510083), false);
+        plotPoint(new LatLng(41.075283, -81.510067), false);
+        plotPoint(new LatLng(41.075283, -81.510067), false);
+        plotPoint(new LatLng(41.075283, -81.510067), false);
+        plotPoint(new LatLng(41.075267, -81.510067), false);
+        plotPoint(new LatLng(41.075267, -81.510067), false);
+        plotPoint(new LatLng(41.075267, -81.510050), false);
+        plotPoint(new LatLng(41.075267, -81.510050), false);
+        plotPoint(new LatLng(41.075267, -81.510050), false);
+        plotPoint(new LatLng(41.075267, -81.510050), false);
+        plotPoint(new LatLng(41.075267, -81.510050), false);
+        plotPoint(new LatLng(41.075267, -81.510050), false);
+        plotPoint(new LatLng(41.075267, -81.510033), false);
+        plotPoint(new LatLng(41.075267, -81.510033), false);
+        plotPoint(new LatLng(41.075267, -81.510033), false);
+        plotPoint(new LatLng(41.075267, -81.510033), false);
+        plotPoint(new LatLng(41.075267, -81.510033), false);
+        plotPoint(new LatLng(41.075267, -81.510033), false);
+        plotPoint(new LatLng(41.075267, -81.510033), false);
+        plotPoint(new LatLng(41.075267, -81.510033), false);
+        plotPoint(new LatLng(41.075267, -81.510033), false);
+        plotPoint(new LatLng(41.075250, -81.510033), false);
+        plotPoint(new LatLng(41.075250, -81.510033), false);
+        plotPoint(new LatLng(41.075250, -81.510017), false);
+        plotPoint(new LatLng(41.075250, -81.510017), false);
+        plotPoint(new LatLng(41.075250, -81.510017), false);
+        plotPoint(new LatLng(41.075250, -81.510017), false);
+        plotPoint(new LatLng(41.075250, -81.510017), false);
+        plotPoint(new LatLng(41.075250, -81.510017), false);
+        plotPoint(new LatLng(41.075250, -81.510017), false);
+        plotPoint(new LatLng(41.075250, -81.510017), false);
+        plotPoint(new LatLng(41.075233, -81.510017), false);
+        plotPoint(new LatLng(41.075233, -81.510000), false);
+        plotPoint(new LatLng(41.075233, -81.510000), false);
+        plotPoint(new LatLng(41.075233, -81.510000), false);
+        plotPoint(new LatLng(41.075233, -81.510000), false);
+        plotPoint(new LatLng(41.075233, -81.510000), false);
+        plotPoint(new LatLng(41.075233, -81.510000), false);
+        plotPoint(new LatLng(41.075233, -81.510000), false);
+        plotPoint(new LatLng(41.075233, -81.510000), false);
+        plotPoint(new LatLng(41.075233, -81.510000), false);
+        plotPoint(new LatLng(41.075233, -81.509983), false);
+        plotPoint(new LatLng(41.075233, -81.509983), false);
+        plotPoint(new LatLng(41.075217, -81.509983), false);
+        plotPoint(new LatLng(41.075217, -81.509983), false);
+        plotPoint(new LatLng(41.075217, -81.509983), false);
+        plotPoint(new LatLng(41.075217, -81.509983), false);
+        plotPoint(new LatLng(41.075217, -81.509983), false);
+        plotPoint(new LatLng(41.075217, -81.509967), false);
+        plotPoint(new LatLng(41.075217, -81.509967), false);
+        plotPoint(new LatLng(41.075217, -81.509967), false);
+        plotPoint(new LatLng(41.075217, -81.509967), false);
+        plotPoint(new LatLng(41.075217, -81.509967), false);
+        plotPoint(new LatLng(41.075217, -81.509950), false);
+        plotPoint(new LatLng(41.075200, -81.509950), false);
+        plotPoint(new LatLng(41.075200, -81.509950), false);
+        plotPoint(new LatLng(41.075200, -81.509950), false);
+        plotPoint(new LatLng(41.075200, -81.509950), false);
+        plotPoint(new LatLng(41.075200, -81.509950), false);
+        plotPoint(new LatLng(41.075200, -81.509933), false);
+        plotPoint(new LatLng(41.075200, -81.509933), false);
+        plotPoint(new LatLng(41.075200, -81.509933), false);
+        plotPoint(new LatLng(41.075200, -81.509933), false);
+        plotPoint(new LatLng(41.075200, -81.509933), false);
+        plotPoint(new LatLng(41.075200, -81.509933), false);
+        plotPoint(new LatLng(41.075200, -81.509917), false);
+        plotPoint(new LatLng(41.075200, -81.509917), false);
+        plotPoint(new LatLng(41.075200, -81.509917), false);
+        plotPoint(new LatLng(41.075200, -81.509917), false);
+        plotPoint(new LatLng(41.075200, -81.509917), false);
+        plotPoint(new LatLng(41.075200, -81.509900), false);
+        plotPoint(new LatLng(41.075200, -81.509900), false);
+        plotPoint(new LatLng(41.075183, -81.509900), false);
+        plotPoint(new LatLng(41.075183, -81.509900), false);
+        plotPoint(new LatLng(41.075183, -81.509900), false);
+        plotPoint(new LatLng(41.075183, -81.509900), false);
+        plotPoint(new LatLng(41.075183, -81.509900), false);
+        plotPoint(new LatLng(41.075183, -81.509883), false);
+        plotPoint(new LatLng(41.075183, -81.509883), false);
+        plotPoint(new LatLng(41.075183, -81.509883), false);
+        plotPoint(new LatLng(41.075183, -81.509883), false);
+        plotPoint(new LatLng(41.075183, -81.509883), false);
+        plotPoint(new LatLng(41.075183, -81.509867), false);
+        plotPoint(new LatLng(41.075183, -81.509867), false);
+        plotPoint(new LatLng(41.075183, -81.509867), false);
+        plotPoint(new LatLng(41.075167, -81.509867), false);
+        plotPoint(new LatLng(41.075167, -81.509867), false);
+        plotPoint(new LatLng(41.075167, -81.509850), false);
+        plotPoint(new LatLng(41.075167, -81.509850), false);
+        plotPoint(new LatLng(41.075167, -81.509850), false);
+        plotPoint(new LatLng(41.075167, -81.509850), false);
+        plotPoint(new LatLng(41.075167, -81.509850), false);
+        plotPoint(new LatLng(41.075167, -81.509850), false);
+        plotPoint(new LatLng(41.075167, -81.509833), false);
+        plotPoint(new LatLng(41.075167, -81.509833), false);
+        plotPoint(new LatLng(41.075167, -81.509833), false);
+        plotPoint(new LatLng(41.075150, -81.509833), false);
+        plotPoint(new LatLng(41.075150, -81.509833), false);
+        plotPoint(new LatLng(41.075150, -81.509833), false);
+        plotPoint(new LatLng(41.075150, -81.509833), false);
+        plotPoint(new LatLng(41.075150, -81.509833), false);
+        plotPoint(new LatLng(41.075150, -81.509817), false);
+        plotPoint(new LatLng(41.075150, -81.509817), false);
+        plotPoint(new LatLng(41.075133, -81.509817), false);
+        plotPoint(new LatLng(41.075133, -81.509817), false);
+        plotPoint(new LatLng(41.075133, -81.509817), false);
+        plotPoint(new LatLng(41.075133, -81.509817), false);
+        plotPoint(new LatLng(41.075133, -81.509817), false);
+        plotPoint(new LatLng(41.075133, -81.509817), false);
+        plotPoint(new LatLng(41.075117, -81.509817), false);
+        plotPoint(new LatLng(41.075117, -81.509817), false);
+        plotPoint(new LatLng(41.075117, -81.509817), false);
+        plotPoint(new LatLng(41.075117, -81.509817), false);
+        plotPoint(new LatLng(41.075117, -81.509817), false);
+        plotPoint(new LatLng(41.075117, -81.509817), false);
+        plotPoint(new LatLng(41.075117, -81.509817), false);
+        plotPoint(new LatLng(41.075100, -81.509817), false);
+        plotPoint(new LatLng(41.075100, -81.509817), false);
+        plotPoint(new LatLng(41.075100, -81.509833), false);
+        plotPoint(new LatLng(41.075100, -81.509833), false);
+        plotPoint(new LatLng(41.075100, -81.509833), false);
+        plotPoint(new LatLng(41.075100, -81.509833), false);
+        plotPoint(new LatLng(41.075100, -81.509833), false);
     }
 }
