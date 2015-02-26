@@ -37,6 +37,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.sdp11.wmd.ACTION_GATT_CONNECTED" />
+                <action android:name="com.example.sdp11.wmd.ACTION_GATT_DISCONNECTED" />
+                <action android:name="com.example.sdp11.wmd.ACTION_GATT_SERVICES_DISCOVERED" />
+                <action android:name="com.example.sdp11.wmd.ACTION_DATA_AVAILABLE" />
+            </intent-filter>
         </activity>
         <service android:name=".BluetoothLEService" android:enabled="true"/>
         <meta-data

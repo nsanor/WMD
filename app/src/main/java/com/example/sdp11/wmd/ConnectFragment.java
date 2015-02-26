@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +50,7 @@ public class ConnectFragment extends Fragment{
     // UUID for the BTLE client characteristic which is necessary for notifications.
     public static UUID CLIENT_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
-    private Button button_toggle, button_search;
+    private Button button_toggle, button_search, crap;
     View view;
 
     private boolean mConnected = false;
@@ -122,6 +123,15 @@ public class ConnectFragment extends Fragment{
                 else Toast.makeText(getActivity(), "Please turn Bluetooth on", Toast.LENGTH_SHORT).show();
             }
         });
+
+        crap = (Button)view.findViewById(R.id.Crap);
+        crap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mBluetoothLEService.transmit();
+            }
+        });
+
 
         lv = (ListView)view.findViewById(R.id.devices);
 

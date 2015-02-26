@@ -9,12 +9,17 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.nio.charset.Charset;
 import java.util.UUID;
 
 /**
@@ -109,8 +114,8 @@ public class BluetoothLEService extends Service {
             else {
                 Log.e(TAG, "Couldn't get RX client descriptor!");
             }
-            Log.e(TAG, tx.getStringValue(0));
-            Log.e(TAG, rx.getStringValue(0));
+            if(tx == null) Log.e(TAG, "TX is null");
+            if(rx == null) Log.e(TAG, "RX is null");
         }
 
         @Override
@@ -129,6 +134,7 @@ public class BluetoothLEService extends Service {
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
             Log.e(TAG, "Received: " + characteristic.getStringValue(0));
+            broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
 
 
@@ -136,7 +142,6 @@ public class BluetoothLEService extends Service {
 
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
-        if (intent == null)  Log.e(TAG, "Intent not created");
         sendBroadcast(intent);
     }
 
@@ -164,6 +169,9 @@ public class BluetoothLEService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+//                new IntentFilter("my-event"));
         return mBinder;
     }
 
@@ -186,15 +194,16 @@ public class BluetoothLEService extends Service {
     public boolean initialize() {
         // For API level 18 and above, get a reference to BluetoothAdapter through
         // BluetoothManager.
-        if (mBluetoothManager == null) {
-            mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-            if (mBluetoothManager == null) {
-                Log.e(TAG, "Unable to initialize BluetoothManager.");
-                return false;
-            }
-        }
+//        mBluetoothManager == MainActivity.Blue
+//        if (mBluetoothManager == null) {
+//            mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+//            if (mBluetoothManager == null) {
+//                Log.e(TAG, "Unable to initialize BluetoothManager.");
+//                return false;
+//            }
+//        }
 
-        mBluetoothAdapter = mBluetoothManager.getAdapter();
+        //mBluetoothAdapter = mBluetoothManager.getAdapter();
         if (mBluetoothAdapter == null) {
             Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
             return false;
@@ -214,15 +223,22 @@ public class BluetoothLEService extends Service {
      *         callback.
      */
     public boolean connect(final String address) {
-        if (mBluetoothAdapter == null || address == null) {
-            Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
+        if (mBluetoothAdapter == null) {
+            Log.e(TAG, "BluetoothAdapter not initialized");
             return false;
         }
+        if (address == null) {
+            Log.e(TAG, "unspecified address.");
+            return false;
+        }
+
+
+
 
         // Previously connected device.  Try to reconnect.
         if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
                 && mBluetoothGatt != null) {
-            Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+            Log.e(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGatt.connect()) {
                 mConnectionState = STATE_CONNECTING;
                 return true;
@@ -233,7 +249,7 @@ public class BluetoothLEService extends Service {
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         if (device == null) {
-            Log.w(TAG, "Device not found.  Unable to connect.");
+            Log.e(TAG, "Device not found.  Unable to connect.");
             return false;
         }
         // We want to directly connect to the device, so we are setting the autoConnect
@@ -253,10 +269,27 @@ public class BluetoothLEService extends Service {
      */
     //gsf
 
+    public void transmit() {
+        String message = "crap";
+        if (tx == null || message == null || message.isEmpty()) {
+            // Do nothing if there is no device or message to send.
+            Log.e(TAG, "something broke");
+            return;
+        }
+        // Update TX characteristic value.  Note the setValue overload that takes a byte array must be used.
+        tx.setValue(message.getBytes(Charset.forName("UTF-8")));
+        if (mBluetoothGatt.writeCharacteristic(tx)) {
+            Log.e(TAG, "Sent: " + message);
+        }
+        else {
+            Log.e(TAG, "Couldn't write TX characteristic!");
+        }
+    }
+
 
     public void disconnect() {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
-            Log.w(TAG, "BluetoothAdapter not initialized");
+            Log.e(TAG, "BluetoothAdapter not initialized");
             return;
         }
         mBluetoothGatt.disconnect();
