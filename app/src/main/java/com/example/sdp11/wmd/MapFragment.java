@@ -9,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -22,7 +20,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -33,20 +30,14 @@ import java.util.Stack;
  * A simple {@link Fragment} subclass.
  */
 public class MapFragment extends Fragment {
-
-    double latitude = 41.13747;
-    double longitude = -81.47430700000001;
-    LatLngBounds bounds;
-    private Circle circle;
-
     private MapView mapView;
     private GoogleMap googleMap;
     private CameraPosition cp;
-    private Button mode;
-    private Button undo;
-    private TextView label;
 
-    private boolean planning = false;
+    private double latitude = 41.13747;
+    private double longitude = -81.47430700000001;
+    private Circle circle;
+    //private LatLngBounds bounds;
 
     public MapFragment() {
         // Required empty public constructor
@@ -69,16 +60,8 @@ public class MapFragment extends Fragment {
 
         final Stack<Marker> markerStack = new Stack<Marker>();
 
-        mode = (Button) view.findViewById(R.id.button_mode);
-        undo = (Button) view.findViewById(R.id.button_undo);
-        label = (TextView) view.findViewById(R.id.mode_label);
-
-        if(planning) {
-            undo.setVisibility(View.VISIBLE);
-            label.setText("Planning Mode");
-        }
-
-
+        Button save = (Button) view.findViewById(R.id.button_save_points);
+        Button undo = (Button) view.findViewById(R.id.button_undo);
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -104,19 +87,10 @@ public class MapFragment extends Fragment {
 
         plotDemoData();
 
-        mode.setOnClickListener(new View.OnClickListener() {
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!planning) {
-                    undo.setVisibility(View.VISIBLE);
-                    label.setText("Planning Mode");
-                    planning = true;
-                }
-                else {
-                    undo.setVisibility(View.INVISIBLE);
-                    label.setText("Normal Mode");
-                    planning = false;
-                }
+                Toast.makeText(getActivity(), "Implement Save Button!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -151,10 +125,6 @@ public class MapFragment extends Fragment {
                 Location location = new Location("");
                 location.setLatitude(point.latitude);
                 location.setLongitude(point.longitude);
-                if(!planning) {
-                    Toast.makeText(getActivity(), "Please turn on planning mode", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 if (markerStack.empty()) {
                     if(mCurrentLocation.distanceTo(location) <= TotalsData.getAverageDistance()){
                         Marker marker = plotUserPoint(point);
@@ -220,19 +190,6 @@ public class MapFragment extends Fragment {
 
     }
 
-    private void calculateBounds() {
-        //Add formula to calculate distance between lat and long lines at current location
-        //Want ~5 mile bounds (8.4 km)
-        //About 69km between lines on average
-        //About .12 degrees for bounds, 0.6 on either side
-        LatLng northeast = new LatLng(latitude + 0.06, longitude + 0.06);
-        LatLng southwest = new LatLng(latitude - 0.06, longitude - 0.06);
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(northeast);
-        builder.include(southwest);
-        bounds = builder.build();
-    }
-
     private Marker plotPoint(LatLng point, boolean user) {
         // create marker
         MarkerOptions marker = new MarkerOptions().position(point);
@@ -244,8 +201,7 @@ public class MapFragment extends Fragment {
         }
         else marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
-        Marker newMarker = googleMap.addMarker(marker);
-        return newMarker;
+        return googleMap.addMarker(marker);
     }
 
     private Marker plotUserPoint(LatLng point) {
@@ -264,7 +220,7 @@ public class MapFragment extends Fragment {
                 .center(point)
                 .radius(radius); // In meters
 
-// Get back the mutable Circle
+        // Get back the mutable Circle
         circle = googleMap.addCircle(circleOptions);
     }
 
@@ -690,4 +646,17 @@ public class MapFragment extends Fragment {
         plotPoint(new LatLng(41.075100, -81.509833), false);
         plotPoint(new LatLng(41.075100, -81.509833), false);
     }
+
+    //    private void calculateBounds() {
+//        //Add formula to calculate distance between lat and long lines at current location
+//        //Want ~5 mile bounds (8.4 km)
+//        //About 69km between lines on average
+//        //About .12 degrees for bounds, 0.6 on either side
+//        LatLng northeast = new LatLng(latitude + 0.06, longitude + 0.06);
+//        LatLng southwest = new LatLng(latitude - 0.06, longitude - 0.06);
+//        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+//        builder.include(northeast);
+//        builder.include(southwest);
+//        bounds = builder.build();
+//    }
 }
