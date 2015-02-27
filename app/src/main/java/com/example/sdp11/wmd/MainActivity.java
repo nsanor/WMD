@@ -88,7 +88,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
         mBluetoothLEService = new BluetoothLEService();
         Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        boolean t = bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+        if(t) Log.e(TAG, "Service bound, back in main");
 
         dataSource = new ThrowsDataSource(this);
         dataSource.open();

@@ -54,8 +54,8 @@ public class BluetoothLEService extends Service {
             "com.example.sdp11.wmd.ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED =
             "com.example.sdp11.wmd.ACTION_GATT_DISCONNECTED";
-    public final static String ACTION_GATT_SERVICES_DISCOVERED =
-            "com.example.sdp11.wmd.ACTION_GATT_SERVICES_DISCOVERED";
+    public final static String ACTION_GATT_SERVICES_DISCOVERED = "mytest";
+            //"com.example.sdp11.wmd.ACTION_GATT_SERVICES_DISCOVERED";
     public final static String ACTION_DATA_AVAILABLE =
             "com.example.sdp11.wmd.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA =
@@ -71,6 +71,7 @@ public class BluetoothLEService extends Service {
                     && newState == BluetoothProfile.STATE_CONNECTED) {
 
                 Log.e(TAG, "Connected Successfully");
+                mBluetoothGatt  = gatt;
                 //Discover services
                 gatt.discoverServices();
 
@@ -137,29 +138,33 @@ public class BluetoothLEService extends Service {
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
 
+        private void broadcastUpdate(final String action) {
+            final Intent i = new Intent(action);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Log.e(TAG, i.getAction());
+            if(i == null ) Log.e(TAG, "Intent is null");
+            BluetoothLEService.this.sendBroadcast(i);
+        }
+
+        private void broadcastUpdate(final String action,
+                                     final BluetoothGattCharacteristic characteristic) {
+            final Intent intent = new Intent(action);
+
+            //writes the data formatted in HEX.
+            final byte[] data = characteristic.getValue();
+            if (data != null && data.length > 0) {
+                final StringBuilder stringBuilder = new StringBuilder(data.length);
+                for(byte byteChar : data)
+                    stringBuilder.append(String.format("%02X ", byteChar));
+                intent.putExtra(EXTRA_DATA, new String(data) + "\n" +
+                        stringBuilder.toString());
+            }
+            sendBroadcast(intent);
+        }
 
     };
 
-    private void broadcastUpdate(final String action) {
-        final Intent intent = new Intent(action);
-        sendBroadcast(intent);
-    }
 
-    private void broadcastUpdate(final String action,
-                                 final BluetoothGattCharacteristic characteristic) {
-        final Intent intent = new Intent(action);
-
-        //writes the data formatted in HEX.
-        final byte[] data = characteristic.getValue();
-        if (data != null && data.length > 0) {
-            final StringBuilder stringBuilder = new StringBuilder(data.length);
-            for(byte byteChar : data)
-                stringBuilder.append(String.format("%02X ", byteChar));
-            intent.putExtra(EXTRA_DATA, new String(data) + "\n" +
-                    stringBuilder.toString());
-        }
-        sendBroadcast(intent);
-    }
 
     public class LocalBinder extends Binder {
         BluetoothLEService getService() {

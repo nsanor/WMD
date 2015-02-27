@@ -128,7 +128,7 @@ public class ConnectFragment extends Fragment{
         crap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mBluetoothLEService.transmit();
+                MainActivity.mBluetoothLEService.transmit();
             }
         });
 
@@ -142,7 +142,7 @@ public class ConnectFragment extends Fragment{
             public void onItemClick(AdapterView<?> aView, View v, int position, long id) {
                 //Log.e(String.valueOf(position), "Connect here.");
                 BluetoothDevice device = listAdapter.getDevice(position);
-                mBluetoothGatt = device.connectGatt(getActivity(), false, mBluetoothLEService.getGattCallback());
+                mBluetoothGatt = device.connectGatt(getActivity(), false, MainActivity.mBluetoothLEService.getGattCallback());
             }
         });
 
@@ -162,14 +162,25 @@ public class ConnectFragment extends Fragment{
     @Override
     public void onPause() {
         super.onPause();
-        //getActivity().unregisterReceiver(mGattUpdateReceiver);
+        listAdapter.clear();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //getActivity().unbindService(mServiceConnection);
-        //mBluetoothLEService = null;
+    }
+
+    public void toggle(View view){
+        if(!BA.isEnabled()){
+            BA.enable();
+            while (BA.getState() != BluetoothAdapter.STATE_ON);
+            Toast.makeText(getActivity(), "Bluetooth is now On!", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            BA.disable();
+            while (BA.getState() != BluetoothAdapter.STATE_OFF);
+            Toast.makeText(getActivity(), "Bluetooth is now off!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     //Cycle through all transferred GPS and IMU data
@@ -236,30 +247,12 @@ public class ConnectFragment extends Fragment{
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    //listAdapter.add(device.getName() + ": " + device.getAddress());
                     listAdapter.addDevice(device);
                     listAdapter.notifyDataSetChanged();
                 }
             });
         }
     };
-
-    public void toggle(View view){
-        if(!BA.isEnabled()){
-            //Intent TurnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            //startActivityForResult(TurnOn, 0);
-            BA.enable();
-            while (BA.getState() != BluetoothAdapter.STATE_ON);
-            Toast.makeText(getActivity(), "Bluetooth is now On!", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            //Intent TurnOn = new Intent(BluetoothAdapter.ACTION_);
-            //startActivityForResult(TurnOn, 0);
-            BA.disable();
-            while (BA.getState() != BluetoothAdapter.STATE_OFF);
-            Toast.makeText(getActivity(), "Bluetooth is now off!", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     static class ViewHolder{
         TextView deviceAddress;
