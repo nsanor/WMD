@@ -128,8 +128,26 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     protected void onStart() {
         super.onStart();
+        //Log.e("Connected?", String.valueOf(mGoogleApiClient.isConnected()));
         mGoogleApiClient.connect();
     }
+
+//    public int getSelectedTab() {
+//        return getActionBar().getSelectedTab().getPosition();
+//    }
+//
+//
+//    private void updateValuesFromBundle(Bundle savedInstanceState) {
+//        if (savedInstanceState != null) {
+//            if (savedInstanceState.keySet().contains("tabState")) {
+//                //getActionBar().set(savedInstanceState.getInt("tabState"));
+//            }
+//
+//
+//            //updateUI();
+//        }
+//    }
+
 
     @Override
     public void onResume() {
@@ -141,7 +159,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         if (mBluetoothLEService != null) {
             final boolean result = mBluetoothLEService.connect(mDeviceAddress);
-            Log.e(TAG, "Connect request result=" + result);
+            Log.d(TAG, "Connect request result=" + result);
         }
     }
 
@@ -267,6 +285,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        //savedInstanceState.putInt("tabState", getSelectedTab());
     }
 
     @Override
