@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.internal.da;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
@@ -49,8 +50,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     String mLastUpdateTime;
     Boolean mRequestingLocationUpdates = true;
     LocationRequest mLocationRequest;
-
-    private GattBroadcastReceiver mGattBroadcastReceiver = new GattBroadcastReceiver();
 
     public static ThrowsDataSource dataSource;
     public static SQLiteDatabase throwsDB;
@@ -86,12 +85,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         buildGoogleApiClient();
         createLocationRequest();
 
-        mBluetoothLEService = new BluetoothLEService();
-        Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
-        boolean t = bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
-        if(t) Log.e(TAG, "Service bound, back in main");
-
         dataSource = new ThrowsDataSource(this);
         dataSource.open();
         TotalsData.loadTotalsData(dataSource.getMaxThrowId());
@@ -126,6 +119,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                             .setTabListener(this));
         }
 
+        mBluetoothLEService = new BluetoothLEService();
+        Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
+        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
     }
 
     @Override
@@ -159,47 +156,41 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             startLocationUpdates();
         }
 
-        registerReceiver(mGattBroadcastReceiver, makeGattUpdateIntentFilter());
+        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         if (mBluetoothLEService != null) {
-            //final boolean result = mBluetoothLEService.connect(mDeviceAddress);
-            //Log.d(TAG, "Connect request result=" + result);
+            final boolean result = mBluetoothLEService.connect(mDeviceAddress);
+            Log.d(TAG, "Connect request result=" + result);
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattBroadcastReceiver);
+        unregisterReceiver(mGattUpdateReceiver);
     }
 
-    public class GattBroadcastReceiver extends BroadcastReceiver {
+    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            Log.e(TAG, "Inside receiver");
-            if(action == null) Log.e(TAG, "action is null");
             if (mBluetoothLEService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 //updateConnectionState(R.string.connected);
                 mConnectionState = STATE_CONNECTED;
-                Log.e(TAG, "Connected in broadcast receiver.");
                 invalidateOptionsMenu();
             } else if (mBluetoothLEService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 //updateConnectionState(R.string.disconnected);
                 mConnectionState = STATE_DISCONNECTED;
-                Log.e(TAG, "Disconnected in broadcast receiver.");
                 invalidateOptionsMenu();
                 //clearUI();
             } else if (mBluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics button_toggle the
                 // user interface.
-                Log.e(TAG, "Services discovered in broadcast receiver.");
                 displayGattServices(getSupportedGattServices());
             } else if (mBluetoothLEService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //displayData(intent.getStringExtra(EXTRA_DATA));
-                Log.e(TAG, "Data available in broadcast receiver.");
-                Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+                Log.e("", intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
             }
         }
     };
@@ -278,8 +269,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 finish();
             }
             // Automatically connects to the device upon successful start-up initialization.
-            //mBluetoothLEService.connect(mDeviceAddress);
-            Log.e(TAG, "Service Connected");
+            mBluetoothLEService.connect(mDeviceAddress);
         }
 
         @Override
