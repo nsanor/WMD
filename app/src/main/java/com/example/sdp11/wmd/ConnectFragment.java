@@ -42,17 +42,10 @@ import java.util.UUID;
 public class ConnectFragment extends Fragment{
     private final static String TAG = ConnectFragment.class.getSimpleName();
 
-    // UUIDs for UAT service and associated characteristics.
-    public static UUID UART_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
-    public static UUID TX_UUID = UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");
-    public static UUID RX_UUID = UUID.fromString("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
-    // UUID for the BTLE client characteristic which is necessary for notifications.
-    public static UUID CLIENT_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
-
-    private Button button_toggle, button_search;
-    View view;
-
-    private boolean mConnected = false;
+    private Button button_toggle;
+    private Button button_search;
+    private View view;
+    private ListView lv;
 
     private BluetoothLEService mBluetoothLEService;
 
@@ -60,15 +53,12 @@ public class ConnectFragment extends Fragment{
     private String mDeviceAddress;
 
     private BluetoothAdapter BA;
-    private ListView lv;
-    //private ArrayAdapter listAdapter;
-    private LeDeviceListAdapter listAdapter;
-    private List values;
 
+    private LeDeviceListAdapter listAdapter;
     private BluetoothGatt mBluetoothGatt;
+
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics;
 
-    private boolean mScanning;
     private Handler mHandler;
 
     //private LatLng[] GPSCoordinates;
@@ -76,16 +66,6 @@ public class ConnectFragment extends Fragment{
 
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 1000;
-
-//    private int mConnectionState = STATE_DISCONNECTED;
-//
-//    private static final int STATE_DISCONNECTED = 0;
-//    private static final int STATE_CONNECTING = 1;
-//    private static final int STATE_CONNECTED = 2;
-//
-//    private final String LIST_NAME = "NAME";
-//    private final String LIST_UUID = "UUID";
-
 
     public ConnectFragment() {
         // Required empty public constructor
@@ -204,17 +184,11 @@ public class ConnectFragment extends Fragment{
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mScanning = false;
                     BA.stopLeScan(mScanCallback);
-                    //Log.e("", "Stop Scanning");
                 }
             }, SCAN_PERIOD);
-
-            //Log.e("", "Now Scanning");
-            mScanning = true;
             BA.startLeScan(mScanCallback);
         } else {
-            mScanning = false;
             BA.stopLeScan(mScanCallback);
         }
 
@@ -226,7 +200,6 @@ public class ConnectFragment extends Fragment{
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    //listAdapter.add(device.getName() + ": " + device.getAddress());
                     listAdapter.addDevice(device);
                     listAdapter.notifyDataSetChanged();
                 }
@@ -236,15 +209,11 @@ public class ConnectFragment extends Fragment{
 
     public void toggle(View view){
         if(!BA.isEnabled()){
-            //Intent TurnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            //startActivityForResult(TurnOn, 0);
             BA.enable();
             while (BA.getState() != BluetoothAdapter.STATE_ON);
             Toast.makeText(getActivity(), "Bluetooth is now On!", Toast.LENGTH_SHORT).show();
         }
         else {
-            //Intent TurnOn = new Intent(BluetoothAdapter.ACTION_);
-            //startActivityForResult(TurnOn, 0);
             BA.disable();
             while (BA.getState() != BluetoothAdapter.STATE_OFF);
             Toast.makeText(getActivity(), "Bluetooth is now off!", Toast.LENGTH_SHORT).show();
