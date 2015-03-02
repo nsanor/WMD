@@ -1,6 +1,8 @@
 package com.example.sdp11.wmd;
 
 
+import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -22,7 +24,16 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 
@@ -30,6 +41,8 @@ import java.util.Stack;
  * A simple {@link Fragment} subclass.
  */
 public class MapFragment extends Fragment {
+    private final static String TAG = MapFragment.class.getSimpleName();
+
     private MapView mapView;
     private GoogleMap googleMap;
     private CameraPosition cp;
@@ -38,6 +51,9 @@ public class MapFragment extends Fragment {
     private double longitude = -81.47430700000001;
     private Circle circle;
     //private LatLngBounds bounds;
+
+    private Stack<Marker> markerStack;
+    private ArrayList<LatLng> points;
 
     public MapFragment() {
         // Required empty public constructor
@@ -58,7 +74,8 @@ public class MapFragment extends Fragment {
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
 
-        final Stack<Marker> markerStack = new Stack<Marker>();
+        markerStack = new Stack<Marker>();
+        points = new ArrayList<LatLng>();
 
         Button save = (Button) view.findViewById(R.id.button_save_points);
         Button undo = (Button) view.findViewById(R.id.button_undo);
@@ -90,7 +107,10 @@ public class MapFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "Implement Save Button!", Toast.LENGTH_SHORT).show();
+                boolean mStackEmpty = markerStack.empty();
+                saveUserPoints();
+                if(!mStackEmpty) Toast.makeText(getActivity(), "Points Saved!", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(getActivity(), "No Points To Save!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -106,12 +126,11 @@ public class MapFragment extends Fragment {
                     if(circle != null) circle.remove();
                     //Get the next to last marker and re-add circle
                     if (!markerStack.empty()) {
-                        marker = markerStack.pop();
+                        marker = markerStack.peek();
                         plotRadius(marker.getPosition(), TotalsData.getAverageDistance());
-                        markerStack.push(marker);
                     }
+                    else plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
                 }
-                if(markerStack.empty()) plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
             }
         });
 
@@ -156,7 +175,51 @@ public class MapFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
+        try {
+            InputStream inputStream = getActivity().openFileInput("user_points.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    String point[] = receiveString.split(",");
+                    replotUserPoint(new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1])));
+                }
+
+                inputStream.close();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e(TAG, "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "Can not read file: " + e.toString());
+        }
+
         return view;
+    }
+
+    private void saveUserPoints() {
+        String filename = "user_points.txt";
+        FileOutputStream outputStream;
+        String text = "";
+
+        while(!markerStack.empty()) {
+            LatLng point = markerStack.pop().getPosition();
+            text += point.latitude + ", " + point.longitude + "\n";
+        }
+
+        try {
+            outputStream = getActivity().openFileOutput(filename, Context.MODE_APPEND);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        circle.remove();
+        plotRadius(new LatLng(latitude, longitude), TotalsData.getAverageDistance());
     }
 
     @Override
@@ -199,9 +262,22 @@ public class MapFragment extends Fragment {
             marker.icon(BitmapDescriptorFactory
                     .defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         }
-        else marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        else {
+            marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            points.add(marker.getPosition());
+        }
 
         return googleMap.addMarker(marker);
+    }
+
+    private void plotPolyLine() {
+        PolylineOptions line= new PolylineOptions().width(5).color(Color.RED);
+
+        for (LatLng point : points) {
+            line.add(point);
+        }
+
+        googleMap.addPolyline(line);
     }
 
     private Marker plotUserPoint(LatLng point) {
@@ -210,6 +286,12 @@ public class MapFragment extends Fragment {
         if(circle != null) circle.remove();
 
         plotRadius(point, TotalsData.getAverageDistance());
+
+        return newMarker;
+    }
+
+    private Marker replotUserPoint(LatLng point) {
+        Marker newMarker = plotPoint(point, true);
 
         return newMarker;
     }
@@ -645,6 +727,8 @@ public class MapFragment extends Fragment {
         plotPoint(new LatLng(41.075100, -81.509833), false);
         plotPoint(new LatLng(41.075100, -81.509833), false);
         plotPoint(new LatLng(41.075100, -81.509833), false);
+
+        plotPolyLine();
     }
 
     //    private void calculateBounds() {

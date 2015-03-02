@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 
 
 public class LogActivity extends Activity {
+    private final static String TAG = LogActivity.class.getSimpleName();
     private TextView logText;
 
     @Override
@@ -49,9 +50,9 @@ public class LogActivity extends Activity {
             }
         }
         catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
+            Log.e(TAG, "File not found: " + e.toString());
         } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
+            Log.e(TAG, "Can not read file: " + e.toString());
         }
     }
 
