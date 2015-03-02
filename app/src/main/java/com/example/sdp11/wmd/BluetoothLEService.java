@@ -69,15 +69,14 @@ public class BluetoothLEService extends Service {
             //Connection established
             if (status == BluetoothGatt.GATT_SUCCESS
                     && newState == BluetoothProfile.STATE_CONNECTED) {
-
-                Log.e(TAG, "Connected Successfully");
                 mBluetoothGatt  = gatt;
+                broadcastUpdate(ACTION_GATT_CONNECTED);
                 //Discover services
                 gatt.discoverServices();
 
             } else if (status == BluetoothGatt.GATT_SUCCESS
                     && newState == BluetoothProfile.STATE_DISCONNECTED) {
-                Log.e(TAG, "Disconnected");
+                broadcastUpdate(ACTION_GATT_DISCONNECTED);
                 //Handle a disconnect event
             }
 
@@ -90,7 +89,6 @@ public class BluetoothLEService extends Service {
         // New services discovered
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.e(TAG, "Services discovered");
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             } else {
                 Log.e(TAG, "Error, onServicesDiscovered received status: " + status);
@@ -115,8 +113,6 @@ public class BluetoothLEService extends Service {
             else {
                 Log.e(TAG, "Couldn't get RX client descriptor!");
             }
-            if(tx == null) Log.e(TAG, "TX is null");
-            if(rx == null) Log.e(TAG, "RX is null");
         }
 
         @Override
@@ -126,7 +122,6 @@ public class BluetoothLEService extends Service {
                                          int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-                Log.e(TAG, characteristic.getStringValue(0));
             }
         }
 
@@ -134,15 +129,12 @@ public class BluetoothLEService extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            Log.e(TAG, "Received: " + characteristic.getStringValue(0));
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
 
         private void broadcastUpdate(final String action) {
             final Intent i = new Intent(action);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Log.e(TAG, i.getAction());
-            if(i == null ) Log.e(TAG, "Intent is null");
             BluetoothLEService.this.sendBroadcast(i);
         }
 

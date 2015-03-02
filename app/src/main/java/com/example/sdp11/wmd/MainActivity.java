@@ -167,6 +167,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private void writeToLog(String text) {
         String filename = "my_log.txt";
         FileOutputStream outputStream;
+        text += "\n";
 
         try {
             outputStream = openFileOutput(filename, Context.MODE_APPEND);
