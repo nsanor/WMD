@@ -47,19 +47,19 @@
         android:text="@string/connection_status"/>
 
     <TextView
-        android:id="@+id/SyncStatus"
+        android:id="@+id/DevicesFound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:textSize="16sp"
         android:padding="5sp"
         android:layout_below="@+id/ConnectionStatus"
-        android:text="@string/sync_status" />
+        android:text="Devices Found: "/>
 
     <ListView
         android:id="@+id/devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/SyncStatus"/>
+        android:layout_below="@+id/DevicesFound"/>
 
 </RelativeLayout>

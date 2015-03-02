@@ -18,4 +18,16 @@ public class GPSDataPoint {
         this.longitude = longitude;
         this.time = time;
     }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public long getTime() {
+        return time;
+    }
 }

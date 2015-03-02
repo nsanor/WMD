@@ -32,8 +32,10 @@ import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -46,7 +48,7 @@ import com.google.android.gms.location.LocationServices;
 public class MainActivity extends Activity implements ActionBar.TabListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private final static String TAG = MainActivity.class.getSimpleName();
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private static SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private GoogleApiClient mGoogleApiClient;
     private static Location mCurrentLocation;
@@ -76,6 +78,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private boolean mConnected = false;
 
     private ArrayList<GPSDataPoint> GPSCoordinates;
+
+    private static ConnectFragment connectFragment;
+
+    private static final String Separator = System.getProperty("line.separator");
 
 
     @Override
@@ -127,6 +133,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         mBluetoothLEService = new BluetoothLEService();
         Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+
     }
 
     //Cycle through all transferred GPS and IMU data
@@ -142,6 +150,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             GPSDataPoint gps = parseGPS(s);
             //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
             //dataSource.createThrow();
+            writeToLog("GPS Data Point: Latitude = " + gps.getLatitude() + ", Longitude = " + gps.getLongitude() + ", Timestamp = " + gps.getTime());
         }
     }
 
@@ -167,7 +176,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private void writeToLog(String text) {
         String filename = "my_log.txt";
         FileOutputStream outputStream;
-        text += "\n";
+        text = "[" + getCurrentTimestamp() + "] : " + text + Separator;
 
         try {
             outputStream = openFileOutput(filename, Context.MODE_APPEND);
@@ -222,6 +231,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         unregisterReceiver(mGattUpdateReceiver);
     }
 
+    public static void setConnectTab() {
+        connectFragment = (ConnectFragment)mSectionsPagerAdapter.getRegisteredFragment(0);
+        connectFragment.setConnectionStatus("test");
+    }
+
     private String getCurrentTimestamp() {
         long time = System.currentTimeMillis();
         Timestamp tsTemp = new Timestamp(time);
@@ -238,21 +252,25 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 mConnected = true;
                 //updateConnectionState(R.string.connected);
                 mConnectionState = STATE_CONNECTED;
-                writeToLog(getCurrentTimestamp() + ": Bluetooth Connected.");
+                writeToLog("Bluetooth Connected.");
+                connectFragment.setConnectionStatus(mBluetoothLEService.getmBluetoothDeviceAddress());
                 invalidateOptionsMenu();
             } else if (mBluetoothLEService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 //updateConnectionState(R.string.disconnected);
                 mConnectionState = STATE_DISCONNECTED;
+                writeToLog("Bluetooth Disconnected.");
                 invalidateOptionsMenu();
                 //clearUI();
             } else if (mBluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics button_toggle the
                 // user interface.
+                writeToLog("Services Discovered.");
                 displayGattServices(getSupportedGattServices());
             } else if (mBluetoothLEService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //displayData(intent.getStringExtra(EXTRA_DATA));
                 Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+                writeToLog("Characteristic Changed.");
                 parseTransferredData();
             }
         }
@@ -386,6 +404,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        private SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -420,6 +439,23 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             }
             return null;
         }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
+        }
     }
 
     @Override
@@ -438,15 +474,18 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
         switch (id){
             case R.id.action_settings:
-//                Toast.makeText(getApplicationContext(), "Settings",
-//                        Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, LogActivity.class);
-                MainActivity.this.startActivity(intent);
+                Toast.makeText(getApplicationContext(), "Settings",
+                        Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.about:
 //                Toast.makeText(getApplicationContext(), "About Us",
 //                        Toast.LENGTH_SHORT).show();
                 parseTransferredData();
+
+                return true;
+            case R.id.view_log:
+                Intent intent = new Intent(MainActivity.this, LogActivity.class);
+                MainActivity.this.startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

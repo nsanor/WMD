@@ -62,6 +62,9 @@ public class BluetoothLEService extends Service {
             "com.example.sdp11.wmd.EXTRA_DATA";
 
     public BluetoothGattCallback getGattCallback() {return mGattCallback;}
+    public String getmBluetoothDeviceAddress() {
+        return mBluetoothDeviceAddress;
+    }
 
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class ConnectFragment extends Fragment{
     private final static String TAG = ConnectFragment.class.getSimpleName();
 
     private View view;
+    private TextView connectionStatus;
     private LeDeviceListAdapter listAdapter;
 
     private boolean mConnected = false;
@@ -36,8 +38,9 @@ public class ConnectFragment extends Fragment{
     private boolean mScanning;
 
     private BluetoothLEService mBluetoothLEService;
-    private BluetoothAdapter BA;
+    private BluetoothAdapter bluetoothAdapter;
     private BluetoothGatt mBluetoothGatt;
+    private int position;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics;
 
     private static final long SCAN_PERIOD = 1000;
@@ -62,7 +65,12 @@ public class ConnectFragment extends Fragment{
         view = inflater.inflate(R.layout.fragment_connect, container, false);
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
-        BA = bluetoothManager.getAdapter();
+        bluetoothAdapter = bluetoothManager.getAdapter();
+
+        //Use logged address to connect to disc automatically
+        //BluetoothDevice device =  bluetoothAdapter.getRemoteDevice("");
+
+        connectionStatus = (TextView)view.findViewById(R.id.ConnectionStatus);
 
         Button button_toggle = (Button)view.findViewById(R.id.Toggle);
         button_toggle.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +84,7 @@ public class ConnectFragment extends Fragment{
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (BA.getState() == BluetoothAdapter.STATE_ON) scanLeDevice(true);
+                if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) scanLeDevice(true);
                 else Toast.makeText(getActivity(), "Please turn Bluetooth on", Toast.LENGTH_SHORT).show();
             }
         });
@@ -87,12 +95,14 @@ public class ConnectFragment extends Fragment{
         deviceListView.setAdapter(listAdapter);
 
         deviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> aView, View v, int position, long id) {
-                BluetoothDevice device = listAdapter.getDevice(position);
+            public void onItemClick(AdapterView<?> aView, View v, int pos, long id) {
+                position = pos;
+                BluetoothDevice device = listAdapter.getDevice(pos);
+                Log.e(TAG, "Address: " + device.getAddress() + " Name: " + device.getName());
                 mBluetoothGatt = device.connectGatt(getActivity(), false, MainActivity.mBluetoothLEService.getGattCallback());
             }
         });
-
+        MainActivity.setConnectTab();
         return view;
     }
 
@@ -112,6 +122,13 @@ public class ConnectFragment extends Fragment{
         super.onDestroy();
     }
 
+
+
+    public void setConnectionStatus(String deviceName) {
+        connectionStatus.setText("Device Connected: " + deviceName);
+    }
+
+
     private void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
@@ -120,15 +137,15 @@ public class ConnectFragment extends Fragment{
                 @Override
                 public void run() {
                     mScanning = false;
-                    BA.stopLeScan(mScanCallback);
+                    bluetoothAdapter.stopLeScan(mScanCallback);
                     if(!deviceFound) listAdapter.clear();
                 }
             }, SCAN_PERIOD);
             mScanning = true;
-            BA.startLeScan(mScanCallback);
+            bluetoothAdapter.startLeScan(mScanCallback);
         } else {
             mScanning = false;
-            BA.stopLeScan(mScanCallback);
+            bluetoothAdapter.stopLeScan(mScanCallback);
         }
 
     }
@@ -148,14 +165,14 @@ public class ConnectFragment extends Fragment{
     };
 
     public void toggle(View view){
-        if(!BA.isEnabled()){
-            BA.enable();
-            while (BA.getState() != BluetoothAdapter.STATE_ON);
+        if(!bluetoothAdapter.isEnabled()){
+            bluetoothAdapter.enable();
+            while (bluetoothAdapter.getState() != BluetoothAdapter.STATE_ON);
             Toast.makeText(getActivity(), "Bluetooth is now On!", Toast.LENGTH_SHORT).show();
         }
         else {
-            BA.disable();
-            while (BA.getState() != BluetoothAdapter.STATE_OFF);
+            bluetoothAdapter.disable();
+            while (bluetoothAdapter.getState() != BluetoothAdapter.STATE_OFF);
             Toast.makeText(getActivity(), "Bluetooth is now off!", Toast.LENGTH_SHORT).show();
         }
     }
