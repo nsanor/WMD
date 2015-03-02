@@ -19,24 +19,21 @@
 - Methods for inserting into all tables and querying the data from the tables.
 - ListView on data tab for throw data (need to update the fields shown).
 - Map of current phone location.
-- Planning mode:
-  - Circle displays maximum throw distance from totals data.
-  - User can plot points for next throws, will add new circle at new point.
-  - User can undo throws as needed.
-- Normal mode:
-  - User can view path of previous throws.
+- Circle displays maximum throw distance from totals data.
+- User can plot points for next throws, will add new circle at new point.
+- User can undo throws as needed.
+- User can view path of previous throws.
+- User can save plotted throws.
 
 **TODO**: 
 
 *Data Storage:*
 - Add method to populate hole and game ids to better categorize throws.
-- Add table for totals data.
-- Add methods to populate general GPS and IMU tables.
+- Add IMU class to hold IMU data points.
+- Create way of correctly ordering GPS points to IMU points.
 
 *Data Transfer:*
-- Add log file for Bluetooth transfers.
 - Test Bluetooth LE discovery with microcontroller.
-- Finish BLE connection callback.
 - Alter connect tab to only search for our disc.
 - Write methods to transfer data and place into tables.
 
@@ -45,13 +42,8 @@
 - Totals data updates.
 
 *Display:*
-- Display connection and sync status on connect tab.
 - Add activity for throw data when a row is clicked.
 - Add preferences page in menu.
-- Access log file from preferences.
-- Save user added throws.
-- Confine marker placement to inside circle (maybe).
-- Connect throw points with line. 
 - Change markers for throw to number of hole.
 
 
