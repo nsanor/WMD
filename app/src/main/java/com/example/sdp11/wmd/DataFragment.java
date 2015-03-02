@@ -29,7 +29,7 @@ public class DataFragment extends Fragment {
 
         //Test
         dataSource.deleteAllThrows();
-        for (int i = 0; i < 25; i++) dataSource.createThrow(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        for (int i = 0; i < 25; i++) dataSource.createThrow(1, 2, 3, 4, 5, 6, 7);
     }
 
     @Override
@@ -39,9 +39,9 @@ public class DataFragment extends Fragment {
 
         ListView lis = (ListView)view.findViewById(R.id.list);
 
-        List<RawThrowData> values = dataSource.getAllThrows();
+        List<ThrowData> values = dataSource.getAllThrows();
 
-        adapter = new ArrayAdapter<RawThrowData>(getActivity(),
+        adapter = new ArrayAdapter<ThrowData>(getActivity(),
                 android.R.layout.simple_list_item_1, values);
         lis.setAdapter(adapter);
         return view;

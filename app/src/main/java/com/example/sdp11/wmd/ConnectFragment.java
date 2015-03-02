@@ -45,8 +45,6 @@ public class ConnectFragment extends Fragment{
     private String mDeviceName;
     private String mDeviceAddress;
 
-    private ArrayList<GPSDataPoint> GPSCoordinates;
-
     public ConnectFragment() {
         // Required empty public constructor
     }
@@ -91,7 +89,7 @@ public class ConnectFragment extends Fragment{
         deviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> aView, View v, int position, long id) {
                 BluetoothDevice device = listAdapter.getDevice(position);
-                mBluetoothGatt = device.connectGatt(getActivity(), false, mBluetoothLEService.getGattCallback());
+                mBluetoothGatt = device.connectGatt(getActivity(), false, MainActivity.mBluetoothLEService.getGattCallback());
             }
         });
 
@@ -106,46 +104,12 @@ public class ConnectFragment extends Fragment{
     @Override
     public void onPause() {
         super.onPause();
+        listAdapter.clear();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    //Cycle through all transferred GPS and IMU data
-    public void parseTransferredData() {
-        String sampleGPS[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
-                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
-                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
-                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
-                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
-                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70"};
-
-        for (String s: sampleGPS) {
-            GPSCoordinates.add(parseGPS(s));
-        }
-    }
-
-    public GPSDataPoint parseGPS(String GPSData) {
-        String gps[] = GPSData.split(",");
-        double latDeg, latMin, latitude, lonDeg, lonMin, longitude;
-        long time;
-        longitude = latitude = -1;
-        time = 0;
-        if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
-            time = Integer.parseInt(gps[1]);
-            latDeg =Double.parseDouble(gps[3].substring(0, 2));
-            latMin =Double.parseDouble(gps[3].substring(2, 8));
-            latitude = latDeg + (latMin / 60);
-            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
-            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
-            lonMin =Double.parseDouble(gps[5].substring(3, 9));
-            longitude = lonDeg + (lonMin / 60);
-            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
-        }
-
-        return new GPSDataPoint(latitude, longitude, time);
     }
 
     private void scanLeDevice(final boolean enable) {

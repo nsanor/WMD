@@ -1,5 +1,8 @@
 package com.example.sdp11.wmd;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,13 +46,13 @@ import com.google.android.gms.location.LocationServices;
 public class MainActivity extends Activity implements ActionBar.TabListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private final static String TAG = MainActivity.class.getSimpleName();
 
-    SectionsPagerAdapter mSectionsPagerAdapter;
-    ViewPager mViewPager;
-    GoogleApiClient mGoogleApiClient;
-    static Location mCurrentLocation;
-    String mLastUpdateTime;
-    Boolean mRequestingLocationUpdates = true;
-    LocationRequest mLocationRequest;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
+    private GoogleApiClient mGoogleApiClient;
+    private static Location mCurrentLocation;
+    private String mLastUpdateTime;
+    private Boolean mRequestingLocationUpdates = true;
+    private LocationRequest mLocationRequest;
 
     public static ThrowsDataSource dataSource;
     public static SQLiteDatabase throwsDB;
@@ -71,6 +74,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private String mDeviceAddress;
 
     private boolean mConnected = false;
+
+    private ArrayList<GPSDataPoint> GPSCoordinates;
 
 
     @Override
@@ -122,7 +127,54 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         mBluetoothLEService = new BluetoothLEService();
         Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+    }
 
+    //Cycle through all transferred GPS and IMU data
+    private void parseTransferredData() {
+        String sampleGPS[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
+                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
+                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
+                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
+                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
+                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70"};
+
+        for (String s: sampleGPS) {
+            GPSDataPoint gps = parseGPS(s);
+            //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
+            //dataSource.createThrow();
+        }
+    }
+
+    private GPSDataPoint parseGPS(String GPSData) {
+        String gps[] = GPSData.split(",");
+        double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
+        if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
+            time = Double.parseDouble(gps[1]);
+            latDeg =Double.parseDouble(gps[3].substring(0, 2));
+            latMin =Double.parseDouble(gps[3].substring(2, 8));
+            latitude = latDeg + (latMin / 60);
+            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
+            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
+            lonMin =Double.parseDouble(gps[5].substring(3, 9));
+            longitude = lonDeg + (lonMin / 60);
+            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
+            return new GPSDataPoint(latitude, longitude, 1);
+        }
+
+        return null;
+    }
+
+    private void writeToLog(String text) {
+        String filename = "my_log.txt";
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_APPEND);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -169,6 +221,14 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         unregisterReceiver(mGattUpdateReceiver);
     }
 
+    private String getCurrentTimestamp() {
+        long time = System.currentTimeMillis();
+        Timestamp tsTemp = new Timestamp(time);
+        String ts =  tsTemp.toString();
+        Log.e(TAG, ts);
+        return ts;
+    }
+
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -177,6 +237,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 mConnected = true;
                 //updateConnectionState(R.string.connected);
                 mConnectionState = STATE_CONNECTED;
+                writeToLog(getCurrentTimestamp() + ": Bluetooth Connected.");
                 invalidateOptionsMenu();
             } else if (mBluetoothLEService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
@@ -190,7 +251,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 displayGattServices(getSupportedGattServices());
             } else if (mBluetoothLEService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //displayData(intent.getStringExtra(EXTRA_DATA));
-                Log.e("", intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+                Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+                parseTransferredData();
             }
         }
     };
@@ -375,12 +437,15 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
         switch (id){
             case R.id.action_settings:
-                Toast.makeText(getApplicationContext(), "Settings",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Settings",
+//                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, LogActivity.class);
+                MainActivity.this.startActivity(intent);
                 return true;
             case R.id.about:
-                Toast.makeText(getApplicationContext(), "About Us",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "About Us",
+//                        Toast.LENGTH_SHORT).show();
+                parseTransferredData();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

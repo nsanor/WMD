@@ -10,9 +10,16 @@ public class TotalsData {
     static private double averageDistance;
     static private double averageAngle;
     static private int syncCount;
+    //static private int someCount;
     static private long lastThrowId;
     static private long lastHoleId;
     static private long lastGameId;
+
+    //These are to tell the difference between holes and games.
+    private static double lastLat;
+    private static double lastLong;
+    private static long time;
+
 
     public static void loadTotalsData(long throwId) {
         averageDistance = 10;

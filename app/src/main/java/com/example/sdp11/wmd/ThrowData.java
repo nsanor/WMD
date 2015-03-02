@@ -3,26 +3,29 @@ package com.example.sdp11.wmd;
 /**
  * Created by Student on 2/5/2015.
  */
-public class CalculatedThrowData {
+public class ThrowData {
     private long throwId;
+    private long holeId;
+    private long gameId;
     private double initialDirection;
     private double finalDirection;
     private double throwIntegrity;
     private double totalDistance;
-    private double totalTime;
+    private long totalTime;
+    private long syncTime;
 
-    public CalculatedThrowData() {
+    public ThrowData() {
 
     }
 
-    public CalculatedThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime) {
+    public ThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime) {
         this.throwId =throwId;
         this.totalDistance = calculateDistance(start_lat, start_long, end_lat, end_long);
         this.totalTime = endTime - startTime;
         this.throwIntegrity = 1;
     }
 
-    public CalculatedThrowData(RawThrowData t) {
+    public ThrowData(RawThrowData t) {
         this.throwId = t.getThrowId();
         this.totalDistance = calculateDistance(t.getStartLat(), t.getStartLong(), t.getEndLat(), t.getEndLong());
         this.totalTime = t.getEndTime() - t.getStartTime();
@@ -61,24 +64,12 @@ public class CalculatedThrowData {
         this.totalDistance = totalDistance;
     }
 
-    public double getTotalTime() {
-        return totalTime;
-    }
-
-    public void setTotalTime(double totalTime) {
-        this.totalTime = totalTime;
-    }
-
     public double getThrowIntegrity() {
         return throwIntegrity;
     }
 
     public void setThrowIntegrity(double throwIntegrity) {
         this.throwIntegrity = throwIntegrity;
-    }
-
-    public String getMainFields() {
-        return throwId + " | " + totalDistance + " | " + throwIntegrity;
     }
 
     double degreesToRadians(double degrees) {
@@ -99,6 +90,34 @@ public class CalculatedThrowData {
     //Will be used by the ArrayAdapter in the ListView
     @Override
     public String toString() {
-        return getMainFields();
+        return throwId + " | " + totalDistance + " | " + throwIntegrity;
+    }
+
+    public long getHoleId() {
+        return holeId;
+    }
+
+    public void setHoleId(long holeId) {
+        this.holeId = holeId;
+    }
+
+    public long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(long gameId) {
+        this.gameId = gameId;
+    }
+
+    public void setTotalTime(long totalTime) {
+        this.totalTime = totalTime;
+    }
+
+    public long getSyncTime() {
+        return syncTime;
+    }
+
+    public void setSyncTime(long syncTime) {
+        this.syncTime = syncTime;
     }
 }

@@ -12,11 +12,11 @@ import java.util.ArrayList;
 /**
  * Created by nsanor on 2/10/2015.
  */
-public class ThrowAdapter extends ArrayAdapter<CalculatedThrowData> {
-    private ArrayList<CalculatedThrowData> items;
+public class ThrowAdapter extends ArrayAdapter<ThrowData> {
+    private ArrayList<ThrowData> items;
     private Context context;
 
-    public ThrowAdapter(Context context, int textViewResourceId, ArrayList<CalculatedThrowData> items) {
+    public ThrowAdapter(Context context, int textViewResourceId, ArrayList<ThrowData> items) {
         super(context, textViewResourceId, items);
         this.items = items;
     }
@@ -28,7 +28,7 @@ public class ThrowAdapter extends ArrayAdapter<CalculatedThrowData> {
             LayoutInflater vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(R.layout.row, null);
         }
-        CalculatedThrowData ctd = items.get(position);
+        ThrowData ctd = items.get(position);
         if (ctd != null) {
             TextView id = (TextView) v.findViewById(R.id.throw_id);
             TextView dist = (TextView) v.findViewById(R.id.total_distance);

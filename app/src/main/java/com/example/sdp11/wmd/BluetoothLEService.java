@@ -54,8 +54,8 @@ public class BluetoothLEService extends Service {
             "com.example.sdp11.wmd.ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED =
             "com.example.sdp11.wmd.ACTION_GATT_DISCONNECTED";
-    public final static String ACTION_GATT_SERVICES_DISCOVERED = "mytest";
-            //"com.example.sdp11.wmd.ACTION_GATT_SERVICES_DISCOVERED";
+    public final static String ACTION_GATT_SERVICES_DISCOVERED =
+            "com.example.sdp11.wmd.ACTION_GATT_SERVICES_DISCOVERED";
     public final static String ACTION_DATA_AVAILABLE =
             "com.example.sdp11.wmd.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA =

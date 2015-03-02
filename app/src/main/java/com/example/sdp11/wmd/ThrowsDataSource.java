@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,25 +15,16 @@ import java.util.List;
 public class ThrowsDataSource {
     private SQLiteDatabase database;
     private DBHelper dbHelper;
+
     private String[] allColumns = { DBHelper.COLUMN_THROW_ID,
             DBHelper.COLUMN_HOLE_ID,
             DBHelper.COLUMN_GAME_ID,
-            DBHelper.COLUMN_START_LAT,
-            DBHelper.COLUMN_START_LONG,
-            DBHelper.COLUMN_END_LAT,
-            DBHelper.COLUMN_END_LONG,
-            DBHelper.COLUMN_START_ACCEL_X,
-            DBHelper.COLUMN_START_ACCEL_Y,
-            DBHelper.COLUMN_START_TIME,
-            DBHelper.COLUMN_END_TIME,
-            DBHelper.COLUMN_SYNC_TIME};
-
-    private String[] mainColumns = { DBHelper.COLUMN_THROW_ID,
             DBHelper.COLUMN_INITIAL_DIRECTION,
             DBHelper.COLUMN_FINAL_DIRECTION,
             DBHelper.COLUMN_TOTAL_DISTANCE,
             DBHelper.COLUMN_THROW_INTEGRITY,
-            DBHelper.COLUMN_TOTAL_TIME};
+            DBHelper.COLUMN_TOTAL_TIME,
+            DBHelper.COLUMN_SYNC_TIME};
 
     public ThrowsDataSource(Context context) {
         dbHelper = new DBHelper(context);
@@ -48,19 +38,16 @@ public class ThrowsDataSource {
         dbHelper.close();
     }
 
-    public void createThrow(long hole_id, long game_id, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime) {
+    public void createThrow(long hole_id, long game_id, double initial_direction, double final_direction, double total_distance, double throw_integrity, long total_time) {
 
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_HOLE_ID, 1);
         values.put(DBHelper.COLUMN_GAME_ID, 1);
-        values.put(DBHelper.COLUMN_START_LAT, start_lat);
-        values.put(DBHelper.COLUMN_START_LONG, start_long);
-        values.put(DBHelper.COLUMN_END_LAT, end_lat);
-        values.put(DBHelper.COLUMN_END_LONG, end_long);
-        values.put(DBHelper.COLUMN_START_ACCEL_X, start_x_accel);
-        values.put(DBHelper.COLUMN_START_ACCEL_Y, start_y_accel);
-        values.put(DBHelper.COLUMN_START_TIME, startTime);
-        values.put(DBHelper.COLUMN_END_TIME, endTime);
+        values.put(DBHelper.COLUMN_INITIAL_DIRECTION, initial_direction);
+        values.put(DBHelper.COLUMN_FINAL_DIRECTION, final_direction);
+        values.put(DBHelper.COLUMN_TOTAL_DISTANCE, total_distance);
+        values.put(DBHelper.COLUMN_THROW_INTEGRITY, throw_integrity);
+        values.put(DBHelper.COLUMN_TOTAL_TIME, total_time);
 
         //Calculate unix time from current time
         long now = System.currentTimeMillis();
@@ -71,22 +58,22 @@ public class ThrowsDataSource {
         //Need to get new max throw id to create calc data
 //        Log.e("TEST", database.toString());
 //        Log.e("ID Test", String.valueOf(getMaxThrowId(database)));
-        //Create new entry in CalculatedThrowData here.
-        //CalculatedThrowData calc = new CalculatedThrowData(throwId, start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime);
+        //Create new entry in ThrowData here.
+        //ThrowData calc = new ThrowData(throwId, start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime);
 
         //Update globals in TotalsData here.
 
 //        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
-//                allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
+//                rawColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
 //                null, null, null);
 //        cursor.moveToFirst();
 //        Throw newThrow = cursorToRawThrow(cursor);
 //        cursor.close();
 //        return newThrow;
 
+
+
     }
-
-
 
     public void deleteThrow(RawThrowData t) {
         long id = t.getThrowId();
@@ -100,15 +87,15 @@ public class ThrowsDataSource {
         database.delete(DBHelper.TABLE_THROWS, null,null);
     }
 
-    public List<RawThrowData> getAllThrows() {
-        List<RawThrowData> ts = new ArrayList<RawThrowData>();
+    public List<ThrowData> getAllThrows() {
+        List<ThrowData> ts = new ArrayList<ThrowData>();
 
         Cursor cursor = database.query(DBHelper.TABLE_THROWS,
                 allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            RawThrowData t = cursorToRawThrow(cursor);
+            ThrowData t = cursorToThrow(cursor);
             ts.add(t);
             cursor.moveToNext();
         }
@@ -117,56 +104,23 @@ public class ThrowsDataSource {
         return ts;
     }
 
-    public List<CalculatedThrowData> getAllThrowsShort() {
-        List<CalculatedThrowData> ts = new ArrayList<CalculatedThrowData>();
-
-        Cursor cursor = database.query(DBHelper.TABLE_CALC,
-                mainColumns, null, null, null, null, null);
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            CalculatedThrowData t = cursorToThrow(cursor);
-            ts.add(t);
-            cursor.moveToNext();
-        }
-        // make sure to close the cursor
-        cursor.close();
-        return ts;
-    }
-
-    private RawThrowData cursorToRawThrow(Cursor cursor) {
-        RawThrowData t = new RawThrowData();
+    private ThrowData cursorToThrow(Cursor cursor) {
+        ThrowData t = new ThrowData();
         t.setThrowId(cursor.getLong(0));
         t.setHoleId(cursor.getLong(1));
         t.setGameId(cursor.getLong(2));
-        t.setStartLat(cursor.getDouble(3));
-        t.setStartLong(cursor.getDouble(4));
-        t.setEndLat(cursor.getDouble(5));
-        t.setEndLong(cursor.getDouble(6));
-        t.setStartXAccel(cursor.getDouble(7));
-        t.setStartYAccel(cursor.getDouble(8));
-        t.setStartTime(cursor.getLong(9));
-        t.setEndTime(cursor.getLong(10));
-        t.setSyncTime(cursor.getLong(11));
-        return t;
-    }
-
-    private CalculatedThrowData cursorToThrow(Cursor cursor) {
-        CalculatedThrowData t = new CalculatedThrowData();
-        t.setThrowId(cursor.getLong(0));
-        t.setInitialDirection(cursor.getDouble(1));
-        t.setFinalDirection(cursor.getDouble(2));
-        t.setThrowIntegrity(cursor.getDouble(3));
-        t.setTotalDistance(cursor.getDouble(4));
-        t.setTotalTime(cursor.getInt(5));
+        t.setInitialDirection(cursor.getDouble(3));
+        t.setFinalDirection(cursor.getDouble(4));
+        t.setThrowIntegrity(cursor.getDouble(5));
+        t.setTotalDistance(cursor.getDouble(6));
+        t.setTotalTime(cursor.getInt(7));
+        t.setSyncTime(cursor.getInt(8));
         return t;
     }
 
     public long getMaxThrowId() {
         Cursor c = database.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_THROWS, new String[] {"throw_id"});
         c.moveToFirst();
-        //int index = c.getColumnIndex("throw_id");
-       // Log.e("TEST", String.valueOf(index));
         return c.getInt(0);
     }
 }
