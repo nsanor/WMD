@@ -1,7 +1,9 @@
 package com.example.sdp11.wmd;
 
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -10,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,16 +47,12 @@ public class DataFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_data, container, false);
 
-        ListView throwDataList = (ListView)view.findViewById(R.id.list);
+        ListView throwDataListView = (ListView) view.findViewById(R.id.list);
 
         List<ThrowData> values = dataSource.getAllThrows();
 
-        adapter = new ThrowDataListAdapter();
-        throwDataList.setAdapter(adapter);
-
-        for (ThrowData t : values) {
-            adapter.addThrow(t);
-        }
+        adapter = new ThrowDataListAdapter(values);
+        throwDataListView.setAdapter(adapter);
 
         return view;
     }
@@ -61,6 +61,7 @@ public class DataFragment extends Fragment {
     public void onResume() {
         dataSource.open();
         super.onResume();
+
     }
 
     @Override
@@ -83,7 +84,8 @@ public class DataFragment extends Fragment {
         public ThrowDataListAdapter() {
             super();
             throwDataList = new ArrayList<ThrowData>();
-            mInflator = getActivity().getLayoutInflater();
+            mInflator = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         }
 
         public ThrowDataListAdapter(List<ThrowData> values) {
@@ -130,13 +132,14 @@ public class DataFragment extends Fragment {
             if (view == null) {
                 view = mInflator.inflate(R.layout.data_row, null);
                 viewHolder = new ViewHolder();
-                viewHolder.throwID = (TextView) view.findViewById(R.id.throw_id);
-                viewHolder.totalDistance = (TextView) view.findViewById(R.id.total_distance);
-                viewHolder.throwIntegrity = (TextView) view.findViewById(R.id.throw_integrity);
                 view.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) view.getTag();
             }
+
+            viewHolder.throwID = (TextView) view.findViewById(R.id.row_throw_id);
+            viewHolder.totalDistance = (TextView) view.findViewById(R.id.row_total_distance);
+            viewHolder.throwIntegrity = (TextView) view.findViewById(R.id.row_throw_integrity);
 
             ThrowData t = throwDataList.get(i);
 //            final String tid = String.valueOf(t.getThrowId());
