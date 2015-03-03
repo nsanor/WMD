@@ -89,6 +89,14 @@ public class ConnectFragment extends Fragment{
             }
         });
 
+        Button crap = (Button)view.findViewById(R.id.Crap);
+        crap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.mBluetoothLEService.transmit();
+            }
+        });
+
         ListView deviceListView = (ListView)view.findViewById(R.id.devices);
 
         listAdapter = new LeDeviceListAdapter();
