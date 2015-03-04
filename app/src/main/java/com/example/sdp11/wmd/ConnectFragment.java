@@ -106,7 +106,6 @@ public class ConnectFragment extends Fragment{
             public void onItemClick(AdapterView<?> aView, View v, int pos, long id) {
                 position = pos;
                 BluetoothDevice device = listAdapter.getDevice(pos);
-                Log.e(TAG, "Address: " + device.getAddress() + " Name: " + device.getName());
                 mBluetoothGatt = device.connectGatt(getActivity(), false, MainActivity.mBluetoothLEService.getGattCallback());
             }
         });
@@ -133,7 +132,8 @@ public class ConnectFragment extends Fragment{
 
 
     public void setConnectionStatus(String deviceName) {
-        connectionStatus.setText("Device Connected: " + deviceName);
+        if(deviceName != null) connectionStatus.setText("Device Connected: " + deviceName);
+        else connectionStatus.setText("Device Disconnected");
     }
 
 

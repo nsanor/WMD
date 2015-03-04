@@ -224,7 +224,7 @@ public class BluetoothLEService extends Service {
      */
     public boolean connect(final String address) {
         if (mBluetoothAdapter == null) {
-            Log.e(TAG, "BluetoothAdapter not initialized");
+            Log.e(TAG, "BluetoothAdapter not initialized in Connect");
             return false;
         }
         if (address == null) {
@@ -254,9 +254,10 @@ public class BluetoothLEService extends Service {
         }
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
-        Log.d(TAG, "Trying to create a new connection.");
+        mBluetoothGatt = device.connectGatt(this, true, mGattCallback);
+        Log.e(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
+        MainActivity.setDeviceAddress(address);
         mConnectionState = STATE_CONNECTING;
         return true;
     }
@@ -289,7 +290,7 @@ public class BluetoothLEService extends Service {
 
     public void disconnect() {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
-            Log.e(TAG, "BluetoothAdapter not initialized");
+            Log.e(TAG, "BluetoothAdapter not initialized in Disconnect");
             return;
         }
         mBluetoothGatt.disconnect();

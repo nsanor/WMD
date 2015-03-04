@@ -72,8 +72,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
-    private String mDeviceName;
-    private String mDeviceAddress;
+    private static String mDeviceAddress = "DB:AB:7F:DD:10:0F";
 
     private boolean mConnected = false;
 
@@ -135,8 +134,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         mBluetoothLEService = new BluetoothLEService();
         Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
-
     }
 
     //Cycle through all transferred GPS and IMU data
@@ -189,10 +186,13 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         }
     }
 
+    public static void setDeviceAddress(String address) {
+        mDeviceAddress = address;
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-        //Log.e("Connected?", String.valueOf(mGoogleApiClient.isConnected()));
         mGoogleApiClient.connect();
     }
 
@@ -206,14 +206,13 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         if (mBluetoothLEService != null) {
             final boolean result = mBluetoothLEService.connect(mDeviceAddress);
-            Log.d(TAG, "Connect request result=" + result);
+            Log.e(TAG, "Connect request result=" + result);
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattUpdateReceiver);
     }
 
     public static void getConnectTabReference() {
@@ -234,9 +233,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private String getCurrentTimestamp() {
         long time = System.currentTimeMillis();
         Timestamp tsTemp = new Timestamp(time);
-        String ts =  tsTemp.toString();
-        Log.e(TAG, ts);
-        return ts;
+        return tsTemp.toString();
     }
 
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
