@@ -80,6 +80,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private ArrayList<GPSDataPoint> GPSCoordinates;
 
     private static ConnectFragment connectFragment;
+    private static DataFragment dataFragment;
+    private static MapFragment mapFragment;
 
     private static final String Separator = System.getProperty("line.separator");
 
@@ -194,23 +196,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         mGoogleApiClient.connect();
     }
 
-//    public int getSelectedTab() {
-//        return getActionBar().getSelectedTab().getPosition();
-//    }
-//
-//
-//    private void updateValuesFromBundle(Bundle savedInstanceState) {
-//        if (savedInstanceState != null) {
-//            if (savedInstanceState.keySet().contains("tabState")) {
-//                //getActionBar().set(savedInstanceState.getInt("tabState"));
-//            }
-//
-//
-//            //updateUI();
-//        }
-//    }
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -231,10 +216,20 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         unregisterReceiver(mGattUpdateReceiver);
     }
 
-    public static void setConnectTab() {
+    public static void getConnectTabReference() {
         connectFragment = (ConnectFragment)mSectionsPagerAdapter.getRegisteredFragment(0);
-        connectFragment.setConnectionStatus("test");
     }
+
+    public static void getDataTabReference() {
+        dataFragment = (DataFragment)mSectionsPagerAdapter.getRegisteredFragment(1);
+    }
+
+    public static void getMapTabReference() {
+        mapFragment = (MapFragment)mSectionsPagerAdapter.getRegisteredFragment(2);
+    }
+
+
+
 
     private String getCurrentTimestamp() {
         long time = System.currentTimeMillis();
@@ -481,7 +476,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 //                Toast.makeText(getApplicationContext(), "About Us",
 //                        Toast.LENGTH_SHORT).show();
                 parseTransferredData();
-
                 return true;
             case R.id.view_log:
                 Intent intent = new Intent(MainActivity.this, LogActivity.class);

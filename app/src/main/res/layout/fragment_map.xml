@@ -18,6 +18,7 @@
             android:id="@+id/button_save_points"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:textSize="12sp"
             android:text="@string/button_save"/>
 
@@ -25,8 +26,16 @@
             android:id="@+id/button_undo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:textSize="12sp"
             android:text="@string/button_undo" />
+        <Button
+            android:id="@+id/button_clear_user_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textSize="12sp"
+            android:text="@string/button_clear_user_point" />
 
     </LinearLayout>
 

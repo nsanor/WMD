@@ -13,8 +13,9 @@
     <string name="sync_status">Data Not Synced</string>
     <string name="unknown_device">Unknown Device</string>
     <string name="connected">Connected</string>
-    //Map Tab    <string name="button_save">Save User Points</string>
-    <string name="button_undo">Undo</string>
+    //Map Tab    <string name="button_save">Save Points</string>
+    <string name="button_undo">Undo Last Point</string>
+    <string name="button_clear_user_point">Clear All Points</string>
     //Data Tab    <string name="throw_id_header">Throw ID</string>
     <string name="total_distance_header">Total Distance</string>
     <string name="throw_integrity_header">Throw Integrity</string>

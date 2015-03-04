@@ -110,7 +110,7 @@ public class ConnectFragment extends Fragment{
                 mBluetoothGatt = device.connectGatt(getActivity(), false, MainActivity.mBluetoothLEService.getGattCallback());
             }
         });
-        MainActivity.setConnectTab();
+        MainActivity.getConnectTabReference();
         return view;
     }
 
