@@ -270,8 +270,7 @@ public class BluetoothLEService extends Service {
      */
     //gsf
 
-    public void transmit() {
-        String message = "crap";
+    public void transmit(String message) {
         if (tx == null || message == null || message.isEmpty()) {
             // Do nothing if there is no device or message to send.
             Log.i(TAG, "something broke");

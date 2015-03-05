@@ -50,9 +50,9 @@ public class LogActivity extends Activity {
             }
         }
         catch (FileNotFoundException e) {
-            Log.i(TAG, "File not found: " + e.toString());
+            Log.e(TAG, "File not found: " + e.toString());
         } catch (IOException e) {
-            Log.i(TAG, "Can not read file: " + e.toString());
+            Log.e(TAG, "Can not read file: " + e.toString());
         }
     }
 

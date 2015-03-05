@@ -31,6 +31,7 @@ public class ConnectFragment extends Fragment{
 
     private View view;
     private TextView connectionStatus;
+    private TextView devicesHeader;
     private LeDeviceListAdapter listAdapter;
 
     private boolean mConnected = false;
@@ -70,6 +71,7 @@ public class ConnectFragment extends Fragment{
         //BluetoothDevice device =  bluetoothAdapter.getRemoteDevice("");
 
         connectionStatus = (TextView)view.findViewById(R.id.ConnectionStatus);
+        devicesHeader = (TextView)view.findViewById(R.id.DevicesFound);
 
         Button button_toggle = (Button)view.findViewById(R.id.Toggle);
         button_toggle.setOnClickListener(new View.OnClickListener() {
@@ -85,14 +87,6 @@ public class ConnectFragment extends Fragment{
             public void onClick(View view) {
                 if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) scanLeDevice(true);
                 else Toast.makeText(getActivity(), "Please turn Bluetooth on", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        Button crap = (Button)view.findViewById(R.id.Crap);
-        crap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.mBluetoothLEService.transmit();
             }
         });
 
@@ -135,7 +129,10 @@ public class ConnectFragment extends Fragment{
 
     public void setConnectionStatus(String deviceName) {
         if(deviceName != null) connectionStatus.setText("Device Connected: " + deviceName);
-        else connectionStatus.setText("Device Disconnected");
+        else {
+            connectionStatus.setText("Device Disconnected");
+            devicesHeader.setVisibility(view.INVISIBLE);
+        }
     }
 
 

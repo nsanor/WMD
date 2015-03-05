@@ -251,6 +251,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 //updateConnectionState(R.string.disconnected);
                 mConnectionState = STATE_DISCONNECTED;
                 writeToLog("Bluetooth Disconnected.");
+                connectFragment.setConnectionStatus(null);
                 invalidateOptionsMenu();
                 //clearUI();
             } else if (mBluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
