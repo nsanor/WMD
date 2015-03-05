@@ -1,8 +1,5 @@
 package com.example.sdp11.wmd;
 
-import com.google.android.gms.internal.ge;
-import com.google.android.gms.maps.model.LatLng;
-
 /**
  * Created by nsanor on 2/10/2015.
  */

@@ -9,14 +9,9 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.Message;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.nio.charset.Charset;
@@ -36,17 +31,10 @@ public class BluetoothLEService extends Service {
     public static UUID CLIENT_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothManager mBluetoothManager;
     private BluetoothGatt mBluetoothGatt;
 
     private BluetoothGattCharacteristic tx;
     private BluetoothGattCharacteristic rx;
-
-    private static final int STATE_DISCONNECTED = 0;
-    private static final int STATE_CONNECTING = 1;
-    private static final int STATE_CONNECTED = 2;
-
-    private int mConnectionState = STATE_DISCONNECTED;
 
     private String mBluetoothDeviceAddress;
 
@@ -239,12 +227,7 @@ public class BluetoothLEService extends Service {
         if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
                 && mBluetoothGatt != null) {
             Log.i(TAG, "Trying to use an existing mBluetoothGatt for connection.");
-            if (mBluetoothGatt.connect()) {
-                mConnectionState = STATE_CONNECTING;
-                return true;
-            } else {
-                return false;
-            }
+            return mBluetoothGatt.connect();
         }
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
@@ -258,7 +241,6 @@ public class BluetoothLEService extends Service {
         Log.i(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
         MainActivity.setDeviceAddress(address);
-        mConnectionState = STATE_CONNECTING;
         return true;
     }
 

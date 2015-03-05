@@ -17,9 +17,6 @@ package com.example.sdp11.wmd;
 
 import java.util.HashMap;
 
-
-        import java.util.HashMap;
-
 /**
  * This class includes a small subset of standard GATT attributes for demonstration purposes.
  */

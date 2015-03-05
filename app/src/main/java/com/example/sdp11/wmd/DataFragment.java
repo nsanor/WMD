@@ -1,21 +1,15 @@
 package com.example.sdp11.wmd;
 
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +18,6 @@ import java.util.List;
 public class DataFragment extends Fragment {
     private final static String TAG = DataFragment.class.getSimpleName();
 
-    private View view;
     private ThrowsDataSource dataSource;
     private ThrowDataListAdapter adapter;
 
@@ -39,13 +32,13 @@ public class DataFragment extends Fragment {
 
         //Test
         dataSource.deleteAllThrows();
-        for (int i = 0; i < 25; i++) dataSource.createThrow(1, 2, 3, 4, 5, 6, 7);
+        addDemoThrows();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_data, container, false);
+        View view = inflater.inflate(R.layout.fragment_data, container, false);
 
         ListView throwDataListView = (ListView) view.findViewById(R.id.list);
 
@@ -68,6 +61,19 @@ public class DataFragment extends Fragment {
     public void onPause() {
         dataSource.close();
         super.onPause();
+    }
+
+    private void addDemoThrows() {
+        dataSource.createThrow(1, 1, 1, 1, 75, 1, 1);
+        dataSource.createThrow(1, 1, 1, 1, 78, 1, 1);
+        dataSource.createThrow(1, 1, 1, 1, 62, 0.85, 1);
+        dataSource.createThrow(1, 1, 1, 1, 80, 1, 1);
+        dataSource.createThrow(1, 1, 1, 1, 20, 0.2, 1);
+        dataSource.createThrow(1, 1, 1, 1, 82, 0.94, 1);
+        dataSource.createThrow(1, 1, 1, 1, 75, 1, 1);
+        dataSource.createThrow(1, 1, 1, 1, 66, 1, 1);
+        dataSource.createThrow(1, 1, 1, 1, 59, 0.57, 1);
+        dataSource.createThrow(1, 1, 1, 1, 70, 0.8, 1);
     }
 
     static class ViewHolder{

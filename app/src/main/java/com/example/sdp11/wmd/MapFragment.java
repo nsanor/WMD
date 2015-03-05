@@ -1,13 +1,11 @@
 package com.example.sdp11.wmd;
 
 
-import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 
@@ -247,7 +244,7 @@ public class MapFragment extends Fragment {
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
+                String receiveString;
 
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
                     String point[] = receiveString.split(",");
