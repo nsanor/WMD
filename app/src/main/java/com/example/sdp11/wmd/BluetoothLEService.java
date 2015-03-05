@@ -84,7 +84,7 @@ public class BluetoothLEService extends Service {
             }
 
             else {
-                Log.e(TAG, "Connection state changed.  New state: " + newState);
+                Log.i(TAG, "Connection state changed.  New state: " + newState);
             }
         }
 
@@ -94,7 +94,7 @@ public class BluetoothLEService extends Service {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             } else {
-                Log.e(TAG, "Error, onServicesDiscovered received status: " + status);
+                Log.i(TAG, "Error, onServicesDiscovered received status: " + status);
             }
 
             // Save reference to each characteristic.
@@ -103,18 +103,18 @@ public class BluetoothLEService extends Service {
             // Setup notifications on RX characteristic changes (i.e. data received).
             // First call setCharacteristicNotification to enable notification.
             if (!gatt.setCharacteristicNotification(rx, true)) {
-                Log.e(TAG, "Couldn't set notifications for RX characteristic!");
+                Log.i(TAG, "Couldn't set notifications for RX characteristic!");
             }
             // Next update the RX characteristic's client descriptor to enable notifications.
             if (rx.getDescriptor(CLIENT_UUID) != null) {
                 BluetoothGattDescriptor desc = rx.getDescriptor(CLIENT_UUID);
                 desc.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                 if (!gatt.writeDescriptor(desc)) {
-                    Log.e(TAG, "Couldn't write RX client descriptor value!");
+                    Log.i(TAG, "Couldn't write RX client descriptor value!");
                 }
             }
             else {
-                Log.e(TAG, "Couldn't get RX client descriptor!");
+                Log.i(TAG, "Couldn't get RX client descriptor!");
             }
         }
 
@@ -198,14 +198,14 @@ public class BluetoothLEService extends Service {
 //        if (mBluetoothManager == null) {
 //            mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 //            if (mBluetoothManager == null) {
-//                Log.e(TAG, "Unable to initialize BluetoothManager.");
+//                Log.i(TAG, "Unable to initialize BluetoothManager.");
 //                return false;
 //            }
 //        }
 
         //mBluetoothAdapter = mBluetoothManager.getAdapter();
         if (mBluetoothAdapter == null) {
-            Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
+            Log.i(TAG, "Unable to obtain a BluetoothAdapter.");
             return false;
         }
 
@@ -224,11 +224,11 @@ public class BluetoothLEService extends Service {
      */
     public boolean connect(final String address) {
         if (mBluetoothAdapter == null) {
-            Log.e(TAG, "BluetoothAdapter not initialized in Connect");
+            Log.i(TAG, "BluetoothAdapter not initialized in Connect");
             return false;
         }
         if (address == null) {
-            Log.e(TAG, "unspecified address.");
+            Log.i(TAG, "unspecified address.");
             return false;
         }
 
@@ -238,7 +238,7 @@ public class BluetoothLEService extends Service {
         // Previously connected device.  Try to reconnect.
         if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
                 && mBluetoothGatt != null) {
-            Log.e(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+            Log.i(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGatt.connect()) {
                 mConnectionState = STATE_CONNECTING;
                 return true;
@@ -249,13 +249,13 @@ public class BluetoothLEService extends Service {
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         if (device == null) {
-            Log.e(TAG, "Device not found.  Unable to connect.");
+            Log.i(TAG, "Device not found.  Unable to connect.");
             return false;
         }
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
         mBluetoothGatt = device.connectGatt(this, true, mGattCallback);
-        Log.e(TAG, "Trying to create a new connection.");
+        Log.i(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
         MainActivity.setDeviceAddress(address);
         mConnectionState = STATE_CONNECTING;
@@ -274,23 +274,23 @@ public class BluetoothLEService extends Service {
         String message = "crap";
         if (tx == null || message == null || message.isEmpty()) {
             // Do nothing if there is no device or message to send.
-            Log.e(TAG, "something broke");
+            Log.i(TAG, "something broke");
             return;
         }
         // Update TX characteristic value.  Note the setValue overload that takes a byte array must be used.
         tx.setValue(message.getBytes(Charset.forName("UTF-8")));
         if (mBluetoothGatt.writeCharacteristic(tx)) {
-            Log.e(TAG, "Sent: " + message);
+            Log.i(TAG, "Sent: " + message);
         }
         else {
-            Log.e(TAG, "Couldn't write TX characteristic!");
+            Log.i(TAG, "Couldn't write TX characteristic!");
         }
     }
 
 
     public void disconnect() {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
-            Log.e(TAG, "BluetoothAdapter not initialized in Disconnect");
+            Log.i(TAG, "BluetoothAdapter not initialized in Disconnect");
             return;
         }
         mBluetoothGatt.disconnect();

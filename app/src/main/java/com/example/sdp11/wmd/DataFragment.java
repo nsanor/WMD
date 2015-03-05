@@ -144,7 +144,7 @@ public class DataFragment extends Fragment {
             ThrowData t = throwDataList.get(i);
 //            final String tid = String.valueOf(t.getThrowId());
 //            if (tid != null && tid.length() > 0){
-//                if(viewHolder.throwID == null) Log.e(TAG, "viewHolder.throwID is null");
+//                if(viewHolder.throwID == null) Log.i(TAG, "viewHolder.throwID is null");
 //
 //            }
 //            else

@@ -113,8 +113,10 @@ public class MapFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 boolean mStackEmpty = markerStack.empty();
-                saveUserPoints();
-                if(!mStackEmpty) Toast.makeText(getActivity(), "Points Saved!", Toast.LENGTH_SHORT).show();
+                if(!mStackEmpty) {
+                    saveUserPoints();
+                    Toast.makeText(getActivity(), "Points Saved!", Toast.LENGTH_SHORT).show();
+                }
                 else Toast.makeText(getActivity(), "No Points To Save!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -136,6 +138,7 @@ public class MapFragment extends Fragment {
                     }
                     else plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
                 }
+                else Toast.makeText(getActivity(), "No Points To Undo!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -155,10 +158,14 @@ public class MapFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                while(!userPoints.empty()) userPoints.pop().remove();
-                while(!markerStack.empty()) markerStack.pop().remove();
-                circle.remove();
-                plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
+                boolean pointsToRemove = (!userPoints.empty() || !markerStack.empty());
+                if(pointsToRemove){
+                    while(!userPoints.empty()) userPoints.pop().remove();
+                    while(!markerStack.empty()) markerStack.pop().remove();
+                    circle.remove();
+                    plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
+                }
+                else Toast.makeText(getActivity(), "No Points To Remove!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -253,9 +260,9 @@ public class MapFragment extends Fragment {
             }
         }
         catch (FileNotFoundException e) {
-            Log.e(TAG, "File not found: " + e.toString());
+            Log.i(TAG, "File not found: " + e.toString());
         } catch (IOException e) {
-            Log.e(TAG, "Can not read file: " + e.toString());
+            Log.i(TAG, "Can not read file: " + e.toString());
         }
     }
 

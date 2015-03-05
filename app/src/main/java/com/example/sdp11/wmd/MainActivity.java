@@ -149,7 +149,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             GPSDataPoint gps = parseGPS(s);
             //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
             //dataSource.createThrow();
-            writeToLog("GPS Data Point: Latitude = " + gps.getLatitude() + ", Longitude = " + gps.getLongitude() + ", Timestamp = " + gps.getTime());
         }
     }
 
@@ -206,7 +205,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         if (mBluetoothLEService != null) {
             final boolean result = mBluetoothLEService.connect(mDeviceAddress);
-            Log.e(TAG, "Connect request result=" + result);
+            Log.i(TAG, "Connect request result=" + result);
         }
     }
 
@@ -263,6 +262,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 //displayData(intent.getStringExtra(EXTRA_DATA));
                 Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
                 writeToLog("Characteristic Changed.");
+                writeToLog("Transferred Data: " + intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
                 parseTransferredData();
             }
         }
@@ -338,7 +338,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLEService = ((BluetoothLEService.LocalBinder) service).getService();
             if (!mBluetoothLEService.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
+                Log.i(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
             // Automatically connects to the device upon successful start-up initialization.

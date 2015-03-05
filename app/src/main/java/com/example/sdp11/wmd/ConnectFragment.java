@@ -40,7 +40,6 @@ public class ConnectFragment extends Fragment{
     private BluetoothLEService mBluetoothLEService;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothGatt mBluetoothGatt;
-    private int position;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics;
 
     private static final long SCAN_PERIOD = 1000;
@@ -104,9 +103,12 @@ public class ConnectFragment extends Fragment{
 
         deviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> aView, View v, int pos, long id) {
-                position = pos;
-                BluetoothDevice device = listAdapter.getDevice(pos);
-                mBluetoothGatt = device.connectGatt(getActivity(), false, MainActivity.mBluetoothLEService.getGattCallback());
+                try {
+                    BluetoothDevice device = listAdapter.getDevice(pos);
+                    mBluetoothGatt = device.connectGatt(getActivity(), false, MainActivity.mBluetoothLEService.getGattCallback());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         MainActivity.getConnectTabReference();
