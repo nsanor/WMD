@@ -346,6 +346,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
+            mBluetoothLEService.disconnect();
             mBluetoothLEService = null;
         }
     };
