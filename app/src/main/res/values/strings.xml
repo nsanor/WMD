@@ -19,7 +19,6 @@
     //Data Tab    <string name="throw_id_header">Throw ID</string>
     <string name="total_distance_header">Total Distance</string>
     <string name="throw_integrity_header">Throw Integrity</string>
-    <string name="title_activity_log">LogActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_log">Bluetooth Log</string>
 
 </resources>

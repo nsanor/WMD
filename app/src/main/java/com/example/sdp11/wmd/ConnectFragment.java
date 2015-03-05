@@ -132,9 +132,11 @@ public class ConnectFragment extends Fragment{
             connectionStatus.setText("Device Connected: " + deviceName);
             devicesHeader.setVisibility(View.INVISIBLE);
             listAdapter.clear();
+            listAdapter.notifyDataSetChanged();
         }
         else {
             connectionStatus.setText("Device Disconnected");
+            devicesHeader.setVisibility(View.VISIBLE);
         }
     }
 
@@ -147,7 +149,10 @@ public class ConnectFragment extends Fragment{
                 @Override
                 public void run() {
                     bluetoothAdapter.stopLeScan(mScanCallback);
-                    if(!deviceFound) listAdapter.clear();
+                    if(!deviceFound) {
+                        listAdapter.clear();
+                        listAdapter.notifyDataSetChanged();
+                    }
                 }
             }, SCAN_PERIOD);
             bluetoothAdapter.startLeScan(mScanCallback);
