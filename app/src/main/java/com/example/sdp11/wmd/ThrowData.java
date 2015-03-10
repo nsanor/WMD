@@ -11,6 +11,11 @@ public class ThrowData {
     private double finalDirection;
     private double throwIntegrity;
     private double totalDistance;
+
+    public long getTotalTime() {
+        return totalTime;
+    }
+
     private long totalTime;
     private long syncTime;
 

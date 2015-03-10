@@ -2,11 +2,14 @@ package com.example.sdp11.wmd;
 
 
 import android.app.Fragment;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -46,6 +49,17 @@ public class DataFragment extends Fragment {
 
         adapter = new ThrowDataListAdapter(values);
         throwDataListView.setAdapter(adapter);
+
+        throwDataListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> aView, View v, int pos, long id) {
+                try {
+                    Intent intent = new Intent(getActivity(), ThrowDataActivity.class);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         return view;
     }

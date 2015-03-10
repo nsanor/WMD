@@ -86,6 +86,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate");
         setContentView(R.layout.activity_main);
 
 //        if( savedInstanceState != null ){
@@ -134,68 +135,17 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
     }
 
-    //Cycle through all transferred GPS and IMU data
-    private void parseTransferredData() {
-        String sampleGPS[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
-                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
-                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
-                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
-                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
-                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70"};
-
-        for (String s: sampleGPS) {
-            GPSDataPoint gps = parseGPS(s);
-            //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
-            //dataSource.createThrow();
-        }
-    }
-
-    private GPSDataPoint parseGPS(String GPSData) {
-        String gps[] = GPSData.split(",");
-        double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
-        if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
-            time = Double.parseDouble(gps[1]);
-            latDeg =Double.parseDouble(gps[3].substring(0, 2));
-            latMin =Double.parseDouble(gps[3].substring(2, 8));
-            latitude = latDeg + (latMin / 60);
-            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
-            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
-            lonMin =Double.parseDouble(gps[5].substring(3, 9));
-            longitude = lonDeg + (lonMin / 60);
-            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
-            return new GPSDataPoint(latitude, longitude, 1);
-        }
-
-        return null;
-    }
-
-    private void writeToLog(String text) {
-        String filename = "my_log.txt";
-        FileOutputStream outputStream;
-        text = "[" + getCurrentTimestamp() + "] : " + text + Separator;
-
-        try {
-            outputStream = openFileOutput(filename, Context.MODE_APPEND);
-            outputStream.write(text.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void setDeviceAddress(String address) {
-        mDeviceAddress = address;
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
+        Log.e(TAG, "onStart");
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.e(TAG, "onResume");
         if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
             startLocationUpdates();
         }
@@ -210,22 +160,47 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     protected void onPause() {
         super.onPause();
+        Log.e(TAG, "onPause");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy");
+        unbindService(mServiceConnection);
+        mBluetoothLEService = null;
+        unregisterReceiver(mGattUpdateReceiver);
+    }
+
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            mBluetoothLEService = ((BluetoothLEService.LocalBinder) service).getService();
+            if (!mBluetoothLEService.initialize()) {
+                Log.i(TAG, "Unable to initialize Bluetooth");
+                finish();
+            }
+            // Automatically connects to the device upon successful start-up initialization.
+            mBluetoothLEService.connect(mDeviceAddress);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mBluetoothLEService.disconnect();
+            mBluetoothLEService = null;
+        }
+    };
+
+
+
+    public static void setDeviceAddress(String address) {
+        mDeviceAddress = address;
     }
 
     public static void getConnectTabReference() {
         connectFragment = (ConnectFragment)mSectionsPagerAdapter.getRegisteredFragment(0);
     }
-
-    public static void getDataTabReference() {
-        dataFragment = (DataFragment)mSectionsPagerAdapter.getRegisteredFragment(1);
-    }
-
-    public static void getMapTabReference() {
-        mapFragment = (MapFragment)mSectionsPagerAdapter.getRegisteredFragment(2);
-    }
-
-
-
 
     private String getCurrentTimestamp() {
         long time = System.currentTimeMillis();
@@ -331,26 +306,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         }
     }
 
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLEService = ((BluetoothLEService.LocalBinder) service).getService();
-            if (!mBluetoothLEService.initialize()) {
-                Log.i(TAG, "Unable to initialize Bluetooth");
-                finish();
-            }
-            // Automatically connects to the device upon successful start-up initialization.
-            mBluetoothLEService.connect(mDeviceAddress);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLEService.disconnect();
-            mBluetoothLEService = null;
-        }
-    };
-
 //    protected void stopLocationUpdates() {
 //        LocationServices.FusedLocationApi.removeLocationUpdates(
 //                mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
@@ -360,14 +315,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         super.onSaveInstanceState(savedInstanceState);
         //savedInstanceState.putInt("tabState", getSelectedTab());
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unbindService(mServiceConnection);
-        mBluetoothLEService = null;
-    }
-
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -512,10 +459,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 mGoogleApiClient);
     }
 
-    public static Location getmCurrentLocation() {
-        return mCurrentLocation;
-    }
-
     @Override
     public void onConnectionSuspended(int i) {
 
@@ -530,5 +473,58 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     protected void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+    }
+
+    /******************************************************************************************
+    Data Processing Utilities
+    *******************************************************************************************/
+
+    //Cycle through all transferred GPS and IMU data
+    private void parseTransferredData() {
+        String sampleGPS[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
+                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
+                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
+                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
+                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
+                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70"};
+
+        for (String s: sampleGPS) {
+            GPSDataPoint gps = parseGPS(s);
+            //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
+            //dataSource.createThrow();
+        }
+    }
+
+    private GPSDataPoint parseGPS(String GPSData) {
+        String gps[] = GPSData.split(",");
+        double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
+        if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
+            time = Double.parseDouble(gps[1]);
+            latDeg =Double.parseDouble(gps[3].substring(0, 2));
+            latMin =Double.parseDouble(gps[3].substring(2, 8));
+            latitude = latDeg + (latMin / 60);
+            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
+            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
+            lonMin =Double.parseDouble(gps[5].substring(3, 9));
+            longitude = lonDeg + (lonMin / 60);
+            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
+            return new GPSDataPoint(latitude, longitude, 1);
+        }
+
+        return null;
+    }
+
+    private void writeToLog(String text) {
+        String filename = "my_log.txt";
+        FileOutputStream outputStream;
+        text = "[" + getCurrentTimestamp() + "] : " + text + Separator;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_APPEND);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
