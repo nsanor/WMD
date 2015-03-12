@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,28 @@ public class ThrowDataActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_throw_data);
 
-        TableLayout table = (TableLayout)findViewById(R.id.throw_table);
+        Bundle data = getIntent().getExtras();
+        ThrowData t = (ThrowData) data.getParcelable("Throw");
+
+        TextView rowThrowID = (TextView)findViewById(R.id.throw_id_data);
+        TextView rowHoleID = (TextView)findViewById(R.id.hole_id_data);
+        TextView rowGameID = (TextView)findViewById(R.id.game_id_data);
+        TextView rowInitialDirection = (TextView)findViewById(R.id.initial_direction_data);
+        TextView rowFinalDirection = (TextView)findViewById(R.id.final_direction_data);
+        TextView rowThrowIntegrity = (TextView)findViewById(R.id.throw_integrity_data);
+        TextView rowTotalDistance = (TextView)findViewById(R.id.total_distance_data);
+        TextView rowTotalTime = (TextView)findViewById(R.id.total_time_data);
+        TextView rowSyncTime = (TextView)findViewById(R.id.sync_time_data);
+
+        rowThrowID.setText(String.valueOf(t.getThrowId()));
+        rowHoleID.setText(String.valueOf(t.getHoleId()));
+        rowGameID.setText(String.valueOf(t.getGameId()));
+        rowInitialDirection.setText(String.valueOf(t.getInitialDirection()));
+        rowFinalDirection.setText(String.valueOf(t.getFinalDirection()));
+        rowThrowIntegrity.setText(String.valueOf(t.getThrowIntegrity()));
+        rowTotalDistance.setText(String.valueOf(t.getTotalDistance()));
+        rowTotalTime.setText(String.valueOf(t.getTotalTime()));
+        rowSyncTime.setText(String.valueOf(t.getSyncTime()));
     }
 
     @Override

@@ -6,6 +6,8 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +56,7 @@ public class DataFragment extends Fragment {
             public void onItemClick(AdapterView<?> aView, View v, int pos, long id) {
                 try {
                     Intent intent = new Intent(getActivity(), ThrowDataActivity.class);
+                    intent.putExtra("Throw", adapter.getThrow(pos));
                     startActivity(intent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -76,6 +79,8 @@ public class DataFragment extends Fragment {
         dataSource.close();
         super.onPause();
     }
+
+
 
     private void addDemoThrows() {
         dataSource.createThrow(1, 1, 1, 1, 75, 1, 1);

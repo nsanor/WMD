@@ -1,9 +1,14 @@
 package com.example.sdp11.wmd;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.android.gms.internal.id;
+
 /**
  * Created by Student on 2/5/2015.
  */
-public class ThrowData {
+public class ThrowData implements Parcelable {
     private long throwId;
     private long holeId;
     private long gameId;
@@ -11,16 +16,28 @@ public class ThrowData {
     private double finalDirection;
     private double throwIntegrity;
     private double totalDistance;
+    private long totalTime;
+    private long syncTime;
 
     public long getTotalTime() {
         return totalTime;
     }
 
-    private long totalTime;
-    private long syncTime;
+    public ThrowData(){}
 
-    public ThrowData() {
+    public ThrowData(Parcel in) {
+        String[] data = new String[9];
 
+        in.readStringArray(data);
+        this.throwId = Long.valueOf(data[0]);
+        this.holeId = Long.valueOf(data[1]);
+        this.gameId = Long.valueOf(data[2]);
+        this.initialDirection = Double.valueOf(data[3]);
+        this.finalDirection = Double.valueOf(data[4]);
+        this.throwIntegrity = Double.valueOf(data[5]);
+        this.totalDistance = Double.valueOf(data[6]);
+        this.totalTime = Long.valueOf(data[7]);
+        this.syncTime = Long.valueOf(data[8]);
     }
 
     public ThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime) {
@@ -125,4 +142,32 @@ public class ThrowData {
     public void setSyncTime(long syncTime) {
         this.syncTime = syncTime;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[] {String.valueOf(this.throwId),
+                String.valueOf(this.holeId),
+                String.valueOf(this.gameId),
+                String.valueOf(this.initialDirection),
+                String.valueOf(this.finalDirection),
+                String.valueOf(this.throwIntegrity),
+                String.valueOf(this.totalDistance),
+                String.valueOf(this.totalTime),
+                String.valueOf(this.syncTime)});
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public ThrowData createFromParcel(Parcel in) {
+            return new ThrowData(in);
+        }
+
+        public ThrowData[] newArray(int size) {
+            return new ThrowData[size];
+        }
+    };
 }

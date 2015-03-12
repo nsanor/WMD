@@ -15,55 +15,64 @@
 
     <TableRow>
         <TextView
-            android:id="@+id/throw_id_header"/>
+            android:id="@+id/throw_id_header"
+            android:text="@string/throw_id_header"/>
         <TextView
             android:id="@+id/throw_id_data"/>
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/hole_id_header"/>
+            android:id="@+id/hole_id_header"
+            android:text="@string/hole_id_header"/>
         <TextView
             android:id="@+id/hole_id_data"/>
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/game_id_header"/>
+            android:id="@+id/game_id_header"
+            android:text="@string/game_id_header"/>
         <TextView
             android:id="@+id/game_id_data"/>
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/initial_direction_header"/>
+            android:id="@+id/initial_direction_header"
+            android:text="@string/initial_direction_header"/>
         <TextView
             android:id="@+id/initial_direction_data"/>
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/final_direction_header"/>
+            android:id="@+id/final_direction_header"
+            android:text="@string/final_direction_header"/>
         <TextView
             android:id="@+id/final_direction_data"/>
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/throw_integrity_header"/>
+            android:id="@+id/throw_integrity_header"
+            android:text="@string/throw_integrity_header"/>
         <TextView
             android:id="@+id/throw_integrity_data"/>
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/total_distance_header"/>
+            android:id="@+id/total_distance_header"
+            android:text="@string/total_distance_header"/>
         <TextView
             android:id="@+id/total_distance_data"/>
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/total_time_header"/>
+            android:id="@+id/total_time_header"
+            android:text="@string/total_time_header"/>
         <TextView
             android:id="@+id/total_time_data"/>
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/sync_time_header"/>
+            android:id="@+id/sync_time_header"
+            android:text="@string/sync_time_header"/>
         <TextView
             android:id="@+id/sync_time_data"/>
     </TableRow>
