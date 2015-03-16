@@ -9,39 +9,27 @@
     tools:context=".MapFragment">
 
     <LinearLayout
-        android:id="@+id/buttons"
+        android:id="@+id/map_buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/button_save_points"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="12sp"
+            style="@style/ButtonStyle"
             android:text="@string/button_save"/>
 
         <Button
             android:id="@+id/button_undo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="12sp"
+            style="@style/ButtonStyle"
             android:text="@string/button_undo" />
         <Button
             android:id="@+id/button_clear_user_points"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="12sp"
+            style="@style/ButtonStyle"
             android:text="@string/button_clear_user_point" />
         <Button
             android:id="@+id/button_refresh_map"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="12sp"
+            style="@style/ButtonStyle"
             android:text="@string/button_refresh" />
 
     </LinearLayout>
@@ -49,6 +37,6 @@
     <com.google.android.gms.maps.MapView android:id="@+id/mapview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttons"/>
+        android:layout_below="@+id/map_buttons"/>
 
 </RelativeLayout>
