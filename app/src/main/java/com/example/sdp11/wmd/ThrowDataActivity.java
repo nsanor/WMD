@@ -10,6 +10,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TextView;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
@@ -42,8 +43,8 @@ public class ThrowDataActivity extends Activity {
         rowFinalDirection.setText(String.valueOf(t.getFinalDirection()));
         rowThrowIntegrity.setText(String.valueOf(t.getThrowIntegrity()));
         rowTotalDistance.setText(String.valueOf(t.getTotalDistance()));
-        rowTotalTime.setText(String.valueOf(t.getTotalTime()));
-        rowSyncTime.setText(String.valueOf(t.getSyncTime()));
+        rowTotalTime.setText(String.valueOf(new Timestamp(t.getTotalTime()*1000)));
+        rowSyncTime.setText(String.valueOf(new Timestamp(t.getSyncTime()*1000)));
     }
 
     @Override
