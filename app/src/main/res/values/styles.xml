@@ -2,7 +2,29 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/ActionBarTheme</item>
+        <!--<item name="android:buttonStyle">@style/ButtonStyle</item>-->
+    </style>
+
+
+
+    <style name="ActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">#414F84</item>
+        <item name="android:displayOptions">showTitle</item>
+        <item name="android:icon">@android:color/transparent</item>
+        <item name="android:actionBarTabStyle">@style/MyActionBarTabs</item>
+    </style>
+
+    <style name="MyActionBarTabs" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
+        <item name="android:background">#6672A0</item>
+    </style>
+
+    <style name="ButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:textSize">16sp</item>
+
     </style>
 
 </resources>
