@@ -104,7 +104,7 @@ public class MapFragment extends Fragment {
         googleMap.addMarker(locMarker);
         plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
 
-        plotDemoData();
+        //plotDemoData();
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,7 +211,8 @@ public class MapFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
-        plotFromFile();
+        plotUserPointsFromFile();
+        plotTransferredPointsFromFile();
 
         return view;
     }
@@ -237,7 +238,7 @@ public class MapFragment extends Fragment {
 //                .setNegativeButton("No", dialogClickListener).show();
 //    }
 
-    private void plotFromFile() {
+    private void plotUserPointsFromFile() {
         try {
             InputStream inputStream = getActivity().openFileInput("user_points.txt");
 
@@ -254,6 +255,32 @@ public class MapFragment extends Fragment {
                 }
 
                 inputStream.close();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.i(TAG, "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.i(TAG, "Can not read file: " + e.toString());
+        }
+    }
+
+    private void plotTransferredPointsFromFile() {
+        try {
+            InputStream inputStream = getActivity().openFileInput("transferred_points.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString;
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    String point[] = receiveString.split(",");
+                    LatLng p = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
+                    Marker m = plotPoint(p, false);
+                }
+
+                inputStream.close();
+                plotPolyLine();
             }
         }
         catch (FileNotFoundException e) {
@@ -336,7 +363,7 @@ public class MapFragment extends Fragment {
     }
 
     private void plotPolyLine() {
-        PolylineOptions line= new PolylineOptions().width(5).color(Color.RED);
+        PolylineOptions line= new PolylineOptions().width(8).color(Color.BLACK);
 
         for (LatLng point : points) {
             line.add(point);

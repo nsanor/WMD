@@ -32,6 +32,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.FileOutputStream;
 import java.sql.Timestamp;
@@ -81,6 +82,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private static MapFragment mapFragment;
 
     private static final String Separator = System.getProperty("line.separator");
+    private String bufferedText = "";
 
 
     @Override
@@ -133,6 +135,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         mBluetoothLEService = new BluetoothLEService();
         Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+        //Test
+        parseTransferredData();
     }
 
     @Override
@@ -486,7 +491,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
                 "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
                 "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
-                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70"};
+                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
 
         for (String s: sampleGPS) {
             GPSDataPoint gps = parseGPS(s);
@@ -495,10 +500,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         }
     }
 
-    private GPSDataPoint parseGPS(String GPSData) {
+    private GPSDataPoint parseGPS(String input) {
+        String GPSData = bufferedText + input;
         String gps[] = GPSData.split(",");
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
         if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
+            bufferedText = "";
             time = Double.parseDouble(gps[1]);
             latDeg =Double.parseDouble(gps[3].substring(0, 2));
             latMin =Double.parseDouble(gps[3].substring(2, 8));
@@ -508,8 +515,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             lonMin =Double.parseDouble(gps[5].substring(3, 9));
             longitude = lonDeg + (lonMin / 60);
             if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
+            //return new GPSDataPoint(latitude, longitude, 1);
+            writeTransferredPoints(latitude + ", " + longitude + Separator);
             return new GPSDataPoint(latitude, longitude, 1);
         }
+        else bufferedText += GPSData;
 
         return null;
     }
@@ -518,6 +528,19 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         String filename = "my_log.txt";
         FileOutputStream outputStream;
         text = "[" + getCurrentTimestamp() + "] : " + text + Separator;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_APPEND);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeTransferredPoints(String text) {
+        String filename = "transferred_points.txt";
+        FileOutputStream outputStream;
 
         try {
             outputStream = openFileOutput(filename, Context.MODE_APPEND);
