@@ -83,6 +83,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     private static final String Separator = System.getProperty("line.separator");
     private String bufferedText = "";
+    private long lastSyncTime = 0;
 
 
     @Override
@@ -137,7 +138,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         //Test
-        parseTransferredData();
+        //parseTransferredData(intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
     }
 
     @Override
@@ -242,7 +243,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
                 writeToLog("Characteristic Changed.");
                 writeToLog("Transferred Data: " + intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
-                parseTransferredData();
+                //if it's been longer than 10 seconds, it's a new throw
+                if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
+                lastSyncTime = System.currentTimeMillis();
+                parseTransferredData(intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
             }
         }
     };
@@ -424,7 +428,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             case R.id.about:
 //                Toast.makeText(getApplicationContext(), "About Us",
 //                        Toast.LENGTH_SHORT).show();
-                parseTransferredData();
+                parseTransferredData("Test\nTest");
                 return true;
             case R.id.view_log:
                 Intent intent = new Intent(MainActivity.this, LogActivity.class);
@@ -485,16 +489,24 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     *******************************************************************************************/
 
     //Cycle through all transferred GPS and IMU data
-    private void parseTransferredData() {
-        String sampleGPS[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
+    private void parseTransferredData(String input) {
+        //String data[] = input.split("\n");
+
+        //Test
+        String data[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
                 "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
                 "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
                 "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
                 "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
                 "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
 
-        for (String s: sampleGPS) {
-            GPSDataPoint gps = parseGPS(s);
+        for (String s: data) {
+            if(s.startsWith("$GPRMC") || !bufferedText.equals("")) {
+                GPSDataPoint gps = parseGPS(s);
+            }
+            else {
+                Log.i(TAG, "Implement IMU parser here");
+            }
             //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
             //dataSource.createThrow();
         }

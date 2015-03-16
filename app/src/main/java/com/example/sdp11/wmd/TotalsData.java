@@ -9,7 +9,7 @@ public class TotalsData {
     //Create all as static variables.
     static private double averageDistance;
     static private double averageAngle;
-    static private int syncCount;
+    static private int throwCount;
     //static private int someCount;
     static private long lastThrowId;
     static private long lastHoleId;
@@ -28,6 +28,10 @@ public class TotalsData {
         lastThrowId = throwId;
     }
 
+    public static void updateThrowCount(){
+        TotalsData.throwCount++;
+    }
+
     public static double getAverageDistance() {
         return averageDistance;
     }
@@ -44,12 +48,12 @@ public class TotalsData {
         TotalsData.averageAngle = averageAngle;
     }
 
-    public static int getSyncCount() {
-        return syncCount;
+    public static int getThrowCount() {
+        return throwCount;
     }
 
-    public static void setSyncCount(int syncCount) {
-        TotalsData.syncCount = syncCount;
+    public static void setThrowCount(int throwCount) {
+        TotalsData.throwCount = throwCount;
     }
 
     public static long getLastThrowId() {
