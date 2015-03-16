@@ -2,12 +2,9 @@ package com.example.sdp11.wmd;
 
 
 import android.app.Fragment;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,7 +188,7 @@ public class DataFragment extends Fragment {
 
             viewHolder.throwID.setText(String.valueOf(t.getThrowId()));
             viewHolder.totalDistance.setText(String.valueOf(t.getTotalDistance()));
-            viewHolder.throwIntegrity.setText(String.valueOf(t.getThrowIntegrity()));
+            viewHolder.throwIntegrity.setText(String.valueOf(t.getThrowQuality()));
 
             return view;
         }

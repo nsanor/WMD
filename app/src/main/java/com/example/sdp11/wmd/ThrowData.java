@@ -3,8 +3,6 @@ package com.example.sdp11.wmd;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.internal.id;
-
 /**
  * Created by Student on 2/5/2015.
  */
@@ -14,7 +12,7 @@ public class ThrowData implements Parcelable {
     private long gameId;
     private double initialDirection;
     private double finalDirection;
-    private double throwIntegrity;
+    private double throwQuality;
     private double totalDistance;
     private long totalTime;
     private long syncTime;
@@ -34,7 +32,7 @@ public class ThrowData implements Parcelable {
         this.gameId = Long.valueOf(data[2]);
         this.initialDirection = Double.valueOf(data[3]);
         this.finalDirection = Double.valueOf(data[4]);
-        this.throwIntegrity = Double.valueOf(data[5]);
+        this.throwQuality = Double.valueOf(data[5]);
         this.totalDistance = Double.valueOf(data[6]);
         this.totalTime = Long.valueOf(data[7]);
         this.syncTime = Long.valueOf(data[8]);
@@ -44,14 +42,14 @@ public class ThrowData implements Parcelable {
         this.throwId =throwId;
         this.totalDistance = calculateDistance(start_lat, start_long, end_lat, end_long);
         this.totalTime = endTime - startTime;
-        this.throwIntegrity = 1;
+        this.throwQuality = 1;
     }
 
     public ThrowData(RawThrowData t) {
         this.throwId = t.getThrowId();
         this.totalDistance = calculateDistance(t.getStartLat(), t.getStartLong(), t.getEndLat(), t.getEndLong());
         this.totalTime = t.getEndTime() - t.getStartTime();
-        this.throwIntegrity = 1;
+        this.throwQuality = 1;
     }
 
     public long getThrowId() {
@@ -86,12 +84,12 @@ public class ThrowData implements Parcelable {
         this.totalDistance = totalDistance;
     }
 
-    public double getThrowIntegrity() {
-        return throwIntegrity;
+    public double getThrowQuality() {
+        return throwQuality;
     }
 
-    public void setThrowIntegrity(double throwIntegrity) {
-        this.throwIntegrity = throwIntegrity;
+    public void setThrowQuality(double throwQuality) {
+        this.throwQuality = throwQuality;
     }
 
     double degreesToRadians(double degrees) {
@@ -112,7 +110,7 @@ public class ThrowData implements Parcelable {
     //Will be used by the ArrayAdapter in the ListView
     @Override
     public String toString() {
-        return throwId + " | " + totalDistance + " | " + throwIntegrity;
+        return throwId + " | " + totalDistance + " | " + throwQuality;
     }
 
     public long getHoleId() {
@@ -155,7 +153,7 @@ public class ThrowData implements Parcelable {
                 String.valueOf(this.gameId),
                 String.valueOf(this.initialDirection),
                 String.valueOf(this.finalDirection),
-                String.valueOf(this.throwIntegrity),
+                String.valueOf(this.throwQuality),
                 String.valueOf(this.totalDistance),
                 String.valueOf(this.totalTime),
                 String.valueOf(this.syncTime)});

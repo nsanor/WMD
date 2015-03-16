@@ -51,7 +51,7 @@
     <TableRow>
         <TextView
             android:id="@+id/throw_integrity_header"
-            android:text="@string/throw_integrity_header"/>
+            android:text="@string/throw_quality_header"/>
         <TextView
             android:id="@+id/throw_integrity_data"/>
     </TableRow>

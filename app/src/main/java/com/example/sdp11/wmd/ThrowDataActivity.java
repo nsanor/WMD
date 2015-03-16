@@ -1,17 +1,10 @@
 package com.example.sdp11.wmd;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TableLayout;
-import android.widget.TextView;
 import android.widget.TextView;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 
 /**
  * Created by Student on 3/5/2015.
@@ -31,7 +24,7 @@ public class ThrowDataActivity extends Activity {
         TextView rowGameID = (TextView)findViewById(R.id.game_id_data);
         TextView rowInitialDirection = (TextView)findViewById(R.id.initial_direction_data);
         TextView rowFinalDirection = (TextView)findViewById(R.id.final_direction_data);
-        TextView rowThrowIntegrity = (TextView)findViewById(R.id.throw_integrity_data);
+        TextView rowThrowQuality = (TextView)findViewById(R.id.throw_integrity_data);
         TextView rowTotalDistance = (TextView)findViewById(R.id.total_distance_data);
         TextView rowTotalTime = (TextView)findViewById(R.id.total_time_data);
         TextView rowSyncTime = (TextView)findViewById(R.id.sync_time_data);
@@ -41,7 +34,7 @@ public class ThrowDataActivity extends Activity {
         rowGameID.setText(String.valueOf(t.getGameId()));
         rowInitialDirection.setText(String.valueOf(t.getInitialDirection()));
         rowFinalDirection.setText(String.valueOf(t.getFinalDirection()));
-        rowThrowIntegrity.setText(String.valueOf(t.getThrowIntegrity()));
+        rowThrowQuality.setText(String.valueOf(t.getThrowQuality()));
         rowTotalDistance.setText(String.valueOf(t.getTotalDistance()));
         rowTotalTime.setText(String.valueOf(new Timestamp(t.getTotalTime()*1000)));
         rowSyncTime.setText(String.valueOf(new Timestamp(t.getSyncTime()*1000)));
@@ -85,7 +78,7 @@ public class ThrowDataActivity extends Activity {
 //                case 4:
 //                    return throwData.getFinalDirection();
 //                case 5:
-//                    return throwData.getThrowIntegrity();
+//                    return throwData.getThrowQuality();
 //                case 6:
 //                    return throwData.getTotalDistance();
 //                case 7:

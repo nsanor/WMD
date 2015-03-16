@@ -32,7 +32,7 @@
     <string name="hole_id_header">Hole ID</string>
     <string name="game_id_header">Game ID</string>
     <string name="total_distance_header">Total Distance</string>
-    <string name="throw_integrity_header">Throw Integrity</string>
+    <string name="throw_quality_header">Throw Quality</string>
     <string name="initial_direction_header">Initial Direction</string>
     <string name="final_direction_header">Final Direction</string>
     <string name="total_time_header">Total Time</string>

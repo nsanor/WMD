@@ -22,7 +22,7 @@ public class ThrowsDataSource {
             DBHelper.COLUMN_INITIAL_DIRECTION,
             DBHelper.COLUMN_FINAL_DIRECTION,
             DBHelper.COLUMN_TOTAL_DISTANCE,
-            DBHelper.COLUMN_THROW_INTEGRITY,
+            DBHelper.COLUMN_THROW_QUALITY,
             DBHelper.COLUMN_TOTAL_TIME,
             DBHelper.COLUMN_SYNC_TIME};
 
@@ -38,7 +38,7 @@ public class ThrowsDataSource {
         dbHelper.close();
     }
 
-    public void createThrow(long hole_id, long game_id, double initial_direction, double final_direction, double total_distance, double throw_integrity, long total_time) {
+    public void createThrow(long hole_id, long game_id, double initial_direction, double final_direction, double total_distance, double throw_quality, long total_time) {
 
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_HOLE_ID, 1);
@@ -46,7 +46,7 @@ public class ThrowsDataSource {
         values.put(DBHelper.COLUMN_INITIAL_DIRECTION, initial_direction);
         values.put(DBHelper.COLUMN_FINAL_DIRECTION, final_direction);
         values.put(DBHelper.COLUMN_TOTAL_DISTANCE, total_distance);
-        values.put(DBHelper.COLUMN_THROW_INTEGRITY, throw_integrity);
+        values.put(DBHelper.COLUMN_THROW_QUALITY, throw_quality);
         values.put(DBHelper.COLUMN_TOTAL_TIME, total_time);
 
         //Calculate unix time from current time
@@ -111,7 +111,7 @@ public class ThrowsDataSource {
         t.setGameId(cursor.getLong(2));
         t.setInitialDirection(cursor.getDouble(3));
         t.setFinalDirection(cursor.getDouble(4));
-        t.setThrowIntegrity(cursor.getDouble(5));
+        t.setThrowQuality(cursor.getDouble(5));
         t.setTotalDistance(cursor.getDouble(6));
         t.setTotalTime(cursor.getInt(7));
         t.setSyncTime(cursor.getInt(8));

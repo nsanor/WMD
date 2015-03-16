@@ -29,7 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_INITIAL_DIRECTION = "initial_direction";
     public static final String COLUMN_FINAL_DIRECTION = "final_direction";
     public static final String COLUMN_TOTAL_DISTANCE = "total_distance";
-    public static final String COLUMN_THROW_INTEGRITY = "throw_integrity";
+    public static final String COLUMN_THROW_QUALITY = "throw_integrity";
     public static final String COLUMN_TOTAL_TIME = "total_time";
     public static final String COLUMN_SYNC_TIME = "sync_time";
 
@@ -44,7 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + COLUMN_INITIAL_DIRECTION + " integer not null, "
             + COLUMN_FINAL_DIRECTION + " integer not null, "
             + COLUMN_TOTAL_DISTANCE + " double not null, "
-            + COLUMN_THROW_INTEGRITY + " double not null, "
+            + COLUMN_THROW_QUALITY + " double not null, "
             + COLUMN_TOTAL_TIME + " integer not null, "
             + COLUMN_SYNC_TIME + " integer not null"
             + ");";
