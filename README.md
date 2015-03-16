@@ -14,10 +14,13 @@
 
 **What's Done**:
 - Layout for Connect, Data and Map tabs.
-- Bluetooth enable, discover devices (not tested yet).
-- General table structure for raw throw data, calculated throw data, general GPS data, general IMU data and totals data (may still need refining).
-- Methods for inserting into all tables and querying the data from the tables.
+- Bluetooth enable, discover devices.
+- Buffered data transfer (the device is limited to 20 bytes maximum transfer at a time).
+- Method for parsing raw GPS strings.
+- General table structure for throw data.
+- Methods for inserting into table and querying the data.
 - ListView on data tab for throw data (need to update the fields shown).
+- Activity for more throw information comes up when a throw is selected.
 - Map of current phone location.
 - Circle displays maximum throw distance from totals data.
 - User can plot points for next throws, will add new circle at new point.
@@ -28,21 +31,18 @@
 **TODO**: 
 
 *Data Storage:*
-- Add method to populate hole and game ids to better categorize throws.
+- Add methods to differentiate between different holes and different games.
 - Add IMU class to hold IMU data points.
 - Create way of correctly ordering GPS points to IMU points.
 
 *Data Transfer:*
-- Test Bluetooth LE discovery with microcontroller.
-- Alter connect tab to only search for our disc.
-- Write methods to transfer data and place into tables.
+
 
 *Calculations:*
-- Add statistics methods.
+- Add methods to calculate throw integrity, initial and final directions.
 - Totals data updates.
 
 *Display:*
-- Add activity for throw data when a row is clicked.
 - Add preferences page in menu.
 - Change markers for throw to number of hole.
 
