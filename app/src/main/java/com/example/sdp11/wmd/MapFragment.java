@@ -81,6 +81,7 @@ public class MapFragment extends Fragment {
         Button save = (Button) view.findViewById(R.id.button_save_points);
         Button undo = (Button) view.findViewById(R.id.button_undo);
         Button clearUserPoints = (Button) view.findViewById(R.id.button_clear_user_points);
+        Button refresh = (Button) view.findViewById(R.id.button_refresh_map);
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -136,6 +137,14 @@ public class MapFragment extends Fragment {
                     else plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
                 }
                 else Toast.makeText(getActivity(), "No Points To Undo!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                plotTransferredPointsFromFile();
             }
         });
 

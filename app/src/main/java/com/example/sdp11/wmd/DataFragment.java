@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,6 +47,7 @@ public class DataFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_data, container, false);
 
         ListView throwDataListView = (ListView) view.findViewById(R.id.list);
+        Button refresh = (Button) view.findViewById(R.id.button_refresh_data);
 
         List<ThrowData> values = dataSource.getAllThrows();
 
@@ -61,6 +63,18 @@ public class DataFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.clear();
+                List<ThrowData> values = dataSource.getAllThrows();
+                for(ThrowData t : values) {
+                    adapter.addThrow(t);
+                }
+                adapter.notifyDataSetChanged();
             }
         });
 
