@@ -75,15 +75,15 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     private boolean mConnected = false;
 
-    private ArrayList<GPSDataPoint> GPSCoordinates;
+    private ArrayList<GPSDataPoint> gpsData;
 
     private static ConnectFragment connectFragment;
     private static DataFragment dataFragment;
     private static MapFragment mapFragment;
 
     private static final String Separator = System.getProperty("line.separator");
-    private String bufferedText = "";
-    private long lastSyncTime = 0;
+//    private String bufferedText = "";
+//    private long lastSyncTime = 0;
 
 
     @Override
@@ -244,9 +244,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 writeToLog("Characteristic Changed.");
                 writeToLog("Transferred Data: " + intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
                 //if it's been longer than 10 seconds, it's a new throw
-                if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
-                lastSyncTime = System.currentTimeMillis();
-                parseTransferredData(intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+//                if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
+//                lastSyncTime = System.currentTimeMillis();
+//                parseTransferredData(intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
             }
         }
     };
@@ -428,7 +428,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             case R.id.about:
 //                Toast.makeText(getApplicationContext(), "About Us",
 //                        Toast.LENGTH_SHORT).show();
-                parseTransferredData("Test\nTest");
+                mBluetoothLEService.parseTransferredData("Test\nTest");
                 return true;
             case R.id.view_log:
                 Intent intent = new Intent(MainActivity.this, LogActivity.class);
@@ -488,53 +488,53 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     Data Processing Utilities
     *******************************************************************************************/
 
-    //Cycle through all transferred GPS and IMU data
-    private void parseTransferredData(String input) {
-        //String data[] = input.split("\n");
-
-        //Test
-        String data[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
-                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
-                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
-                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
-                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
-                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
-
-        for (String s: data) {
-            if(s.startsWith("$GPRMC") || !bufferedText.equals("")) {
-                GPSDataPoint gps = parseGPS(s);
-            }
-            else {
-                Log.i(TAG, "Implement IMU parser here");
-            }
-            //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
-            //dataSource.createThrow();
-        }
-    }
-
-    private GPSDataPoint parseGPS(String input) {
-        String GPSData = bufferedText + input;
-        String gps[] = GPSData.split(",");
-        double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
-        if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
-            bufferedText = "";
-            time = Double.parseDouble(gps[1]);
-            latDeg =Double.parseDouble(gps[3].substring(0, 2));
-            latMin =Double.parseDouble(gps[3].substring(2, 8));
-            latitude = latDeg + (latMin / 60);
-            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
-            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
-            lonMin =Double.parseDouble(gps[5].substring(3, 9));
-            longitude = lonDeg + (lonMin / 60);
-            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
-            //return new GPSDataPoint(latitude, longitude, 1);
-            writeTransferredPoints(latitude + ", " + longitude + Separator);
-            return new GPSDataPoint(latitude, longitude, 1);
-        }
-        else bufferedText += GPSData;
-
-        return null;
-    }
+//    //Cycle through all transferred GPS and IMU data
+//    private void parseTransferredData(String input) {
+//        //String data[] = input.split("\n");
+//
+//        //Test
+//        String data[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
+//                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
+//                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
+//                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
+//                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
+//                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
+//
+//        for (String s: data) {
+//            if(s.startsWith("$GPRMC") || !bufferedText.equals("")) {
+//                GPSDataPoint gps = parseGPS(s);
+//            }
+//            else {
+//                Log.i(TAG, "Implement IMU parser here");
+//            }
+//            //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
+//            //dataSource.createThrow();
+//        }
+//    }
+//
+//    private GPSDataPoint parseGPS(String input) {
+//        String GPSData = bufferedText + input;
+//        String gps[] = GPSData.split(",");
+//        double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
+//        if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
+//            bufferedText = "";
+//            time = Double.parseDouble(gps[1]);
+//            latDeg =Double.parseDouble(gps[3].substring(0, 2));
+//            latMin =Double.parseDouble(gps[3].substring(2, 8));
+//            latitude = latDeg + (latMin / 60);
+//            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
+//            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
+//            lonMin =Double.parseDouble(gps[5].substring(3, 9));
+//            longitude = lonDeg + (lonMin / 60);
+//            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
+//            //return new GPSDataPoint(latitude, longitude, 1);
+//            writeTransferredPoints(latitude + ", " + longitude + Separator);
+//            return new GPSDataPoint(latitude, longitude, 1);
+//        }
+//        else bufferedText += GPSData;
+//
+//        return null;
+//    }
 
     private void writeToLog(String text) {
         String filename = "my_log.txt";
@@ -550,16 +550,16 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         }
     }
 
-    private void writeTransferredPoints(String text) {
-        String filename = "transferred_points.txt";
-        FileOutputStream outputStream;
-
-        try {
-            outputStream = openFileOutput(filename, Context.MODE_APPEND);
-            outputStream.write(text.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void writeTransferredPoints(String text) {
+//        String filename = "transferred_points.txt";
+//        FileOutputStream outputStream;
+//
+//        try {
+//            outputStream = openFileOutput(filename, Context.MODE_APPEND);
+//            outputStream.write(text.getBytes());
+//            outputStream.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
