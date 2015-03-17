@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.UUID;
+import android.os.Handler;
 
 /**
  * Created by nsanor on 2/20/2015.
@@ -58,6 +59,8 @@ public class BluetoothLEService extends Service {
     private long lastSyncTime = 0;
 
     private ArrayList<GPSDataPoint> gpsData;
+
+    private boolean isTransferring = false;
 
     public BluetoothGattCallback getGattCallback() {return mGattCallback;}
     public String getmBluetoothDeviceAddress() {
@@ -119,12 +122,24 @@ public class BluetoothLEService extends Service {
             }
         }
 
+
         @Override
         // Result of a characteristic read operation
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                if(!isTransferring) {
+                    isTransferring = true;
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            processData();
+                            isTransferring = false;
+                        }
+                    }, 3000);
+                }
                 Log.e(TAG, "onCharacteristicRead");
                 String data = characteristic.getStringValue(0);
                 writeToLog("Characteristic Changed.");
@@ -168,6 +183,12 @@ public class BluetoothLEService extends Service {
 
 
     };
+
+    private void processData() {
+        double initialDirection = calculateInitialDirection();
+        double finalDirection = calculateFinalDirection();
+
+    }
 
     private double calculateInitialDirection(){
         return -1;
