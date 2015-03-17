@@ -75,7 +75,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     private boolean mConnected = false;
 
-    private ArrayList<GPSDataPoint> gpsData;
+
 
     private static ConnectFragment connectFragment;
     private static DataFragment dataFragment;
@@ -222,27 +222,27 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 mConnected = true;
                 //updateConnectionState(R.string.connected);
                 mConnectionState = STATE_CONNECTED;
-                writeToLog("Bluetooth Connected.");
+//                writeToLog("Bluetooth Connected.");
                 connectFragment.setConnectionStatus(mBluetoothLEService.getmBluetoothDeviceAddress());
                 invalidateOptionsMenu();
             } else if (mBluetoothLEService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 //updateConnectionState(R.string.disconnected);
                 mConnectionState = STATE_DISCONNECTED;
-                writeToLog("Bluetooth Disconnected.");
+//                writeToLog("Bluetooth Disconnected.");
                 connectFragment.setConnectionStatus(null);
                 invalidateOptionsMenu();
                 //clearUI();
             } else if (mBluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics button_toggle the
                 // user interface.
-                writeToLog("Services Discovered.");
+//                writeToLog("Services Discovered.");
                 displayGattServices(getSupportedGattServices());
             } else if (mBluetoothLEService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //displayData(intent.getStringExtra(EXTRA_DATA));
                 Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
-                writeToLog("Characteristic Changed.");
-                writeToLog("Transferred Data: " + intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+//                writeToLog("Characteristic Changed.");
+//                writeToLog("Transferred Data: " + intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
                 //if it's been longer than 10 seconds, it's a new throw
 //                if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
 //                lastSyncTime = System.currentTimeMillis();
@@ -536,19 +536,19 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 //        return null;
 //    }
 
-    private void writeToLog(String text) {
-        String filename = "my_log.txt";
-        FileOutputStream outputStream;
-        text = "[" + getCurrentTimestamp() + "] : " + text + Separator;
-
-        try {
-            outputStream = openFileOutput(filename, Context.MODE_APPEND);
-            outputStream.write(text.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void writeToLog(String text) {
+//        String filename = "my_log.txt";
+//        FileOutputStream outputStream;
+//        text = "[" + getCurrentTimestamp() + "] : " + text + Separator;
+//
+//        try {
+//            outputStream = openFileOutput(filename, Context.MODE_APPEND);
+//            outputStream.write(text.getBytes());
+//            outputStream.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 //    private void writeTransferredPoints(String text) {
 //        String filename = "transferred_points.txt";

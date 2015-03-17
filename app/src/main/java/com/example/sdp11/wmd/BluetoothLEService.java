@@ -17,6 +17,8 @@ import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -55,6 +57,8 @@ public class BluetoothLEService extends Service {
     private String bufferedText = "";
     private long lastSyncTime = 0;
 
+    private ArrayList<GPSDataPoint> gpsData;
+
     public BluetoothGattCallback getGattCallback() {return mGattCallback;}
     public String getmBluetoothDeviceAddress() {
         return mBluetoothDeviceAddress;
@@ -68,12 +72,14 @@ public class BluetoothLEService extends Service {
                     && newState == BluetoothProfile.STATE_CONNECTED) {
                 mBluetoothGatt  = gatt;
                 broadcastUpdate(ACTION_GATT_CONNECTED);
+                writeToLog("Bluetooth Connected.");
                 //Discover services
                 gatt.discoverServices();
 
             } else if (status == BluetoothGatt.GATT_SUCCESS
                     && newState == BluetoothProfile.STATE_DISCONNECTED) {
                 broadcastUpdate(ACTION_GATT_DISCONNECTED);
+                writeToLog("Bluetooth Disconnected.");
                 //Handle a disconnect event
             }
 
@@ -87,6 +93,7 @@ public class BluetoothLEService extends Service {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
+                writeToLog("Services Discovered.");
             } else {
                 Log.i(TAG, "Error, onServicesDiscovered received status: " + status);
             }
@@ -119,10 +126,13 @@ public class BluetoothLEService extends Service {
                                          int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.e(TAG, "onCharacteristicRead");
+                String data = characteristic.getStringValue(0);
+                writeToLog("Characteristic Changed.");
+                writeToLog("Transferred Data: " + data);
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
                 if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
                 lastSyncTime = System.currentTimeMillis();
-                parseTransferredData(characteristic.getStringValue(0));
+                parseTransferredData(data);
             }
         }
 
@@ -159,6 +169,14 @@ public class BluetoothLEService extends Service {
 
     };
 
+    private double calculateInitialDirection(){
+        return -1;
+    }
+
+    private double calculateFinalDirection(){
+        return -1;
+    }
+
     //Cycle through all transferred GPS and IMU data
     public void parseTransferredData(String input) {
         //String data[] = input.split("\n");
@@ -173,7 +191,7 @@ public class BluetoothLEService extends Service {
 
         for (String s: data) {
             if(s.startsWith("$GPRMC") || !bufferedText.equals("")) {
-                GPSDataPoint gps = parseGPS(s);
+                gpsData.add(parseGPS(s));
             }
             else {
                 Log.i(TAG, "Implement IMU parser here");
@@ -210,6 +228,26 @@ public class BluetoothLEService extends Service {
     private void writeTransferredPoints(String text) {
         String filename = "transferred_points.txt";
         FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_APPEND);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getCurrentTimestamp() {
+        long time = System.currentTimeMillis();
+        Timestamp tsTemp = new Timestamp(time);
+        return tsTemp.toString();
+    }
+
+    private void writeToLog(String text) {
+        String filename = "my_log.txt";
+        FileOutputStream outputStream;
+        text = "[" + getCurrentTimestamp() + "] : " + text + Separator;
 
         try {
             outputStream = openFileOutput(filename, Context.MODE_APPEND);
