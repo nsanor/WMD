@@ -1,21 +1,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#4783BA"
+    style="@style/FragmentStyle"
     android:padding="20dp"
     tools:context=".DataFragment">
 
-    <Button
-        android:id="@+id/button_refresh_data"
-        style="@style/ButtonStyle"
-        android:text="@string/button_refresh" />
+    <!--<Button-->
+        <!--android:id="@+id/button_refresh_data"-->
+        <!--style="@style/ButtonStyle"-->
+        <!--android:text="@string/button_refresh" />-->
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button_refresh_data"
         android:background="@color/wallet_highlighted_text_holo_light"
         android:orientation="horizontal">
 
@@ -43,10 +40,17 @@
             android:text="@string/throw_quality_header"/>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/header"/>
+        android:layout_below="@+id/header">
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     </RelativeLayout>
