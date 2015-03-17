@@ -192,13 +192,6 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
             viewHolder.throwIntegrity = (TextView) view.findViewById(R.id.row_throw_integrity);
 
             ThrowData t = throwDataList.get(i);
-//            final String tid = String.valueOf(t.getThrowId());
-//            if (tid != null && tid.length() > 0){
-//                if(viewHolder.throwID == null) Log.i(TAG, "viewHolder.throwID is null");
-//
-//            }
-//            else
-//                viewHolder.throwID.setText(R.string.unknown_device);
 
             viewHolder.throwID.setText(String.valueOf(t.getThrowId()));
             viewHolder.totalDistance.setText(String.valueOf(t.getTotalDistance()));

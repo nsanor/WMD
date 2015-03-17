@@ -11,11 +11,6 @@
         <item name="android:background">@color/action_bar_color</item>
         <item name="android:displayOptions">showTitle</item>
         <item name="android:icon">@android:color/transparent</item>
-        <item name="android:actionBarTabStyle">@style/MyActionBarTabs</item>
-    </style>
-
-    <style name="MyActionBarTabs" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
-        <item name="android:background">#6672A0</item>
     </style>
 
     <style name="ButtonStyle">
