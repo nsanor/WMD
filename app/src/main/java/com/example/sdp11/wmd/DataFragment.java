@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DataFragment extends Fragment {
+public class DataFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private final static String TAG = DataFragment.class.getSimpleName();
 
     private ThrowsDataSource dataSource;
     private ThrowDataListAdapter adapter;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public DataFragment() {
         // Required empty public constructor
@@ -44,7 +48,21 @@ public class DataFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_data, container, false);
 
         ListView throwDataListView = (ListView) view.findViewById(R.id.list);
-        Button refresh = (Button) view.findViewById(R.id.button_refresh_data);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setOnClickListener(this);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clear();
+                List<ThrowData> values = dataSource.getAllThrows();
+                for(ThrowData t : values) {
+                    adapter.addThrow(t);
+                }
+                adapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright);
 
         List<ThrowData> values = dataSource.getAllThrows();
 
@@ -60,18 +78,6 @@ public class DataFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-        });
-
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                adapter.clear();
-                List<ThrowData> values = dataSource.getAllThrows();
-                for(ThrowData t : values) {
-                    adapter.addThrow(t);
-                }
-                adapter.notifyDataSetChanged();
             }
         });
 
@@ -104,6 +110,14 @@ public class DataFragment extends Fragment {
         dataSource.createThrow(1, 1, 1, 1, 66, 1, 1);
         dataSource.createThrow(1, 1, 1, 1, 59, 0.57, 1);
         dataSource.createThrow(1, 1, 1, 1, 70, 0.8, 1);
+    }
+
+    @Override
+    public void onRefresh() {}
+
+    @Override
+    public void onClick(View view) {
+
     }
 
     static class ViewHolder{
