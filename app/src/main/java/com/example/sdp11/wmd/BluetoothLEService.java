@@ -130,6 +130,7 @@ public class BluetoothLEService extends Service {
                                          int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 if(!isTransferring) {
+                    Log.e(TAG, "in handler");
                     isTransferring = true;
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -156,6 +157,7 @@ public class BluetoothLEService extends Service {
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+            Log.e(TAG, "onCharacteristicChanged");
         }
 
         private void broadcastUpdate(final String action) {
@@ -246,7 +248,7 @@ public class BluetoothLEService extends Service {
         return null;
     }
 
-    private void writeTransferredPoints(String text) {
+    public void writeTransferredPoints(String text) {
         String filename = "transferred_points.txt";
         FileOutputStream outputStream;
 

@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 public class LogActivity extends Activity {
     private final static String TAG = LogActivity.class.getSimpleName();
     private TextView logText;
+    private String filename = "transferred_points.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class LogActivity extends Activity {
         logText.setText("");
 
         try {
-            InputStream inputStream = openFileInput("my_log.txt");
+            InputStream inputStream = openFileInput(filename);
 
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -80,12 +81,15 @@ public class LogActivity extends Activity {
             clearLog();
             return true;
         }
+        if (id == R.id.switch_data) {
+            switchData();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
     private void clearLog() {
-        String filename = "my_log.txt";
         FileOutputStream outputStream;
         String text = "";
 
@@ -98,5 +102,35 @@ public class LogActivity extends Activity {
         }
 
         logText.setText("");
+    }
+
+    private void switchData() {
+        if(filename == "transferred_points.txt") filename = "my_log.txt";
+        if(filename == "my_log.txt") filename = "transferred_points.txt";
+
+        logText.setText("");
+        try {
+            InputStream inputStream = openFileInput(filename);
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                    stringBuilder.append("\n\n");
+                }
+
+                inputStream.close();
+                logText.append(stringBuilder.toString() + "\n");
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e(TAG, "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "Can not read file: " + e.toString());
+        }
     }
 }
