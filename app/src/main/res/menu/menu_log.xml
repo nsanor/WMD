@@ -3,4 +3,6 @@
     tools:context="com.example.sdp11.wmd.LogActivity">
     <item android:id="@+id/clear_log" android:title="Clear Log"
         android:orderInCategory="100" android:showAsAction="never" />
+    <item android:id="@+id/switch_data" android:title="Switch"
+        android:orderInCategory="200" android:showAsAction="never" />
 </menu>

@@ -428,7 +428,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             case R.id.about:
 //                Toast.makeText(getApplicationContext(), "About Us",
 //                        Toast.LENGTH_SHORT).show();
-                mBluetoothLEService.writeTransferredPoints("Test\nTest");
+                mBluetoothLEService.writeTransferredPoints("1.0, 1.0");
                 return true;
             case R.id.view_log:
                 Intent intent = new Intent(MainActivity.this, LogActivity.class);
