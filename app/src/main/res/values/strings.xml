@@ -11,7 +11,12 @@
     <string name="title_section2">Data</string>
     <string name="title_section3">Map</string>
     <string name="action_settings">Settings</string>
-    <string name="about">About</string>
+    <string name="about_menu_item">About</string>
+    <string name="log_menu_item">View Log</string>
+
+    //Log Activity
+    <string name="clear_menu_item">Clear Log</string>
+    <string name="switch_menu_item">Switch</string>
 
     //Connect Tab
     <string name="button_toggle">Toggle Bluetooth</string>

@@ -109,7 +109,7 @@ public class MapFragment extends Fragment {
             longitude = mCurrentLocation.getLongitude();
         }
 
-        final MarkerOptions locMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title("You are here");
+        final MarkerOptions locMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(latitude + ", " + longitude);
         googleMap.addMarker(locMarker);
         plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
 
@@ -364,7 +364,7 @@ public class MapFragment extends Fragment {
 
     private Marker plotPoint(LatLng point, boolean user) {
         // create marker
-        MarkerOptions marker = new MarkerOptions().position(point);
+        MarkerOptions marker = new MarkerOptions().position(point).title(latitude + ", " + longitude);
 
         if(user) {
             // Changing marker icon

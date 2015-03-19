@@ -129,26 +129,26 @@ public class BluetoothLEService extends Service {
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                if(!isTransferring) {
-                    Log.e(TAG, "in handler");
-                    isTransferring = true;
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            processData();
-                            isTransferring = false;
-                        }
-                    }, 3000);
-                }
-                Log.e(TAG, "onCharacteristicRead");
-                String data = characteristic.getStringValue(0);
-                writeToLog("Characteristic Changed.");
-                writeToLog("Transferred Data: " + data);
-                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-                if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
-                lastSyncTime = System.currentTimeMillis();
-                parseTransferredData(data);
+//                if(!isTransferring) {
+//                    Log.e(TAG, "in handler");
+//                    isTransferring = true;
+//                    Handler handler = new Handler();
+//                    handler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            processData();
+//                            isTransferring = false;
+//                        }
+//                    }, 10000);
+//                }
+//                Log.e(TAG, "onCharacteristicRead");
+//                String data = characteristic.getStringValue(0);
+//                writeToLog("Characteristic Changed.");
+//                writeToLog("Transferred Data: " + data);
+//                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+//                if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
+//                lastSyncTime = System.currentTimeMillis();
+//                parseTransferredData(data);
             }
         }
 
@@ -158,6 +158,25 @@ public class BluetoothLEService extends Service {
             super.onCharacteristicChanged(gatt, characteristic);
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
             Log.e(TAG, "onCharacteristicChanged");
+            if(!isTransferring) {
+                isTransferring = true;
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        processData();
+                        Log.e(TAG, "in handler");
+                        isTransferring = false;
+                    }
+                }, 10000);
+            }
+            String data = characteristic.getStringValue(0);
+            writeToLog("Characteristic Changed.");
+            writeToLog("Transferred Data: " + data);
+            broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+            if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
+            lastSyncTime = System.currentTimeMillis();
+            parseTransferredData(data);
         }
 
         private void broadcastUpdate(final String action) {
@@ -202,21 +221,23 @@ public class BluetoothLEService extends Service {
 
     //Cycle through all transferred GPS and IMU data
     public void parseTransferredData(String input) {
-        //String data[] = input.split("\n");
+        String data[] = input.split("\n");
 
         //Test
-        String data[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
-                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
-                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
-                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
-                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
-                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
+//        String data[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
+//                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
+//                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
+//                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
+//                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
+//                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
 
         for (String s: data) {
             if(s.startsWith("$GPRMC") || !bufferedText.equals("")) {
+                Log.e(TAG, "Found GPS Point");
                 gpsData.add(parseGPS(s));
             }
             else {
+                Log.e(TAG, "Not GPS Point");
                 Log.i(TAG, "Implement IMU parser here");
             }
             //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
@@ -244,6 +265,7 @@ public class BluetoothLEService extends Service {
             return new GPSDataPoint(latitude, longitude, 1);
         }
         else bufferedText += GPSData;
+        Log.e(TAG, "BufferedText = " + bufferedText);
 
         return null;
     }

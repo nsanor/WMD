@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
 public class LogActivity extends Activity {
     private final static String TAG = LogActivity.class.getSimpleName();
     private TextView logText;
-    private String filename = "transferred_points.txt";
+    private String filename = "my_log.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +106,7 @@ public class LogActivity extends Activity {
 
     private void switchData() {
         if(filename == "transferred_points.txt") filename = "my_log.txt";
-        if(filename == "my_log.txt") filename = "transferred_points.txt";
+        else if(filename == "my_log.txt") filename = "transferred_points.txt";
 
         logText.setText("");
         try {
