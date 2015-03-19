@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -141,8 +142,9 @@ public class BluetoothLEService extends Service {
 //                        }
 //                    }, 10000);
 //                }
-//                Log.e(TAG, "onCharacteristicRead");
-//                String data = characteristic.getStringValue(0);
+
+                String data = characteristic.getStringValue(0);
+                Log.e(TAG, "onCharacteristicRead: " + data);
 //                writeToLog("Characteristic Changed.");
 //                writeToLog("Transferred Data: " + data);
 //                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
@@ -157,21 +159,21 @@ public class BluetoothLEService extends Service {
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-            Log.e(TAG, "onCharacteristicChanged");
-            if(!isTransferring) {
-                isTransferring = true;
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        processData();
-                        Log.e(TAG, "in handler");
-                        isTransferring = false;
-                    }
-                }, 10000);
-            }
+
+//            if(!isTransferring) {
+//                isTransferring = true;
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        processData();
+//                        Log.e(TAG, "in handler");
+//                        isTransferring = false;
+//                    }
+//                }, 10000);
+//            }
             String data = characteristic.getStringValue(0);
-            writeToLog("Characteristic Changed.");
+            Log.e(TAG, "onCharacteristicChanged: " + data);
             writeToLog("Transferred Data: " + data);
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
             if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
@@ -249,23 +251,26 @@ public class BluetoothLEService extends Service {
         String GPSData = bufferedText + input;
         String gps[] = GPSData.split(",");
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
-        if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
-            bufferedText = "";
-            time = Double.parseDouble(gps[1]);
-            latDeg =Double.parseDouble(gps[3].substring(0, 2));
-            latMin =Double.parseDouble(gps[3].substring(2, 8));
-            latitude = latDeg + (latMin / 60);
-            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
-            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
-            lonMin =Double.parseDouble(gps[5].substring(3, 9));
-            longitude = lonDeg + (lonMin / 60);
-            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
-            //return new GPSDataPoint(latitude, longitude, 1);
-            writeTransferredPoints(latitude + ", " + longitude + Separator);
-            return new GPSDataPoint(latitude, longitude, 1);
+        for(String s : gps) {
+            Log.e(TAG, s);
         }
-        else bufferedText += GPSData;
-        Log.e(TAG, "BufferedText = " + bufferedText);
+//        if (gps.length >= 7) {
+//            bufferedText = "";
+//            time = Double.parseDouble(gps[1]);
+//            latDeg =Double.parseDouble(gps[3].substring(0, 2));
+//            latMin =Double.parseDouble(gps[3].substring(2, 8));
+//            latitude = latDeg + (latMin / 60);
+//            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
+//            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
+//            lonMin =Double.parseDouble(gps[5].substring(3, 9));
+//            longitude = lonDeg + (lonMin / 60);
+//            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
+//            //return new GPSDataPoint(latitude, longitude, 1);
+//            writeTransferredPoints(latitude + ", " + longitude + Separator);
+//            return new GPSDataPoint(latitude, longitude, 1);
+//        }
+//        else bufferedText += GPSData;
+//        Log.e(TAG, "BufferedText = " + bufferedText);
 
         return null;
     }

@@ -89,7 +89,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(TAG, "onCreate");
         setContentView(R.layout.activity_main);
 
 //        if( savedInstanceState != null ){
@@ -144,14 +143,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e(TAG, "onStart");
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume");
         if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
             startLocationUpdates();
         }
@@ -166,13 +163,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e(TAG, "onPause");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e(TAG, "onDestroy");
         unbindService(mServiceConnection);
         mBluetoothLEService = null;
         unregisterReceiver(mGattUpdateReceiver);
@@ -240,7 +235,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 displayGattServices(getSupportedGattServices());
             } else if (mBluetoothLEService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //displayData(intent.getStringExtra(EXTRA_DATA));
-                Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+                //Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
 //                writeToLog("Characteristic Changed.");
 //                writeToLog("Transferred Data: " + intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
                 //if it's been longer than 10 seconds, it's a new throw
