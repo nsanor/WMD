@@ -284,15 +284,18 @@ public class MapFragment extends Fragment {
     private void plotTransferredPointsFromFile() {
         try {
             InputStream inputStream = getActivity().openFileInput("transferred_points.txt");
+            Log.e(TAG, "in plottransferredshit");
 
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString;
+                Log.e(TAG, "input stream is cool");
 
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
                     String point[] = receiveString.split(",");
                     LatLng p = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
+                    Log.e(TAG, "plotting point at " + p.latitude + ", " + p.longitude);
                     Marker m = plotPoint(p, false);
                 }
 

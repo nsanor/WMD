@@ -56,12 +56,14 @@ public class BluetoothLEService extends Service {
             "com.example.sdp11.wmd.EXTRA_DATA";
 
     private static final String Separator = System.getProperty("line.separator");
-    private String bufferedText = "";
     private long lastSyncTime = 0;
 
     private ArrayList<GPSDataPoint> gpsData;
 
     private boolean isTransferring = false;
+    private ArrayList<String> inputStrings;
+
+    private boolean isGPS;
 
     public BluetoothGattCallback getGattCallback() {return mGattCallback;}
     public String getmBluetoothDeviceAddress() {
@@ -172,6 +174,7 @@ public class BluetoothLEService extends Service {
 //                    }
 //                }, 10000);
 //            }
+
             String data = characteristic.getStringValue(0);
             Log.e(TAG, "onCharacteristicChanged: " + data);
             writeToLog("Transferred Data: " + data);
@@ -234,9 +237,11 @@ public class BluetoothLEService extends Service {
 //                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
 
         for (String s: data) {
-            if(s.startsWith("$GPRMC") || !bufferedText.equals("")) {
+            if(s.startsWith("$GPRMC") || isGPS) {
                 Log.e(TAG, "Found GPS Point");
-                gpsData.add(parseGPS(s));
+                isGPS = true;
+                //gpsData.add(parseGPS(s));
+                combineStrings(s);
             }
             else {
                 Log.e(TAG, "Not GPS Point");
@@ -247,37 +252,44 @@ public class BluetoothLEService extends Service {
         }
     }
 
-    private GPSDataPoint parseGPS(String input) {
-        String GPSData = bufferedText + input;
-        String gps[] = GPSData.split(",");
-        double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
-        for(String s : gps) {
-            Log.e(TAG, s);
-        }
-//        if (gps.length >= 7) {
-//            bufferedText = "";
-//            time = Double.parseDouble(gps[1]);
-//            latDeg =Double.parseDouble(gps[3].substring(0, 2));
-//            latMin =Double.parseDouble(gps[3].substring(2, 8));
-//            latitude = latDeg + (latMin / 60);
-//            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
-//            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
-//            lonMin =Double.parseDouble(gps[5].substring(3, 9));
-//            longitude = lonDeg + (lonMin / 60);
-//            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
-//            //return new GPSDataPoint(latitude, longitude, 1);
-//            writeTransferredPoints(latitude + ", " + longitude + Separator);
-//            return new GPSDataPoint(latitude, longitude, 1);
-//        }
-//        else bufferedText += GPSData;
-//        Log.e(TAG, "BufferedText = " + bufferedText);
+    private void combineStrings(String input) {
+        Log.e(TAG, "inside combine string");
+        for (String s: input.split(",")) {
+            inputStrings.add(s);
+            if(s.contains("*")) {
+                parseGPS(inputStrings);
+                inputStrings.clear();
+                isGPS = false;
+            }
 
-        return null;
+        }
+    }
+
+    private void parseGPS(ArrayList<String> input) {
+        double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
+        Log.e(TAG, "inside parsegps");
+        if (input.size() >= 7) {
+            Log.e(TAG, "data valid");
+            time = Double.parseDouble(input.get(1));
+            latDeg =Double.parseDouble(input.get(3).substring(0, 2));
+            latMin =Double.parseDouble(input.get(3).substring(2));
+            latitude = latDeg + (latMin / 60);
+            if (input.get(4).equals(String.valueOf('S'))) latitude = -1 * latitude;
+            lonDeg =Double.parseDouble(input.get(5).substring(0, 3));
+            lonMin =Double.parseDouble(input.get(5).substring(3));
+            longitude = lonDeg + (lonMin / 60);
+            if (input.get(6).equals(String.valueOf('W'))) longitude = -1 * longitude;
+            //return new inputDataPoint(latitude, longitude, 1);
+            writeTransferredPoints(latitude + ", " + longitude + Separator);
+            GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, 1);
+            gpsData.add(gpsdataPoint);
+        }
     }
 
     public void writeTransferredPoints(String text) {
         String filename = "transferred_points.txt";
         FileOutputStream outputStream;
+        Log.e(TAG, "Writing point: " + text);
 
         try {
             outputStream = openFileOutput(filename, Context.MODE_APPEND);
@@ -319,6 +331,8 @@ public class BluetoothLEService extends Service {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
 //                new IntentFilter("my-event"));
+        inputStrings = new ArrayList<String>();
+        gpsData = new ArrayList<GPSDataPoint>();
         return mBinder;
     }
 
