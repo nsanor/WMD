@@ -160,10 +160,10 @@ public class BluetoothLEService extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 
 //            if(!isTransferring) {
 //                isTransferring = true;
+//
 //                Handler handler = new Handler();
 //                handler.postDelayed(new Runnable() {
 //                    @Override
@@ -226,59 +226,61 @@ public class BluetoothLEService extends Service {
 
     //Cycle through all transferred GPS and IMU data
     public void parseTransferredData(String input) {
-        String data[] = input.split("\n");
 
-        //Test
+    //Test
 //        String data[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
 //                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
 //                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
 //                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
 //                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
 //                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
-
-        for (String s: data) {
-            if(s.startsWith("$GPRMC") || isGPS) {
-                Log.e(TAG, "Found GPS Point");
-                isGPS = true;
-                //gpsData.add(parseGPS(s));
-                combineStrings(s);
-            }
-            else {
-                Log.e(TAG, "Not GPS Point");
-                Log.i(TAG, "Implement IMU parser here");
-            }
-            //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
-            //dataSource.createThrow();
-        }
+    if(input.startsWith("$GPRMC") || isGPS) {
+        isGPS = true;
+        //gpsData.add(parseGPS(s));
+        combineStrings(input);
+    }
+    else {
+        Log.i(TAG, "Implement IMU parser here");
+    }
+    //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
+    //dataSource.createThrow();
     }
 
     private void combineStrings(String input) {
-        Log.e(TAG, "inside combine string");
         for (String s: input.split(",")) {
-            inputStrings.add(s);
-            if(s.contains("*")) {
-                parseGPS(inputStrings);
-                inputStrings.clear();
-                isGPS = false;
-            }
 
+            if(s.contains("*")) {
+                if(s.contains("$")){
+                    String strings[] = s.split("$");
+                    inputStrings.add(strings[0]);
+                    parseGPS(inputStrings);
+                    inputStrings.clear();
+                    inputStrings.add("$" + strings[1]);
+                }
+                else {
+                    inputStrings.add(s);
+                    parseGPS(inputStrings);
+                    inputStrings.clear();
+                    isGPS = false;
+                }
+
+            }
+            else inputStrings.add(s);
         }
     }
 
     private void parseGPS(ArrayList<String> input) {
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
-        Log.e(TAG, "inside parsegps");
         if (input.size() >= 7) {
-            Log.e(TAG, "data valid");
             time = Double.parseDouble(input.get(1));
             latDeg =Double.parseDouble(input.get(3).substring(0, 2));
             latMin =Double.parseDouble(input.get(3).substring(2));
             latitude = latDeg + (latMin / 60);
-            if (input.get(4).equals(String.valueOf('S'))) latitude = -1 * latitude;
+            if (input.get(4).equals(String.valueOf("S"))) latitude = -1 * latitude;
             lonDeg =Double.parseDouble(input.get(5).substring(0, 3));
             lonMin =Double.parseDouble(input.get(5).substring(3));
-            longitude = lonDeg + (lonMin / 60);
-            if (input.get(6).equals(String.valueOf('W'))) longitude = -1 * longitude;
+            longitude = (lonDeg + (lonMin / 60)) * -1;
+            if (input.get(6).equals(String.valueOf("E"))) longitude = -1 * longitude;
             //return new inputDataPoint(latitude, longitude, 1);
             writeTransferredPoints(latitude + ", " + longitude + Separator);
             GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, 1);
@@ -289,7 +291,6 @@ public class BluetoothLEService extends Service {
     public void writeTransferredPoints(String text) {
         String filename = "transferred_points.txt";
         FileOutputStream outputStream;
-        Log.e(TAG, "Writing point: " + text);
 
         try {
             outputStream = openFileOutput(filename, Context.MODE_APPEND);

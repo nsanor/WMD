@@ -55,6 +55,7 @@ public class MapFragment extends Fragment {
     private Stack<Marker> markerStack;
     private ArrayList<LatLng> points;
     private Stack<Marker> userPoints;
+    private Stack<Marker> transferredPoints;
 
     public MapFragment() {
         // Required empty public constructor
@@ -85,6 +86,7 @@ public class MapFragment extends Fragment {
         markerStack = new Stack<Marker>();
         points = new ArrayList<LatLng>();
         userPoints = new Stack<Marker>();
+        transferredPoints = new Stack<Marker>();
 
         Button save = (Button) view.findViewById(R.id.button_save_points);
         Button undo = (Button) view.findViewById(R.id.button_undo);
@@ -172,10 +174,12 @@ public class MapFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                boolean pointsToRemove = (!userPoints.empty() || !markerStack.empty());
+                //Don't remove saved points at end
+                boolean pointsToRemove = (!userPoints.empty() || !markerStack.empty() || !transferredPoints.empty());
                 if(pointsToRemove){
                     while(!userPoints.empty()) userPoints.pop().remove();
                     while(!markerStack.empty()) markerStack.pop().remove();
+                    while(!transferredPoints.empty()) transferredPoints.pop().remove();
                     circle.remove();
                     plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
                 }
@@ -229,7 +233,7 @@ public class MapFragment extends Fragment {
                 .newCameraPosition(cameraPosition));
 
         plotUserPointsFromFile();
-        plotTransferredPointsFromFile();
+
 
         return view;
     }
@@ -284,23 +288,21 @@ public class MapFragment extends Fragment {
     private void plotTransferredPointsFromFile() {
         try {
             InputStream inputStream = getActivity().openFileInput("transferred_points.txt");
-            Log.e(TAG, "in plottransferredshit");
 
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString;
-                Log.e(TAG, "input stream is cool");
 
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
                     String point[] = receiveString.split(",");
                     LatLng p = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
-                    Log.e(TAG, "plotting point at " + p.latitude + ", " + p.longitude);
                     Marker m = plotPoint(p, false);
+                    transferredPoints.push(m);
                 }
 
                 inputStream.close();
-                plotPolyLine();
+                //plotPolyLine();
             }
         }
         catch (FileNotFoundException e) {
@@ -347,6 +349,8 @@ public class MapFragment extends Fragment {
             googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
             cp = null;
         }
+
+        plotTransferredPointsFromFile();
     }
 
     @Override
@@ -834,7 +838,7 @@ public class MapFragment extends Fragment {
         plotPoint(new LatLng(41.075100, -81.509833), false);
         plotPoint(new LatLng(41.075100, -81.509833), false);
 
-        plotPolyLine();
+        //plotPolyLine();
     }
 
     //    private void calculateBounds() {
