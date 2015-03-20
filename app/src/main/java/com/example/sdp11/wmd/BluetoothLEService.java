@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 import android.os.Handler;
 
@@ -62,6 +63,7 @@ public class BluetoothLEService extends Service {
 
     private boolean isTransferring = false;
     private ArrayList<String> inputStrings;
+    private char lastCharacter = "".charAt(0);
 
     private boolean isGPS;
 
@@ -247,30 +249,40 @@ public class BluetoothLEService extends Service {
     }
 
     private void combineStrings(String input) {
-        for (String s: input.split(",")) {
+        String data[] = input.split(",");
+        String data2[] = Arrays.copyOfRange(data, 1, data.length);
+        if(!inputStrings.isEmpty() && (lastCharacter != ",".charAt(0))) {
+            String oldString = inputStrings.get(inputStrings.size());
+            inputStrings.set(inputStrings.size(), oldString + data[0]);
+        }
+        for (String s: data2) {
 
             if(s.contains("*")) {
-                if(s.contains("$")){
-                    String strings[] = s.split("$");
-                    inputStrings.add(strings[0]);
+                if(s.length() > 5){
+                    inputStrings.add(s.substring(0, 4).trim());
                     parseGPS(inputStrings);
                     inputStrings.clear();
-                    inputStrings.add("$" + strings[1]);
+                    inputStrings.add(s.substring(4).trim());
                 }
                 else {
-                    inputStrings.add(s);
+                    inputStrings.add(s.trim());
                     parseGPS(inputStrings);
                     inputStrings.clear();
                     isGPS = false;
                 }
 
             }
-            else inputStrings.add(s);
+            else {
+                inputStrings.add(s.trim());
+                lastCharacter = s.trim().charAt(s.trim().length()-1);
+            }
         }
     }
 
     private void parseGPS(ArrayList<String> input) {
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
+        writeToLog("Entering parseGPS");
+
         if (input.size() >= 7) {
             time = Double.parseDouble(input.get(1));
             latDeg =Double.parseDouble(input.get(3).substring(0, 2));
