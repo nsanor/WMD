@@ -423,7 +423,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             case R.id.about:
 //                Toast.makeText(getApplicationContext(), "About Us",
 //                        Toast.LENGTH_SHORT).show();
-                mBluetoothLEService.writeTransferredPoints("1.0, 1.0");
+                mBluetoothLEService.parseTransferredData("$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D" +
+                        "\n$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n");
                 return true;
             case R.id.view_log:
                 Intent intent = new Intent(MainActivity.this, LogActivity.class);
