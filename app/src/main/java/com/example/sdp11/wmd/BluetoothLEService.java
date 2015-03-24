@@ -63,7 +63,7 @@ public class BluetoothLEService extends Service {
 
     private boolean isTransferring = false;
     private ArrayList<String> inputStrings;
-    private char lastCharacter = "".charAt(0);
+    private char lastCharacter = "@".charAt(0);
 
     private boolean isGPS;
 
