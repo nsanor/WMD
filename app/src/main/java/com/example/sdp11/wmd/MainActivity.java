@@ -416,6 +416,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         int id = item.getItemId();
 
         switch (id){
+            case R.id.new_game:
+                Toast.makeText(getApplicationContext(), "New Game",
+                        Toast.LENGTH_SHORT).show();
+                //Add yes/no dialog here
+                TotalsData.updateGameId();
+                return true;
             case R.id.action_settings:
                 Toast.makeText(getApplicationContext(), "Settings",
                         Toast.LENGTH_SHORT).show();

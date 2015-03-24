@@ -3,11 +3,18 @@
     style="@style/ActivityStyle"
     tools:context="com.example.sdp11.wmd.LogActivity">
 
+    <Spinner
+        android:id="@+id/log_choice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/log_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:maxLines="10000"
-        android:scrollbars="horizontal"/>
+        android:scrollbars="horizontal"
+        android:padding="20dp"
+        android:layout_below="@+id/log_choice"/>
 
 </RelativeLayout>

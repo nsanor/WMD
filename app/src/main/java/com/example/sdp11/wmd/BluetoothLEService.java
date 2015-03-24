@@ -250,66 +250,50 @@ public class BluetoothLEService extends Service {
     }
 
     private void combineStrings(String input) {
-        //Test if newline actually works
-        if(input.contains("\n")) {
-            String data[] = input.split("\n");
-            inputString += data[0].trim();
-            parseGPS(inputString);
-            inputString += data[1].trim();
-            Log.e(TAG, inputString);
+        String data[] = input.split(",");
+        String data2[] = Arrays.copyOfRange(data, 1, data.length);
+        if(!inputStrings.isEmpty() && (lastCharacter != ",".charAt(0))) {
+            String oldString = inputStrings.get(inputStrings.size());
+            inputStrings.set(inputStrings.size(), oldString + data[0]);
         }
-        else {
-            inputString += input.trim();
-            Log.e(TAG, inputString);
-        }
+        for (String s: data2) {
 
-//        String data[] = input.split(",");
-//        //Get input data after the first index
-//        String data2[] = Arrays.copyOfRange(data, 1, data.length);
-//        Log.e(TAG, "Is this a newline: " + "\n".charAt(0));
-//        if(!inputStrings.isEmpty() && (lastCharacter != ",".charAt(0)) && (lastCharacter != "\n".charAt(0))) {
-//            String oldString = inputStrings.get(inputStrings.size());
-//            inputStrings.set(inputStrings.size(), oldString + data[0]);
-//        }
-//        else data2 = data;
-//        for (String s: data2) {
-//            if(s.contains("*")) {
-//                if(s.length() > 5){
-//                    inputStrings.add(s.substring(0, 4).trim());
-//                    parseGPS(inputStrings);
-//                    inputStrings.clear();
-//                    inputStrings.add(s.substring(4).trim());
-//                }
-//                else {
-//                    inputStrings.add(s.trim());
-//                    parseGPS(inputStrings);
-//                    inputStrings.clear();
-//                    isGPS = false;
-//                }
-//
-//            }
-//            else {
-//                inputStrings.add(s.trim());
-//                lastCharacter = s.trim().charAt(s.trim().length()-1);
-//            }
-//        }
+            if(s.contains("*")) {
+                if(s.length() > 5){
+                    inputStrings.add(s.substring(0, 4).trim());
+                    parseGPS(inputStrings);
+                    inputStrings.clear();
+                    inputStrings.add(s.substring(4).trim());
+                }
+                else {
+                    inputStrings.add(s.trim());
+                    parseGPS(inputStrings);
+                    inputStrings.clear();
+                    isGPS = false;
+                }
+
+            }
+            else {
+                inputStrings.add(s.trim());
+                lastCharacter = s.trim().charAt(s.trim().length()-1);
+            }
+        }
     }
 
-    private void parseGPS(String i) {
+    private void parseGPS(ArrayList<String> input) {
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
         writeToLog("Entering parseGPS");
-        String input[] = i.split(",");
 
-        if (input.length >= 7) {
-            time = Double.parseDouble(input[1]);
-            latDeg =Double.parseDouble(input[3].substring(0, 2));
-            latMin =Double.parseDouble(input[3].substring(2));
+        if (input.size() >= 7) {
+            time = Double.parseDouble(input.get(1));
+            latDeg =Double.parseDouble(input.get(3).substring(0, 2));
+            latMin =Double.parseDouble(input.get(3).substring(2));
             latitude = latDeg + (latMin / 60);
-            if (input[4].equals(String.valueOf("S"))) latitude = -1 * latitude;
-            lonDeg =Double.parseDouble(input[5].substring(0, 3));
-            lonMin =Double.parseDouble(input[5].substring(3));
+            if (input.get(4).equals(String.valueOf("S"))) latitude = -1 * latitude;
+            lonDeg =Double.parseDouble(input.get(5).substring(0, 3));
+            lonMin =Double.parseDouble(input.get(5).substring(3));
             longitude = (lonDeg + (lonMin / 60)) * -1;
-            if (input[6].equals(String.valueOf("E"))) longitude = -1 * longitude;
+            if (input.get(6).equals(String.valueOf("E"))) longitude = -1 * longitude;
             //return new inputDataPoint(latitude, longitude, 1);
             writeTransferredPoints(latitude + ", " + longitude + Separator);
             GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, 1);

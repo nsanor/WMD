@@ -11,9 +11,9 @@ public class TotalsData {
     static private double averageAngle;
     static private int throwCount;
     //static private int someCount;
-    static private long lastThrowId;
-    static private long lastHoleId;
-    static private long lastGameId;
+    static private long throwId;
+    static private long holeId;
+    static private long gameId;
 
     //These are to tell the difference between holes and games.
     private static double lastLat;
@@ -23,13 +23,17 @@ public class TotalsData {
 
     public static void loadTotalsData(long throwId) {
         averageDistance = 10;
-        lastGameId = 1;
-        lastHoleId = 1;
-        lastThrowId = throwId;
+        gameId = 1;
+        holeId = 1;
+        TotalsData.throwId = throwId;
     }
 
     public static void updateThrowCount(){
         TotalsData.throwCount++;
+    }
+
+    public static void updateGameId(){
+        TotalsData.gameId++;
     }
 
     public static double getAverageDistance() {
@@ -56,27 +60,27 @@ public class TotalsData {
         TotalsData.throwCount = throwCount;
     }
 
-    public static long getLastThrowId() {
-        return lastThrowId;
+    public static long getThrowId() {
+        return throwId;
     }
 
-    public static void setLastThrowId(long lastThrowId) {
-        TotalsData.lastThrowId = lastThrowId;
+    public static void setThrowId(long throwId) {
+        TotalsData.throwId = throwId;
     }
 
-    public static long getLastHoleId() {
-        return lastHoleId;
+    public static long getHoleId() {
+        return holeId;
     }
 
-    public static void setLastHoleId(long lastHoleId) {
-        TotalsData.lastHoleId = lastHoleId;
+    public static void setHoleId(long holeId) {
+        TotalsData.holeId = holeId;
     }
 
-    public static long getLastGameId() {
-        return lastGameId;
+    public static long getGameId() {
+        return gameId;
     }
 
-    public static void setLastGameId(long lastGameId) {
-        TotalsData.lastGameId = lastGameId;
+    public static void setGameId(long gameId) {
+        TotalsData.gameId = gameId;
     }
 }

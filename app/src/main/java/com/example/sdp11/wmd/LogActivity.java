@@ -7,6 +7,10 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -17,7 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-public class LogActivity extends Activity {
+public class LogActivity extends Activity implements AdapterView.OnItemSelectedListener {
     private final static String TAG = LogActivity.class.getSimpleName();
     private TextView logText;
     private String filename = "my_log.txt";
@@ -31,29 +35,14 @@ public class LogActivity extends Activity {
         logText.setMovementMethod(new ScrollingMovementMethod());
         logText.setText("");
 
-        try {
-            InputStream inputStream = openFileInput(filename);
+        Spinner logChoice = (Spinner)findViewById(R.id.log_choice);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.log_item, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        logChoice.setAdapter(adapter);
+        logChoice.setOnItemSelectedListener(this);
 
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString);
-                    stringBuilder.append("\n\n");
-                }
-
-                inputStream.close();
-                logText.append(stringBuilder.toString() + "\n");
-            }
-        }
-        catch (FileNotFoundException e) {
-            Log.e(TAG, "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e(TAG, "Can not read file: " + e.toString());
-        }
+        refreshText();
     }
 
     @Override
@@ -81,10 +70,6 @@ public class LogActivity extends Activity {
             clearLog();
             return true;
         }
-        if (id == R.id.switch_data) {
-            switchData();
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -104,10 +89,7 @@ public class LogActivity extends Activity {
         logText.setText("");
     }
 
-    private void switchData() {
-        if(filename == "transferred_points.txt") filename = "my_log.txt";
-        else if(filename == "my_log.txt") filename = "transferred_points.txt";
-
+    private void refreshText() {
         logText.setText("");
         try {
             InputStream inputStream = openFileInput(filename);
@@ -115,7 +97,7 @@ public class LogActivity extends Activity {
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
+                String receiveString;
                 StringBuilder stringBuilder = new StringBuilder();
 
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
@@ -132,5 +114,23 @@ public class LogActivity extends Activity {
         } catch (IOException e) {
             Log.e(TAG, "Can not read file: " + e.toString());
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(adapterView.getItemAtPosition(i).equals("Bluetooth Log")) {
+            Log.e(TAG, "Switching to Bluetooth log");
+            filename = "my_log.txt";
+        }
+        else {
+            filename = "transferred_points.txt";
+            Log.e(TAG, "Switching to transferred points");
+        }
+        refreshText();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

@@ -10,7 +10,7 @@ public class GPSDataPoint {
     private long time;
 
     public GPSDataPoint(double latitude, double longitude, long time) {
-        this.throwId = TotalsData.getLastThrowId();
+        this.throwId = TotalsData.getThrowId();
         this.latitude = latitude;
         this.longitude = longitude;
         this.time = time;
