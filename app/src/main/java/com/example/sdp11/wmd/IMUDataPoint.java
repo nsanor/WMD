@@ -8,7 +8,7 @@ public class IMUDataPoint {
     private String IMUString;
 
     public IMUDataPoint(String IMUString) {
-        this.throwId = TotalsData.getLastThrowId();
+        this.throwId = TotalsData.getThrowId();
         this.IMUString = IMUString;
     }
 
