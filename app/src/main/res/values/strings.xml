@@ -17,6 +17,10 @@
     //Log Activity
     <string name="clear_menu_item">Clear Log</string>
     <string name="switch_menu_item">Switch</string>
+    <array name="log_item">
+        <item>Bluetooth Log</item>
+        <item>Transferred Points</item>
+    </array>
 
     //Connect Tab
     <string name="button_toggle">Toggle Bluetooth</string>
