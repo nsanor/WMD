@@ -28,6 +28,13 @@ public class ThrowsDataSource {
             DBHelper.COLUMN_TOTAL_TIME,
             DBHelper.COLUMN_SYNC_TIME};
 
+    private String[] totalsColumns = { DBHelper.COLUMN_HOLE_ID,
+            DBHelper.COLUMN_GAME_ID,
+            DBHelper.COLUMN_AVERAGE_DISTANCE,
+            DBHelper.COLUMN_AVERAGE_ANGLE,
+            DBHelper.COLUMN_AVERAGE_TIME,
+            DBHelper.COLUMN_THROW_COUNT};
+
     public ThrowsDataSource(Context context) {
         dbHelper = new DBHelper(context);
     }
@@ -38,6 +45,7 @@ public class ThrowsDataSource {
 
     public void close() {
         dbHelper.close();
+        database.close();
     }
 
     public void createThrow(double initial_direction, double final_direction, double total_distance, double throw_quality, long total_time) {
@@ -56,30 +64,10 @@ public class ThrowsDataSource {
         values.put(DBHelper.COLUMN_SYNC_TIME, now);
 
         long insertId = database.insert(DBHelper.TABLE_THROWS, null,values);
-
-        //Need to get new max throw id to create calc data
-//        Log.i("TEST", database.toString());
-//        Log.i("ID Test", String.valueOf(getMaxThrowId(database)));
-        //Create new entry in ThrowData here.
-        //ThrowData calc = new ThrowData(throwId, start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime);
-
-        //Update globals in TotalsData here.
-
-//        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
-//                rawColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
-//                null, null, null);
-//        cursor.moveToFirst();
-//        Throw newThrow = cursorToRawThrow(cursor);
-//        cursor.close();
-//        return newThrow;
-
-
-
     }
 
     public void deleteThrow(RawThrowData t) {
         long id = t.getThrowId();
-        System.out.println("Comment deleted with id: " + id);
         database.delete(DBHelper.TABLE_THROWS, DBHelper.COLUMN_THROW_ID
                 + " = " + id, null);
     }
@@ -104,6 +92,42 @@ public class ThrowsDataSource {
         // make sure to close the cursor
         cursor.close();
         return ts;
+    }
+
+    public void loadTotalsData() {
+        Cursor c = database.query(DBHelper.TABLE_TOTALS,
+                totalsColumns, null, null, null, null, null);
+        c.moveToFirst();
+        if(c.getCount() > 0){
+            TotalsData.setHoleId(c.getLong(0));
+            TotalsData.setGameId(c.getLong(1));
+            TotalsData.setAverageDistance(c.getDouble(2));
+            TotalsData.setAverageAngle(c.getDouble(3));
+            TotalsData.setAverageTime(c.getDouble(4));
+            TotalsData.setThrowCount(c.getInt(5));
+        }
+        else {
+            Log.e(TAG, "Cursor empty");
+            TotalsData.setHoleId(1);
+            TotalsData.setGameId(1);
+            TotalsData.setAverageDistance(0);
+            TotalsData.setAverageAngle(0);
+            TotalsData.setAverageTime(0);
+            TotalsData.setThrowCount(0);
+        }
+        c.close();
+    }
+
+    public void writeTotalsData() {
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_HOLE_ID, TotalsData.getHoleId());
+        values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getGameId());
+        values.put(DBHelper.COLUMN_AVERAGE_DISTANCE, TotalsData.getAverageDistance());
+        values.put(DBHelper.COLUMN_AVERAGE_ANGLE, TotalsData.getAverageAngle());
+        values.put(DBHelper.COLUMN_AVERAGE_TIME, TotalsData.getAverageTime());
+        values.put(DBHelper.COLUMN_THROW_COUNT, TotalsData.getThrowCount());
+
+        long insertId = database.insert(DBHelper.TABLE_TOTALS, null,values);
     }
 
     private ThrowData cursorToThrow(Cursor cursor) {

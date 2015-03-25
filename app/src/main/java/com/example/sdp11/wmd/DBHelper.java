@@ -33,8 +33,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TOTAL_TIME = "total_time";
     public static final String COLUMN_SYNC_TIME = "sync_time";
 
+    public static final String TABLE_TOTALS = "totals_data";
+
+    public static final String COLUMN_AVERAGE_DISTANCE = "average_distance";
+    public static final String COLUMN_AVERAGE_ANGLE = "average_angle";
+    public static final String COLUMN_AVERAGE_TIME = "average_time";
+    public static final String COLUMN_THROW_COUNT = "throw_count";
+
     private static final String DATABASE_NAME = "throw_data.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
 
     private static final String THROWS_TABLE_CREATE = "create table "
             + TABLE_THROWS + " ( "
@@ -49,6 +56,16 @@ public class DBHelper extends SQLiteOpenHelper {
             + COLUMN_SYNC_TIME + " integer not null"
             + ");";
 
+    private static final String TOTALS_TABLE_CREATE = "create table "
+            + TABLE_TOTALS + " ( "
+            + COLUMN_HOLE_ID + " integer not null, "
+            + COLUMN_GAME_ID + " integer not null, "
+            + COLUMN_AVERAGE_DISTANCE + " double not null, "
+            + COLUMN_AVERAGE_ANGLE + " double not null, "
+            + COLUMN_AVERAGE_TIME + " double not null, "
+            + COLUMN_THROW_COUNT + " integer not null"
+            + ");";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -57,11 +74,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_THROWS);
         db.execSQL(THROWS_TABLE_CREATE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOTALS);
+        db.execSQL(TOTALS_TABLE_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_THROWS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TOTALS);
         onCreate(db);
     }
 

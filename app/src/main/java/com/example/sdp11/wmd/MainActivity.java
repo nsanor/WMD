@@ -100,7 +100,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
         dataSource = new ThrowsDataSource(this);
         dataSource.open();
-        TotalsData.loadTotalsData(dataSource.getMaxThrowId());
+        dataSource.loadTotalsData();
 
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -171,6 +171,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         unbindService(mServiceConnection);
         mBluetoothLEService = null;
         unregisterReceiver(mGattUpdateReceiver);
+        dataSource.close();
     }
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {

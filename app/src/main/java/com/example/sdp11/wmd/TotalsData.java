@@ -9,6 +9,7 @@ public class TotalsData {
     //Create all as static variables.
     static private double averageDistance;
     static private double averageAngle;
+    static private double averageTime;
     static private int throwCount;
     //static private int someCount;
     static private long throwId;
@@ -18,15 +19,13 @@ public class TotalsData {
     //These are to tell the difference between holes and games.
     private static double lastLat;
     private static double lastLong;
-    private static long time;
 
-
-    public static void loadTotalsData(long throwId) {
-        averageDistance = 10;
-        gameId = 1;
-        holeId = 1;
-        TotalsData.throwId = throwId;
-    }
+//    public static void loadTotalsData(long throwId) {
+//        averageDistance = 10;
+//        gameId = 1;
+//        holeId = 1;
+//        TotalsData.throwId = throwId;
+//    }
 
     public static void updateThrowCount(){
         TotalsData.throwCount++;
@@ -82,5 +81,29 @@ public class TotalsData {
 
     public static void setGameId(long gameId) {
         TotalsData.gameId = gameId;
+    }
+
+    public static double getLastLat() {
+        return lastLat;
+    }
+
+    public static void setLastLat(double lastLat) {
+        TotalsData.lastLat = lastLat;
+    }
+
+    public static double getLastLong() {
+        return lastLong;
+    }
+
+    public static void setLastLong(double lastLong) {
+        TotalsData.lastLong = lastLong;
+    }
+
+    public static double getAverageTime() {
+        return averageTime;
+    }
+
+    public static void setAverageTime(double averageTime) {
+        TotalsData.averageTime = averageTime;
     }
 }
