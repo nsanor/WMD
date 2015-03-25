@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * Created by Student on 1/27/2015.
  */
 public class ThrowsDataSource {
+    private final static String TAG = ThrowsDataSource.class.getSimpleName();
     private SQLiteDatabase database;
     private DBHelper dbHelper;
 
@@ -41,8 +43,8 @@ public class ThrowsDataSource {
     public void createThrow(double initial_direction, double final_direction, double total_distance, double throw_quality, long total_time) {
 
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_HOLE_ID, TotalsData.getGameId());
-        values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getHoleId());
+        values.put(DBHelper.COLUMN_HOLE_ID, TotalsData.getHoleId());
+        values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getGameId());
         values.put(DBHelper.COLUMN_INITIAL_DIRECTION, initial_direction);
         values.put(DBHelper.COLUMN_FINAL_DIRECTION, final_direction);
         values.put(DBHelper.COLUMN_TOTAL_DISTANCE, total_distance);

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +43,7 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
         if(dataSource == null) {
             dataSource = MainActivity.dataSource;
             dataSource.deleteAllThrows();
-            addDemoThrows();
         }
-
     }
 
     @Override
@@ -81,7 +80,6 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
                 }
             }
         });
-
         return view;
     }
 
@@ -89,10 +87,8 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
     public void onResume() {
         dataSource.open();
         super.onResume();
-        if(gameId != TotalsData.getGameId()) {
-            gameId = TotalsData.getGameId();
-            refreshData();
-        }
+        addDemoThrows();
+        refreshData();
     }
 
     @Override
@@ -117,6 +113,7 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
     }
 
     public void refreshData() {
+        gameId = TotalsData.getGameId();
         adapter.clear();
         List<ThrowData> values = dataSource.getAllThrows(gameId);
         for(ThrowData t : values) {
@@ -136,7 +133,7 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
     static class ViewHolder{
         TextView throwID;
         TextView totalDistance;
-        TextView throwIntegrity;
+        TextView throwQuality;
     }
 
     // Adapter for holding devices found through scanning.
@@ -202,13 +199,13 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
 
             viewHolder.throwID = (TextView) view.findViewById(R.id.row_throw_id);
             viewHolder.totalDistance = (TextView) view.findViewById(R.id.row_total_distance);
-            viewHolder.throwIntegrity = (TextView) view.findViewById(R.id.row_throw_integrity);
+            viewHolder.throwQuality = (TextView) view.findViewById(R.id.row_throw_quality);
 
             ThrowData t = throwDataList.get(i);
 
             viewHolder.throwID.setText(String.valueOf(t.getThrowId()));
             viewHolder.totalDistance.setText(String.valueOf(t.getTotalDistance()));
-            viewHolder.throwIntegrity.setText(String.valueOf(t.getThrowQuality()));
+            viewHolder.throwQuality.setText(String.valueOf(t.getThrowQuality()));
 
             return view;
         }

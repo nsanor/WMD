@@ -219,9 +219,6 @@ public class MapFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
 
-        plotUserPointsFromFile();
-
-
         return view;
     }
 
@@ -264,7 +261,7 @@ public class MapFragment extends Fragment {
             circle.remove();
             plotRadius(currentLocation, TotalsData.getAverageDistance());
         }
-        else Toast.makeText(getActivity(), "No Points To Remove!", Toast.LENGTH_SHORT).show();
+        //else Toast.makeText(getActivity(), "No Points To Remove!", Toast.LENGTH_SHORT).show();
     }
 
     private void removeTransferredPoints() {
@@ -375,14 +372,11 @@ public class MapFragment extends Fragment {
             cp = null;
         }
 
-        if(gameId != TotalsData.getGameId()) {
-            gameId = TotalsData.getGameId();
-            removeUserPoints();
-            removeTransferredPoints();
-        }
-        Log.e(TAG, "onResume");
-
+        gameId = TotalsData.getGameId();
+        removeUserPoints();
+        removeTransferredPoints();
         plotTransferredPointsFromFile();
+        plotUserPointsFromFile();
     }
 
     @Override
@@ -397,7 +391,6 @@ public class MapFragment extends Fragment {
 
         cp = googleMap.getCameraPosition();
 //        googleMap = null;
-        Log.e(TAG, "onPause");
 
     }
 

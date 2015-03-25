@@ -118,14 +118,8 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if(adapterView.getItemAtPosition(i).equals("Bluetooth Log")) {
-            Log.e(TAG, "Switching to Bluetooth log");
-            filename = "my_log.txt";
-        }
-        else {
-            filename = "transferred_points.txt";
-            Log.e(TAG, "Switching to transferred points");
-        }
+        if(adapterView.getItemAtPosition(i).equals("Bluetooth Log")) filename = "my_log.txt";
+        else filename = "transferred_points.txt";
         refreshText();
     }
 
