@@ -57,6 +57,8 @@ public class BluetoothLEService extends Service {
             "com.example.sdp11.wmd.EXTRA_DATA";
 
     private static final String Separator = System.getProperty("line.separator");
+    private String transferredFilename = "transferred_points.txt";
+    private String logFilename = "my_log.txt";
     private long lastSyncTime = 0;
 
     private ArrayList<GPSDataPoint> gpsData;
@@ -320,11 +322,24 @@ public class BluetoothLEService extends Service {
     }
 
     public void writeTransferredPoints(String text) {
-        String filename = "transferred_points.txt";
+
         FileOutputStream outputStream;
 
         try {
-            outputStream = openFileOutput(filename, Context.MODE_APPEND);
+            outputStream = openFileOutput(transferredFilename, Context.MODE_APPEND);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearTransferredPoints() {
+        FileOutputStream outputStream;
+        String text = "";
+
+        try {
+            outputStream = openFileOutput(transferredFilename, Context.MODE_PRIVATE);
             outputStream.write(text.getBytes());
             outputStream.close();
         } catch (Exception e) {
@@ -339,12 +354,24 @@ public class BluetoothLEService extends Service {
     }
 
     private void writeToLog(String text) {
-        String filename = "my_log.txt";
         FileOutputStream outputStream;
         text = "[" + getCurrentTimestamp() + "] : " + text + Separator;
 
         try {
-            outputStream = openFileOutput(filename, Context.MODE_APPEND);
+            outputStream = openFileOutput(logFilename, Context.MODE_APPEND);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearLog() {
+        FileOutputStream outputStream;
+        String text = "";
+
+        try {
+            outputStream = openFileOutput(logFilename, Context.MODE_PRIVATE);
             outputStream.write(text.getBytes());
             outputStream.close();
         } catch (Exception e) {

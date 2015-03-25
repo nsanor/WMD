@@ -25,8 +25,9 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
 
     private ThrowsDataSource dataSource;
     private ThrowDataListAdapter adapter;
-
     private SwipeRefreshLayout swipeRefreshLayout;
+
+    private long gameId;
 
     public DataFragment() {
         // Required empty public constructor
@@ -57,18 +58,14 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.clear();
-                List<ThrowData> values = dataSource.getAllThrows();
-                for(ThrowData t : values) {
-                    adapter.addThrow(t);
-                }
-                adapter.notifyDataSetChanged();
+                refreshData();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright);
+        gameId = TotalsData.getGameId();
 
-        List<ThrowData> values = dataSource.getAllThrows();
+        List<ThrowData> values = dataSource.getAllThrows(gameId);
 
         adapter = new ThrowDataListAdapter(values);
         throwDataListView.setAdapter(adapter);
@@ -92,7 +89,10 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
     public void onResume() {
         dataSource.open();
         super.onResume();
-
+        if(gameId != TotalsData.getGameId()) {
+            gameId = TotalsData.getGameId();
+            refreshData();
+        }
     }
 
     @Override
@@ -104,16 +104,25 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
 
 
     private void addDemoThrows() {
-        dataSource.createThrow(1, 1, 1, 1, 75, 1, 1);
-        dataSource.createThrow(1, 1, 1, 1, 78, 1, 1);
-        dataSource.createThrow(1, 1, 1, 1, 62, 0.85, 1);
-        dataSource.createThrow(1, 1, 1, 1, 80, 1, 1);
-        dataSource.createThrow(1, 1, 1, 1, 20, 0.2, 1);
-        dataSource.createThrow(1, 1, 1, 1, 82, 0.94, 1);
-        dataSource.createThrow(1, 1, 1, 1, 75, 1, 1);
-        dataSource.createThrow(1, 1, 1, 1, 66, 1, 1);
-        dataSource.createThrow(1, 1, 1, 1, 59, 0.57, 1);
-        dataSource.createThrow(1, 1, 1, 1, 70, 0.8, 1);
+        dataSource.createThrow(1, 1, 75, 1, 1);
+        dataSource.createThrow(1, 1, 78, 1, 1);
+        dataSource.createThrow(1, 1, 62, 0.85, 1);
+        dataSource.createThrow(1, 1, 80, 1, 1);
+        dataSource.createThrow(1, 1, 20, 0.2, 1);
+        dataSource.createThrow(1, 1, 82, 0.94, 1);
+        dataSource.createThrow(1, 1, 75, 1, 1);
+        dataSource.createThrow(1, 1, 66, 1, 1);
+        dataSource.createThrow(1, 1, 59, 0.57, 1);
+        dataSource.createThrow(1, 1, 70, 0.8, 1);
+    }
+
+    public void refreshData() {
+        adapter.clear();
+        List<ThrowData> values = dataSource.getAllThrows(gameId);
+        for(ThrowData t : values) {
+            adapter.addThrow(t);
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override

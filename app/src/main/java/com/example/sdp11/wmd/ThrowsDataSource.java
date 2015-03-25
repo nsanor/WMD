@@ -38,11 +38,11 @@ public class ThrowsDataSource {
         dbHelper.close();
     }
 
-    public void createThrow(long hole_id, long game_id, double initial_direction, double final_direction, double total_distance, double throw_quality, long total_time) {
+    public void createThrow(double initial_direction, double final_direction, double total_distance, double throw_quality, long total_time) {
 
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_HOLE_ID, 1);
-        values.put(DBHelper.COLUMN_GAME_ID, 1);
+        values.put(DBHelper.COLUMN_HOLE_ID, TotalsData.getGameId());
+        values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getHoleId());
         values.put(DBHelper.COLUMN_INITIAL_DIRECTION, initial_direction);
         values.put(DBHelper.COLUMN_FINAL_DIRECTION, final_direction);
         values.put(DBHelper.COLUMN_TOTAL_DISTANCE, total_distance);
@@ -87,11 +87,11 @@ public class ThrowsDataSource {
         database.delete(DBHelper.TABLE_THROWS, null,null);
     }
 
-    public List<ThrowData> getAllThrows() {
+    public List<ThrowData> getAllThrows(long gameId) {
         List<ThrowData> ts = new ArrayList<ThrowData>();
 
         Cursor cursor = database.query(DBHelper.TABLE_THROWS,
-                allColumns, null, null, null, null, null);
+                allColumns, DBHelper.COLUMN_GAME_ID + " = " + gameId, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

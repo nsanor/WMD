@@ -50,12 +50,15 @@ public class MapFragment extends Fragment {
     private double latitude = 41.13747;
     private double longitude = -81.47430700000001;
     private Circle circle;
+    private LatLng currentLocation;
     //private LatLngBounds bounds;
 
     private Stack<Marker> markerStack;
     private ArrayList<LatLng> points;
     private Stack<Marker> userPoints;
     private Stack<Marker> transferredPoints;
+
+    private long gameId;
 
     public MapFragment() {
         // Required empty public constructor
@@ -88,6 +91,8 @@ public class MapFragment extends Fragment {
         userPoints = new Stack<Marker>();
         transferredPoints = new Stack<Marker>();
 
+
+
         Button save = (Button) view.findViewById(R.id.button_save_points);
         Button undo = (Button) view.findViewById(R.id.button_undo);
         Button clearUserPoints = (Button) view.findViewById(R.id.button_clear_user_points);
@@ -114,6 +119,7 @@ public class MapFragment extends Fragment {
         final MarkerOptions locMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(latitude + ", " + longitude);
         googleMap.addMarker(locMarker);
         plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
+        currentLocation = locMarker.getPosition();
 
         //plotDemoData();
 
@@ -174,16 +180,7 @@ public class MapFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                //Don't remove saved points at end
-                boolean pointsToRemove = (!userPoints.empty() || !markerStack.empty() || !transferredPoints.empty());
-                if(pointsToRemove){
-                    while(!userPoints.empty()) userPoints.pop().remove();
-                    while(!markerStack.empty()) markerStack.pop().remove();
-                    while(!transferredPoints.empty()) transferredPoints.pop().remove();
-                    circle.remove();
-                    plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
-                }
-                else Toast.makeText(getActivity(), "No Points To Remove!", Toast.LENGTH_SHORT).show();
+                removePoints();
             }
         });
 
@@ -258,6 +255,18 @@ public class MapFragment extends Fragment {
 //        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
 //                .setNegativeButton("No", dialogClickListener).show();
 //    }
+    private void removePoints() {
+        //Don't remove saved points at end
+        boolean pointsToRemove = (!userPoints.empty() || !markerStack.empty() || !transferredPoints.empty());
+        if(pointsToRemove){
+            while(!userPoints.empty()) userPoints.pop().remove();
+            while(!markerStack.empty()) markerStack.pop().remove();
+            while(!transferredPoints.empty()) transferredPoints.pop().remove();
+            circle.remove();
+            plotRadius(currentLocation, TotalsData.getAverageDistance());
+        }
+        else Toast.makeText(getActivity(), "No Points To Remove!", Toast.LENGTH_SHORT).show();
+    }
 
     private void plotUserPointsFromFile() {
         try {
@@ -348,6 +357,11 @@ public class MapFragment extends Fragment {
         if (cp != null) {
             googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
             cp = null;
+        }
+
+        if(gameId != TotalsData.getGameId()) {
+            gameId = TotalsData.getGameId();
+            removePoints();
         }
 
         plotTransferredPointsFromFile();

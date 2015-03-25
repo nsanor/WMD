@@ -421,6 +421,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                         Toast.LENGTH_SHORT).show();
                 //Add yes/no dialog here
                 TotalsData.updateGameId();
+                mBluetoothLEService.clearTransferredPoints();
                 return true;
             case R.id.action_settings:
                 Toast.makeText(getApplicationContext(), "Settings",
