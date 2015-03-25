@@ -60,6 +60,9 @@ public class MapFragment extends Fragment {
 
     private long gameId;
 
+    private String userPointsFilename = "user_points.txt";
+    private String transferredPointsFilename = "transferred_points.txt";
+
     public MapFragment() {
         // Required empty public constructor
     }
@@ -167,20 +170,7 @@ public class MapFragment extends Fragment {
         clearUserPoints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String filename = "user_points.txt";
-                FileOutputStream outputStream;
-                String text = "";
-
-                try {
-                    outputStream = getActivity().openFileOutput(filename, Context.MODE_PRIVATE);
-                    outputStream.write(text.getBytes());
-                    outputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                removePoints();
+                removeUserPoints();
             }
         });
 
@@ -255,17 +245,44 @@ public class MapFragment extends Fragment {
 //        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
 //                .setNegativeButton("No", dialogClickListener).show();
 //    }
-    private void removePoints() {
+    private void removeUserPoints() {
+        FileOutputStream outputStream;
+        String text = "";
+
+        try {
+            outputStream = getActivity().openFileOutput(userPointsFilename, Context.MODE_PRIVATE);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //Don't remove saved points at end
-        boolean pointsToRemove = (!userPoints.empty() || !markerStack.empty() || !transferredPoints.empty());
+        boolean pointsToRemove = (!userPoints.empty() || !markerStack.empty());
         if(pointsToRemove){
             while(!userPoints.empty()) userPoints.pop().remove();
             while(!markerStack.empty()) markerStack.pop().remove();
-            while(!transferredPoints.empty()) transferredPoints.pop().remove();
             circle.remove();
             plotRadius(currentLocation, TotalsData.getAverageDistance());
         }
         else Toast.makeText(getActivity(), "No Points To Remove!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void removeTransferredPoints() {
+        FileOutputStream outputStream;
+        String text = "";
+
+        try {
+            outputStream = getActivity().openFileOutput(transferredPointsFilename, Context.MODE_PRIVATE);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Don't remove saved points at end
+        boolean pointsToRemove = (!transferredPoints.empty());
+        if(pointsToRemove){
+            while(!transferredPoints.empty()) transferredPoints.pop().remove();
+        }
     }
 
     private void plotUserPointsFromFile() {
@@ -322,7 +339,6 @@ public class MapFragment extends Fragment {
     }
 
     private void saveUserPoints() {
-        String filename = "user_points.txt";
         FileOutputStream outputStream;
         String text = "";
 
@@ -335,7 +351,7 @@ public class MapFragment extends Fragment {
         }
 
         try {
-            outputStream = getActivity().openFileOutput(filename, Context.MODE_APPEND);
+            outputStream = getActivity().openFileOutput(userPointsFilename, Context.MODE_APPEND);
             outputStream.write(text.getBytes());
             outputStream.close();
         } catch (Exception e) {
@@ -361,8 +377,10 @@ public class MapFragment extends Fragment {
 
         if(gameId != TotalsData.getGameId()) {
             gameId = TotalsData.getGameId();
-            removePoints();
+            removeUserPoints();
+            removeTransferredPoints();
         }
+        Log.e(TAG, "onResume");
 
         plotTransferredPointsFromFile();
     }
@@ -379,7 +397,7 @@ public class MapFragment extends Fragment {
 
         cp = googleMap.getCameraPosition();
 //        googleMap = null;
-
+        Log.e(TAG, "onPause");
 
     }
 
