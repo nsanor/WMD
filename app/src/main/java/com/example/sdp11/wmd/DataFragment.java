@@ -42,7 +42,6 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
         //Test
         if(dataSource == null) {
             dataSource = MainActivity.dataSource;
-            dataSource.deleteAllThrows();
         }
     }
 

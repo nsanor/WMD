@@ -81,6 +81,33 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private static DataFragment dataFragment;
     private static MapFragment mapFragment;
 
+    private String testStrings[] = {"$GPRMC,180338.600,A,",
+            "4104.5010,N,08130.65",
+            "33,W,2.67,356.61,190",
+            "215,,,A*7D\n$GPRMC,1",
+            "80338.600,A,4104.501",
+            "0,N,08130.6533,W,2.6",
+            "7,356.61,190215,,,A*",
+            "7D\n$GPRMC,180338.60",
+            "0,A,4104.5010,N,0813",
+            "0.6533,W,2.67,356.61",
+            ",190215,,,A*7D\n$GPR",
+            "MC,180338.600,A,4104",
+            ".5010,N,08130.6533,W",
+            ",2.67,356.61,190215,",
+            ",,A*7D\n$GPRMC,18033",
+            "8.600,A,4104.5010,N,",
+            "08130.6533,W,2.67,35",
+            "6.61,190215,,,A*7D\n",
+            "$GPRMC,180338.600,A,",
+            "4104.5010,N,08130.65",
+            "33,W,2.67,356.61,190",
+            "215,,,A*7D\n$GPRMC,1",
+            "80338.600,A,4104.501",
+            "0,N,08130.6533,W,2.6",
+            "7,356.61,190215,,,A*",
+            "7D\n"};
+
     private static final String Separator = System.getProperty("line.separator");
 //    private String bufferedText = "";
 //    private long lastSyncTime = 0;
@@ -431,8 +458,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             case R.id.about:
 //                Toast.makeText(getApplicationContext(), "About Us",
 //                        Toast.LENGTH_SHORT).show();
-                mBluetoothLEService.parseTransferredData("$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D" +
-                        "\n$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n");
+                for(String s: testStrings) {
+                    mBluetoothLEService.parseTransferredData(s);
+                }
+
                 return true;
             case R.id.view_log:
                 Intent intent = new Intent(MainActivity.this, LogActivity.class);

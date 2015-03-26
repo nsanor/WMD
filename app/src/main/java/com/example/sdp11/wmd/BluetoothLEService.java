@@ -251,59 +251,39 @@ public class BluetoothLEService extends Service {
     }
 
     private void combineStrings(String input) {
-        //New line doesn't work
-        if(input.contains("$")) {
-            String data[] = input.split("$");
-            inputString += data[0].trim();
-            Log.e(TAG, inputString);
-            parseGPS(inputString);
-            inputString = "$" + data[1].trim();
-            Log.e(TAG, inputString);
+        Log.e(TAG, "Input String at beginning: " + inputString);
+        //if the line contains a $ it is either the beginning or the start of a new line
+        if(input.contains("\\r?\\n")) {
+            Log.e(TAG, "newline present");
+            String data[] = input.split("\\r?\\n");
+            //Start of a new line
+            if(data.length > 1) {
+                Log.e(TAG, "New line, needs split");
+                inputString += data[0].trim();
+                parseGPS(inputString);
+                inputString = data[1].trim();
+            }
+
+            Log.e(TAG, "Error splitting");
         }
         else {
             inputString += input.trim();
-            Log.e(TAG, inputString);
+            Log.e(TAG, "No '$' present");
             if(inputString.length() - inputString.replace(",", "").length() >= 12) {
                 parseGPS(inputString);
                 inputString = "";
             }
 
         }
-//        String data[] = input.split(",");
-//        String data2[] = Arrays.copyOfRange(data, 1, data.length);
-//        if(!inputStrings.isEmpty() && (lastCharacter != ",".charAt(0))) {
-//            String oldString = inputStrings.get(inputStrings.size());
-//            inputStrings.set(inputStrings.size(), oldString + data[0]);
-//        }
-//        for (String s: data2) {
-//
-//            if(s.contains("*")) {
-//                if(s.length() > 5){
-//                    inputStrings.add(s.substring(0, 4).trim());
-//                    parseGPS(inputStrings);
-//                    inputStrings.clear();
-//                    inputStrings.add(s.substring(4).trim());
-//                }
-//                else {
-//                    inputStrings.add(s.trim());
-//                    parseGPS(inputStrings);
-//                    inputStrings.clear();
-//                    isGPS = false;
-//                }
-//
-//            }
-//            else {
-//                inputStrings.add(s.trim());
-//                lastCharacter = s.trim().charAt(s.trim().length()-1);
-//            }
-//        }
+        Log.e(TAG, "Input String at end: " + inputString);
     }
 
     private void parseGPS(String i) {
-        double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
-        writeToLog("Entering parseGPS");
+        double latDeg, latMin, latitude, lonDeg, lonMin, longitude;
+        double time;
         String input[] = i.split(",");
 
+        //Figure out time!!
         if (input.length >= 7) {
             time = Double.parseDouble(input[1]);
             latDeg =Double.parseDouble(input[3].substring(0, 2));
@@ -316,7 +296,7 @@ public class BluetoothLEService extends Service {
             if (input[6].equals(String.valueOf("E"))) longitude = -1 * longitude;
             //return new inputDataPoint(latitude, longitude, 1);
             writeTransferredPoints(latitude + ", " + longitude + Separator);
-            GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, 1);
+            GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, (long)time);
             gpsData.add(gpsdataPoint);
         }
     }
