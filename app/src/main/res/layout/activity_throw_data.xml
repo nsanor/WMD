@@ -17,13 +17,6 @@
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/hole_id_header"
-            android:text="@string/hole_id_header"/>
-        <TextView
-            android:id="@+id/hole_id_data"/>
-    </TableRow>
-    <TableRow>
-        <TextView
             android:id="@+id/game_id_header"
             android:text="@string/game_id_header"/>
         <TextView

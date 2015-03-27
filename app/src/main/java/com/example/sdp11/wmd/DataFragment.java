@@ -86,6 +86,7 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
     public void onResume() {
         dataSource.open();
         super.onResume();
+        dataSource.deleteAllThrows();
         addDemoThrows();
         refreshData();
     }

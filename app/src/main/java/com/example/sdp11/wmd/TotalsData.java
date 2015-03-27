@@ -11,9 +11,7 @@ public class TotalsData {
     static private double averageAngle;
     static private double averageTime;
     static private int throwCount;
-    //static private int someCount;
     static private long throwId;
-    static private long holeId;
     static private long gameId;
 
     //These are to tell the difference between holes and games.
@@ -65,14 +63,6 @@ public class TotalsData {
 
     public static void setThrowId(long throwId) {
         TotalsData.throwId = throwId;
-    }
-
-    public static long getHoleId() {
-        return holeId;
-    }
-
-    public static void setHoleId(long holeId) {
-        TotalsData.holeId = holeId;
     }
 
     public static long getGameId() {

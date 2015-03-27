@@ -143,18 +143,17 @@ public class RawThrowData {
         Date date = new Date(d);
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-        String formatted = format.format(date);
-        return formatted;
+        return format.format(date);
     }
 
-    public String getAllFields() {
-        return throwId + ", " + holeId + ", " + gameId + ", " + startLat + ", " + startLong + ", " + startXAccel + ", " + startYAccel + ", " + endLat + ", " + endLong;
-    }
+//    public String getAllFields() {
+//        return throwId + ", " + holeId + ", " + gameId + ", " + startLat + ", " + startLong + ", " + startXAccel + ", " + startYAccel + ", " + endLat + ", " + endLong;
+//    }
 
     //Will be used by the ArrayAdapter in the ListView
-    @Override
-    public String toString() {
-        return getAllFields();
-    }
+//    @Override
+//    public String toString() {
+//        return getAllFields();
+//    }
 
 }

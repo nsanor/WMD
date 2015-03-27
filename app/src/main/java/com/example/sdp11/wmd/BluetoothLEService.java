@@ -217,6 +217,7 @@ public class BluetoothLEService extends Service {
     private void processData() {
         double initialDirection = calculateInitialDirection();
         double finalDirection = calculateFinalDirection();
+        //double
 
     }
 
@@ -230,24 +231,14 @@ public class BluetoothLEService extends Service {
 
     //Cycle through all transferred GPS and IMU data
     public void parseTransferredData(String input) {
-
-    //Test
-//        String data[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
-//                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
-//                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
-//                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
-//                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
-//                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
-    if(input.startsWith("$GPRMC") || isGPS) {
-        isGPS = true;
-        //gpsData.add(parseGPS(s));
-        combineStrings(input);
-    }
-    else {
-        Log.i(TAG, "Implement IMU parser here");
-    }
-    //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
-    //dataSource.createThrow();
+        if(input.startsWith("$GPRMC") || isGPS) {
+            isGPS = true;
+            //gpsData.add(parseGPS(s));
+            combineStrings(input);
+        }
+        else {
+            Log.i(TAG, "Implement IMU parser here");
+        }
     }
 
     private void combineStrings(String input) {
@@ -287,7 +278,7 @@ public class BluetoothLEService extends Service {
         String input[] = i.split(",");
 
         //Figure out time!!
-        if (input.length >= 7) {
+        if ((input.length >= 7) && i.startsWith("$GPRMC")) {
             time = Double.parseDouble(input[1]);
             latDeg =Double.parseDouble(input[3].substring(0, 2));
             latMin =Double.parseDouble(input[3].substring(2));
@@ -302,6 +293,11 @@ public class BluetoothLEService extends Service {
             GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, (long)time);
             gpsData.add(gpsdataPoint);
         }
+        else Log.e(TAG, "Failed in parseGPS");
+    }
+
+    private void recalcTotals() {
+
     }
 
     public void writeTransferredPoints(String text) {

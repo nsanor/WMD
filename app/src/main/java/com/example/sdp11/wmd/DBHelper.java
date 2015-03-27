@@ -24,7 +24,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_THROWS = "throw_data";
 
     public static final String COLUMN_THROW_ID = "throw_id";
-    public static final String COLUMN_HOLE_ID = "hole_id";
     public static final String COLUMN_GAME_ID = "game_id";
     public static final String COLUMN_INITIAL_DIRECTION = "initial_direction";
     public static final String COLUMN_FINAL_DIRECTION = "final_direction";
@@ -46,7 +45,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String THROWS_TABLE_CREATE = "create table "
             + TABLE_THROWS + " ( "
             + COLUMN_THROW_ID + " integer primary key autoincrement, "
-            + COLUMN_HOLE_ID + " integer not null, "
             + COLUMN_GAME_ID + " integer not null, "
             + COLUMN_INITIAL_DIRECTION + " integer not null, "
             + COLUMN_FINAL_DIRECTION + " integer not null, "
@@ -58,7 +56,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String TOTALS_TABLE_CREATE = "create table "
             + TABLE_TOTALS + " ( "
-            + COLUMN_HOLE_ID + " integer not null, "
             + COLUMN_GAME_ID + " integer not null, "
             + COLUMN_AVERAGE_DISTANCE + " double not null, "
             + COLUMN_AVERAGE_ANGLE + " double not null, "

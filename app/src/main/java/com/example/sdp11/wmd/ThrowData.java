@@ -8,7 +8,6 @@ import android.os.Parcelable;
  */
 public class ThrowData implements Parcelable {
     private long throwId;
-    private long holeId;
     private long gameId;
     private double initialDirection;
     private double finalDirection;
@@ -24,18 +23,17 @@ public class ThrowData implements Parcelable {
     public ThrowData(){}
 
     public ThrowData(Parcel in) {
-        String[] data = new String[9];
+        String[] data = new String[8];
 
         in.readStringArray(data);
         this.throwId = Long.valueOf(data[0]);
-        this.holeId = Long.valueOf(data[1]);
-        this.gameId = Long.valueOf(data[2]);
-        this.initialDirection = Double.valueOf(data[3]);
-        this.finalDirection = Double.valueOf(data[4]);
-        this.throwQuality = Double.valueOf(data[5]);
-        this.totalDistance = Double.valueOf(data[6]);
-        this.totalTime = Long.valueOf(data[7]);
-        this.syncTime = Long.valueOf(data[8]);
+        this.gameId = Long.valueOf(data[1]);
+        this.initialDirection = Double.valueOf(data[2]);
+        this.finalDirection = Double.valueOf(data[3]);
+        this.throwQuality = Double.valueOf(data[4]);
+        this.totalDistance = Double.valueOf(data[5]);
+        this.totalTime = Long.valueOf(data[6]);
+        this.syncTime = Long.valueOf(data[7]);
     }
 
     public ThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime) {
@@ -113,14 +111,6 @@ public class ThrowData implements Parcelable {
         return throwId + " | " + totalDistance + " | " + throwQuality;
     }
 
-    public long getHoleId() {
-        return holeId;
-    }
-
-    public void setHoleId(long holeId) {
-        this.holeId = holeId;
-    }
-
     public long getGameId() {
         return gameId;
     }
@@ -149,7 +139,6 @@ public class ThrowData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[] {String.valueOf(this.throwId),
-                String.valueOf(this.holeId),
                 String.valueOf(this.gameId),
                 String.valueOf(this.initialDirection),
                 String.valueOf(this.finalDirection),
