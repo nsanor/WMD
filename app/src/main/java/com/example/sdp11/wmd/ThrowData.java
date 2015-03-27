@@ -13,10 +13,10 @@ public class ThrowData implements Parcelable {
     private double finalDirection;
     private double throwQuality;
     private double totalDistance;
-    private long totalTime;
-    private long syncTime;
+    private double totalTime;
+    private double syncTime;
 
-    public long getTotalTime() {
+    public double getTotalTime() {
         return totalTime;
     }
 
@@ -123,7 +123,7 @@ public class ThrowData implements Parcelable {
         this.totalTime = totalTime;
     }
 
-    public long getSyncTime() {
+    public double getSyncTime() {
         return syncTime;
     }
 

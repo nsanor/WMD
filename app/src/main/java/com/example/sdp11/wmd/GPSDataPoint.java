@@ -1,5 +1,7 @@
 package com.example.sdp11.wmd;
 
+import android.location.Location;
+
 /**
  * Created by nsanor on 2/10/2015.
  */
@@ -7,13 +9,17 @@ public class GPSDataPoint {
     private long throwId;
     private double latitude;
     private double longitude;
-    private long time;
+    private double time;
+    private Location loc;
 
-    public GPSDataPoint(double latitude, double longitude, long time) {
+    public GPSDataPoint(double latitude, double longitude, double time) {
         this.throwId = TotalsData.getThrowId();
         this.latitude = latitude;
         this.longitude = longitude;
         this.time = time;
+        this.loc = new Location("");
+        this.loc.setLatitude(latitude);
+        this.loc.setLongitude(longitude);
     }
 
     public double getLatitude() {
@@ -24,7 +30,11 @@ public class GPSDataPoint {
         return longitude;
     }
 
-    public long getTime() {
+    public double getTime() {
         return time;
+    }
+
+    public Location getLoc() {
+        return loc;
     }
 }

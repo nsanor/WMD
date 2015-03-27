@@ -39,7 +39,6 @@
 
     //Data Tab
     <string name="throw_id_header">Throw ID</string>
-    <string name="hole_id_header">Hole ID</string>
     <string name="game_id_header">Game ID</string>
     <string name="total_distance_header">Total Distance</string>
     <string name="throw_quality_header">Throw Quality</string>

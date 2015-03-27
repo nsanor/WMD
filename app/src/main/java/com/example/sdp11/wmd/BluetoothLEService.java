@@ -136,27 +136,9 @@ public class BluetoothLEService extends Service {
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-//                if(!isTransferring) {
-//                    Log.e(TAG, "in handler");
-//                    isTransferring = true;
-//                    Handler handler = new Handler();
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            processData();
-//                            isTransferring = false;
-//                        }
-//                    }, 10000);
-//                }
 
                 String data = characteristic.getStringValue(0);
                 Log.e(TAG, "onCharacteristicRead: " + data);
-//                writeToLog("Characteristic Changed.");
-//                writeToLog("Transferred Data: " + data);
-//                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-//                if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
-//                lastSyncTime = System.currentTimeMillis();
-//                parseTransferredData(data);
             }
         }
 
@@ -164,20 +146,6 @@ public class BluetoothLEService extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-
-//            if(!isTransferring) {
-//                isTransferring = true;
-//
-//                Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        processData();
-//                        Log.e(TAG, "in handler");
-//                        isTransferring = false;
-//                    }
-//                }, 10000);
-//            }
 
             String data = characteristic.getStringValue(0);
             Log.e(TAG, "onCharacteristicChanged: " + data);
@@ -217,8 +185,11 @@ public class BluetoothLEService extends Service {
     private void processData() {
         double initialDirection = calculateInitialDirection();
         double finalDirection = calculateFinalDirection();
-        //double
+        double throwQuality = calculateThrowQuality();
+        double totalDistance = gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
+        long totalTime = convertToUnixTime(gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime());
 
+        MainActivity.dataSource.createThrow(initialDirection, finalDirection, totalDistance, throwQuality, totalTime);
     }
 
     private double calculateInitialDirection(){
@@ -227,6 +198,15 @@ public class BluetoothLEService extends Service {
 
     private double calculateFinalDirection(){
         return -1;
+    }
+
+    private double calculateThrowQuality(){
+        return 1.0;
+    }
+
+    private long convertToUnixTime(double time) {
+        //figure out calculation
+        return 1;
     }
 
     //Cycle through all transferred GPS and IMU data
@@ -290,7 +270,7 @@ public class BluetoothLEService extends Service {
             if (input[6].equals(String.valueOf("E"))) longitude = -1 * longitude;
             //return new inputDataPoint(latitude, longitude, 1);
             writeTransferredPoints(latitude + ", " + longitude + Separator);
-            GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, (long)time);
+            GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, time);
             gpsData.add(gpsdataPoint);
         }
         else Log.e(TAG, "Failed in parseGPS");
