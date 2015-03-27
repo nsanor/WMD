@@ -251,31 +251,34 @@ public class BluetoothLEService extends Service {
     }
 
     private void combineStrings(String input) {
-        Log.e(TAG, "Input String at beginning: " + inputString);
-        //if the line contains a $ it is either the beginning or the start of a new line
-        if(input.contains("\\r?\\n")) {
-            Log.e(TAG, "newline present");
-            String data[] = input.split("\\r?\\n");
+        //Log.e(TAG, "Input String at beginning: " + inputString);
+
+        if(input.contains("\n")) {
+            //Log.e(TAG, "newline present");
+            String data[] = input.split("\n");
+            //for(String i: data) Log.e(TAG, i);
             //Start of a new line
             if(data.length > 1) {
-                Log.e(TAG, "New line, needs split");
+                //Log.e(TAG, "New line, needs split");
                 inputString += data[0].trim();
                 parseGPS(inputString);
                 inputString = data[1].trim();
             }
 
-            Log.e(TAG, "Error splitting");
+            //else Log.e(TAG, "Error splitting");
         }
         else {
             inputString += input.trim();
-            Log.e(TAG, "No '$' present");
-            if(inputString.length() - inputString.replace(",", "").length() >= 12) {
+            //Log.e(TAG, "No newline present");
+            //If there are two characters after the star (full string)
+            if(inputString.contains("*") && (inputString.length() - inputString.indexOf("*") - 1) >= 2){//if(inputString.length() - inputString.replace(",", "").length() >= 12) {
+                //Log.e(TAG, "Full string");
                 parseGPS(inputString);
                 inputString = "";
             }
 
         }
-        Log.e(TAG, "Input String at end: " + inputString);
+        //Log.e(TAG, "Input String at end: " + inputString);
     }
 
     private void parseGPS(String i) {
