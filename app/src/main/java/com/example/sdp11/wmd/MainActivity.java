@@ -106,7 +106,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             "80338.600,A,4104.501",
             "0,N,08130.6533,W,2.6",
             "7,356.61,190215,,,A*",
-            "7D\n"};
+            "7D\nZQK"};
 
     private static final String Separator = System.getProperty("line.separator");
 //    private String bufferedText = "";
@@ -459,7 +459,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 //                Toast.makeText(getApplicationContext(), "About Us",
 //                        Toast.LENGTH_SHORT).show();
                 for(String s: testStrings) {
-                    mBluetoothLEService.parseTransferredData(s);
+                    mBluetoothLEService.bufferStrings(s);
                 }
 
                 return true;

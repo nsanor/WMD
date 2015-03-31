@@ -89,6 +89,7 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
         logText.setText("");
     }
 
+
     private void refreshText() {
         logText.setText("");
         try {

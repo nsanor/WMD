@@ -69,6 +69,8 @@ public class BluetoothLEService extends Service {
 
     private boolean isGPS;
 
+    private String allInput = "";
+
     public BluetoothGattCallback getGattCallback() {return mGattCallback;}
     public String getmBluetoothDeviceAddress() {
         return mBluetoothDeviceAddress;
@@ -150,10 +152,10 @@ public class BluetoothLEService extends Service {
             String data = characteristic.getStringValue(0);
             Log.e(TAG, "onCharacteristicChanged: " + data);
             writeToLog("Transferred Data: " + data);
-            broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-            if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
-            lastSyncTime = System.currentTimeMillis();
-            parseTransferredData(data);
+//            broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+//            if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
+//            lastSyncTime = System.currentTimeMillis();
+            bufferStrings(data);
         }
 
         private void broadcastUpdate(final String action) {
@@ -204,50 +206,56 @@ public class BluetoothLEService extends Service {
         return 1.0;
     }
 
+    public void bufferStrings(String input) {
+        allInput += input;
+        Log.e(TAG, "allInput = " + allInput);
+        parseTransferredData();
+    }
+
     //Cycle through all transferred GPS and IMU data
-    public void parseTransferredData(String input) {
-        if(input.startsWith("$GPRMC") || isGPS) {
-            isGPS = true;
-            //gpsData.add(parseGPS(s));
-            combineStrings(input);
+    public void parseTransferredData() {
+        if(allInput.contains("ZQK")) {
+            String strings[] = allInput.split("\n");
+            for(String s: strings) {
+                if(s.startsWith("$GPRMC")) parseGPS(s);
+                else parseIMU(s);
+            }
+            processData();
+            allInput = "";
         }
-        else {
-            Log.i(TAG, "Implement IMU parser here");
-        }
-
-        if(input.contains("ZQK")) processData();
+        else Log.e(TAG, "Not a full string");
     }
 
-    private void combineStrings(String input) {
-        //Log.e(TAG, "Input String at beginning: " + inputString);
-
-        if(input.contains("\n")) {
-            //Log.e(TAG, "newline present");
-            String data[] = input.split("\n");
-            //for(String i: data) Log.e(TAG, i);
-            //Start of a new line
-            if(data.length > 1) {
-                //Log.e(TAG, "New line, needs split");
-                inputString += data[0].trim();
-                parseGPS(inputString);
-                inputString = data[1].trim();
-            }
-
-            //else Log.e(TAG, "Error splitting");
-        }
-        else {
-            inputString += input.trim();
-            //Log.e(TAG, "No newline present");
-            //If there are two characters after the star (full string)
-            if(inputString.contains("*") && (inputString.length() - inputString.indexOf("*") - 1) >= 2){//if(inputString.length() - inputString.replace(",", "").length() >= 12) {
-                //Log.e(TAG, "Full string");
-                parseGPS(inputString);
-                inputString = "";
-            }
-
-        }
-        //Log.e(TAG, "Input String at end: " + inputString);
-    }
+//    private void combineStrings(String input) {
+//        //Log.e(TAG, "Input String at beginning: " + inputString);
+//
+//        if(input.contains("\n")) {
+//            //Log.e(TAG, "newline present");
+//            String data[] = input.split("\n");
+//            //for(String i: data) Log.e(TAG, i);
+//            //Start of a new line
+//            if(data.length > 1) {
+//                //Log.e(TAG, "New line, needs split");
+//                inputString += data[0].trim();
+//                parseGPS(inputString);
+//                inputString = data[1].trim();
+//            }
+//
+//            //else Log.e(TAG, "Error splitting");
+//        }
+//        else {
+//            inputString += input.trim();
+//            //Log.e(TAG, "No newline present");
+//            //If there are two characters after the star (full string)
+//            if(inputString.contains("*") && (inputString.length() - inputString.indexOf("*") - 1) >= 2){//if(inputString.length() - inputString.replace(",", "").length() >= 12) {
+//                //Log.e(TAG, "Full string");
+//                parseGPS(inputString);
+//                inputString = "";
+//            }
+//
+//        }
+//        //Log.e(TAG, "Input String at end: " + inputString);
+//    }
 
     private void parseGPS(String i) {
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude;
@@ -273,7 +281,9 @@ public class BluetoothLEService extends Service {
         else Log.e(TAG, "Failed in parseGPS");
     }
 
-
+    private void parseIMU(String i) {
+        //TODO parse IMU
+    }
 
     private void recalcTotals() {
 
