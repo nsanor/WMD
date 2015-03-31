@@ -187,7 +187,7 @@ public class BluetoothLEService extends Service {
         double finalDirection = calculateFinalDirection();
         double throwQuality = calculateThrowQuality();
         double totalDistance = gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
-        long totalTime = convertToUnixTime(gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime());
+        double totalTime = gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
 
         MainActivity.dataSource.createThrow(initialDirection, finalDirection, totalDistance, throwQuality, totalTime);
     }
@@ -207,6 +207,11 @@ public class BluetoothLEService extends Service {
     private long convertToUnixTime(double time) {
         //figure out calculation
         return 1;
+    }
+
+    public String convertToGPSTime(double time) {
+        String temp = String.valueOf(time);
+        return temp.substring(0,2) + ":" + temp.substring(2,4) + ":" + temp.substring(4);
     }
 
     //Cycle through all transferred GPS and IMU data
@@ -275,6 +280,8 @@ public class BluetoothLEService extends Service {
         }
         else Log.e(TAG, "Failed in parseGPS");
     }
+
+
 
     private void recalcTotals() {
 

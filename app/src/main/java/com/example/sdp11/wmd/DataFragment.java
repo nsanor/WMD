@@ -16,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,7 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
         throwDataListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> aView, View v, int pos, long id) {
                 try {
+                    //Log.e(TAG, "Original: " + adapter.getThrow(pos).getTotalTime() + ", Converted: " + convertToGPSTime(adapter.getThrow(pos).getTotalTime()));
                     Intent intent = new Intent(getActivity(), ThrowDataActivity.class);
                     intent.putExtra("Throw", adapter.getThrow(pos));
                     startActivity(intent);
@@ -80,6 +82,13 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
             }
         });
         return view;
+    }
+
+    public String convertToGPSTime(double time) {
+        //Subtract 4 hours to convert to Eastern time
+        time -= 40000;
+        String temp = String.valueOf(time);
+        return temp.substring(0,2) + ":" + temp.substring(2,4) + ":" + temp.substring(4);
     }
 
     @Override
@@ -100,16 +109,16 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
 
 
     private void addDemoThrows() {
-        dataSource.createThrow(1, 1, 75, 1, 1);
-        dataSource.createThrow(1, 1, 78, 1, 1);
-        dataSource.createThrow(1, 1, 62, 0.85, 1);
-        dataSource.createThrow(1, 1, 80, 1, 1);
-        dataSource.createThrow(1, 1, 20, 0.2, 1);
-        dataSource.createThrow(1, 1, 82, 0.94, 1);
-        dataSource.createThrow(1, 1, 75, 1, 1);
-        dataSource.createThrow(1, 1, 66, 1, 1);
-        dataSource.createThrow(1, 1, 59, 0.57, 1);
-        dataSource.createThrow(1, 1, 70, 0.8, 1);
+        dataSource.createThrow(1, 1, 75, 1, 180338.600);
+        dataSource.createThrow(1, 1, 78, 1, 180338.600);
+        dataSource.createThrow(1, 1, 62, 0.85, 180338.600);
+        dataSource.createThrow(1, 1, 80, 1, 180338.600);
+        dataSource.createThrow(1, 1, 20, 0.2, 180338.600);
+        dataSource.createThrow(1, 1, 82, 0.94, 180338.600);
+        dataSource.createThrow(1, 1, 75, 1, 180338.600);
+        dataSource.createThrow(1, 1, 66, 1, 180338.600);
+        dataSource.createThrow(1, 1, 59, 0.57, 180338.600);
+        dataSource.createThrow(1, 1, 70, 0.8, 180338.600);
     }
 
     public void refreshData() {

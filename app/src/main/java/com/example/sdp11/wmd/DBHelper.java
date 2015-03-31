@@ -50,8 +50,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + COLUMN_FINAL_DIRECTION + " integer not null, "
             + COLUMN_TOTAL_DISTANCE + " double not null, "
             + COLUMN_THROW_QUALITY + " double not null, "
-            + COLUMN_TOTAL_TIME + " integer not null, "
-            + COLUMN_SYNC_TIME + " integer not null"
+            + COLUMN_TOTAL_TIME + " double not null, "
+            + COLUMN_SYNC_TIME + " double not null"
             + ");";
 
     private static final String TOTALS_TABLE_CREATE = "create table "

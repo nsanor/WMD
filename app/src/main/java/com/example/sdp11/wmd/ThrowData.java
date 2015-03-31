@@ -32,23 +32,30 @@ public class ThrowData implements Parcelable {
         this.finalDirection = Double.valueOf(data[3]);
         this.throwQuality = Double.valueOf(data[4]);
         this.totalDistance = Double.valueOf(data[5]);
-        this.totalTime = Long.valueOf(data[6]);
-        this.syncTime = Long.valueOf(data[7]);
+        this.totalTime = Double.valueOf(data[6]);
+        this.syncTime = Double.valueOf(data[7]);
     }
 
-    public ThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, long startTime, long endTime) {
+    public ThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, double startTime, double endTime) {
         this.throwId =throwId;
         this.totalDistance = calculateDistance(start_lat, start_long, end_lat, end_long);
         this.totalTime = endTime - startTime;
         this.throwQuality = 1;
     }
 
-    public ThrowData(RawThrowData t) {
-        this.throwId = t.getThrowId();
-        this.totalDistance = calculateDistance(t.getStartLat(), t.getStartLong(), t.getEndLat(), t.getEndLong());
-        this.totalTime = t.getEndTime() - t.getStartTime();
-        this.throwQuality = 1;
+    public String convertToGPSTime(double time) {
+        //Subtract 4 hours to convert to Eastern time
+        time -= 40000;
+        String temp = String.valueOf(time);
+        return temp.substring(0,2) + ":" + temp.substring(2,4) + ":" + temp.substring(4);
     }
+
+//    public ThrowData(RawThrowData t) {
+//        this.throwId = t.getThrowId();
+//        this.totalDistance = calculateDistance(t.getStartLat(), t.getStartLong(), t.getEndLat(), t.getEndLong());
+//        this.totalTime = t.getEndTime() - t.getStartTime();
+//        this.throwQuality = 1;
+//    }
 
     public long getThrowId() {
         return throwId;
@@ -119,7 +126,7 @@ public class ThrowData implements Parcelable {
         this.gameId = gameId;
     }
 
-    public void setTotalTime(long totalTime) {
+    public void setTotalTime(double totalTime) {
         this.totalTime = totalTime;
     }
 
@@ -127,7 +134,7 @@ public class ThrowData implements Parcelable {
         return syncTime;
     }
 
-    public void setSyncTime(long syncTime) {
+    public void setSyncTime(double syncTime) {
         this.syncTime = syncTime;
     }
 

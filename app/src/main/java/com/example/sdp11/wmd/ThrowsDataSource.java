@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class ThrowsDataSource {
         database.close();
     }
 
-    public void createThrow(double initial_direction, double final_direction, double total_distance, double throw_quality, long total_time) {
+    public void createThrow(double initial_direction, double final_direction, double total_distance, double throw_quality, double total_time) {
 
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getGameId());
@@ -56,11 +57,30 @@ public class ThrowsDataSource {
         values.put(DBHelper.COLUMN_THROW_QUALITY, throw_quality);
         values.put(DBHelper.COLUMN_TOTAL_TIME, total_time);
 
-        //Calculate unix time from current time
-        long now = System.currentTimeMillis();
+        //Calculate GPS time from current time
+        String now = getCurrentTime();
         values.put(DBHelper.COLUMN_SYNC_TIME, now);
 
         long insertId = database.insert(DBHelper.TABLE_THROWS, null,values);
+    }
+
+    private String getCurrentTime() {
+        Calendar now = Calendar.getInstance();
+        String leadingHour = "";
+        String leadingMinute = "";
+        String leadingSecond = "";
+
+        int hour = now.get(Calendar.HOUR);
+        if(hour < 10) leadingHour = "0";
+
+        int minute = now.get(Calendar.MINUTE);
+        if(minute < 10) leadingMinute = "0";
+
+        int second = now.get(Calendar.SECOND);
+        if(second < 10) leadingSecond = "0";
+
+        int millisecond = now.get(Calendar.MILLISECOND);
+        return leadingHour + hour + leadingMinute + minute + leadingSecond + second + "." + millisecond;
     }
 
     public void deleteThrow(RawThrowData t) {
@@ -132,8 +152,8 @@ public class ThrowsDataSource {
         t.setFinalDirection(cursor.getDouble(3));
         t.setThrowQuality(cursor.getDouble(4));
         t.setTotalDistance(cursor.getDouble(5));
-        t.setTotalTime(cursor.getInt(6));
-        t.setSyncTime(cursor.getInt(7));
+        t.setTotalTime(cursor.getDouble(6));
+        t.setSyncTime(cursor.getDouble(7));
         return t;
     }
 
