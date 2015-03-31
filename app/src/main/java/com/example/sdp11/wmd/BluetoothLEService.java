@@ -204,16 +204,6 @@ public class BluetoothLEService extends Service {
         return 1.0;
     }
 
-    private long convertToUnixTime(double time) {
-        //figure out calculation
-        return 1;
-    }
-
-    public String convertToGPSTime(double time) {
-        String temp = String.valueOf(time);
-        return temp.substring(0,2) + ":" + temp.substring(2,4) + ":" + temp.substring(4);
-    }
-
     //Cycle through all transferred GPS and IMU data
     public void parseTransferredData(String input) {
         if(input.startsWith("$GPRMC") || isGPS) {
@@ -224,6 +214,8 @@ public class BluetoothLEService extends Service {
         else {
             Log.i(TAG, "Implement IMU parser here");
         }
+
+        if(input.contains("ZQK")) processData();
     }
 
     private void combineStrings(String input) {
