@@ -282,7 +282,7 @@ public class BluetoothLEService extends Service {
     }
 
     private void parseIMU(String i) {
-        //TODO parse IMU
+        Log.e(TAG, "parse IMU here");
     }
 
     private void recalcTotals() {
