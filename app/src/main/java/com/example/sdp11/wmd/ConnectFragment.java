@@ -33,6 +33,7 @@ public class ConnectFragment extends Fragment{
     private TextView connectionStatus;
     private TextView devicesHeader;
     private LeDeviceListAdapter listAdapter;
+    private Button button_search;
 
     private boolean deviceFound = false;
 
@@ -81,7 +82,7 @@ public class ConnectFragment extends Fragment{
             }
         });
 
-        Button button_search = (Button)view.findViewById(R.id.Paired);
+        button_search = (Button)view.findViewById(R.id.Paired);
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,12 +132,16 @@ public class ConnectFragment extends Fragment{
         if(deviceName != null) {
             connectionStatus.setText("Device Connected: " + deviceName);
             devicesHeader.setVisibility(View.INVISIBLE);
+            button_search.setVisibility(View.INVISIBLE);
             listAdapter.clear();
             listAdapter.notifyDataSetChanged();
         }
         else {
             connectionStatus.setText("Device Disconnected");
             devicesHeader.setVisibility(View.VISIBLE);
+            button_search.setVisibility(View.VISIBLE);
+            listAdapter.clear();
+            listAdapter.notifyDataSetChanged();
         }
     }
 

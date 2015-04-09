@@ -185,7 +185,6 @@ public class BluetoothLEService extends Service {
     };
 
     private void processData() {
-        Log.e(TAG, "In processData");
         double initialDirection = calculateInitialDirection();
         double finalDirection = calculateFinalDirection();
         double throwQuality = calculateThrowQuality();
@@ -209,7 +208,6 @@ public class BluetoothLEService extends Service {
 
     public void bufferStrings(String input) {
         allInput += input;
-        Log.e(TAG, "allInput = " + allInput);
         parseTransferredData();
     }
 
@@ -219,12 +217,12 @@ public class BluetoothLEService extends Service {
             String strings[] = allInput.split("\n");
             for(String s: strings) {
                 if(s.startsWith("$")) parseGPS(s);
-//                else parseIMU(s);
+                else Log.e(TAG, "Not a valid string");
             }
             processData();
             allInput = "";
         }
-        else Log.e(TAG, "Not a full string");
+        else Log.e(TAG, "No Termination character");
     }
 
 //    private void combineStrings(String input) {
@@ -286,7 +284,6 @@ public class BluetoothLEService extends Service {
     private void parseGPS(String i) {
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude;
         String input[] = i.split(",");
-        Log.e(TAG, "In parseGPS");
 
         //Figure out time!!
         if ((input.length >= 4) && i.startsWith("$")) {
@@ -304,10 +301,6 @@ public class BluetoothLEService extends Service {
             gpsData.add(gpsdataPoint);
         }
         else Log.e(TAG, "Failed in parseGPS");
-    }
-
-    private void parseIMU(String i) {
-        Log.e(TAG, "parse IMU here");
     }
 
     private void recalcTotals() {
@@ -330,8 +323,6 @@ public class BluetoothLEService extends Service {
     public void clearTransferredPoints() {
         FileOutputStream outputStream;
         String text = "";
-
-        Log.e(TAG, "in clearTransferredPoints");
 
         try {
             outputStream = openFileOutput(transferredFilename, Context.MODE_PRIVATE);
