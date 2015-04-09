@@ -15,19 +15,22 @@
             android:id="@+id/button_save_points"
             style="@style/ButtonStyle"
             android:text="@string/button_save"/>
-
+        <Button
+            android:id="@+id/button_plot_hole"
+            style="@style/ButtonStyle"
+            android:text="@string/button_hole" />
         <Button
             android:id="@+id/button_undo"
             style="@style/ButtonStyle"
             android:text="@string/button_undo" />
         <Button
-            android:id="@+id/button_clear_user_points"
-            style="@style/ButtonStyle"
-            android:text="@string/button_clear_user_point" />
-        <Button
             android:id="@+id/button_refresh_map"
             style="@style/ButtonStyle"
             android:text="@string/button_refresh" />
+        <Button
+            android:id="@+id/button_clear_user_points"
+            style="@style/ButtonStyle"
+            android:text="@string/button_clear_user_point" />
 
     </LinearLayout>
 

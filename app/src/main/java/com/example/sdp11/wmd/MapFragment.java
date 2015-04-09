@@ -58,10 +58,16 @@ public class MapFragment extends Fragment {
     private Stack<Marker> userPoints;
     private Stack<Marker> transferredPoints;
 
+    private Button plotHole;
+
+    private Location mCurrentLocation;
+
     private long gameId;
 
     private String userPointsFilename = "user_points.txt";
     private String transferredPointsFilename = "transferred_points.txt";
+
+    private Marker hole;
 
     public MapFragment() {
         // Required empty public constructor
@@ -100,6 +106,7 @@ public class MapFragment extends Fragment {
         Button undo = (Button) view.findViewById(R.id.button_undo);
         Button clearUserPoints = (Button) view.findViewById(R.id.button_clear_user_points);
         Button refresh = (Button) view.findViewById(R.id.button_refresh_map);
+        plotHole = (Button) view.findViewById(R.id.button_plot_hole);
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -109,7 +116,7 @@ public class MapFragment extends Fragment {
 
         googleMap = mapView.getMap();
         //for demo purposes, don't default to current location
-        final Location mCurrentLocation = new Location(""); //MainActivity.getmCurrentLocation();
+        mCurrentLocation = new Location(""); //MainActivity.getmCurrentLocation();
         mCurrentLocation.setLatitude(41.075017);
         mCurrentLocation.setLongitude(-81.510883);
 
@@ -174,40 +181,22 @@ public class MapFragment extends Fragment {
             }
         });
 
-
-
-
-
-
-        //calculateBounds();
-        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
+        plotHole.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onMapClick(LatLng point) {
-                //lstLatLngs.add(point);
-                Location location = new Location("");
-                location.setLatitude(point.latitude);
-                location.setLongitude(point.longitude);
-                if (markerStack.empty()) {
-                    if(mCurrentLocation.distanceTo(location) <= TotalsData.getAverageDistance()){
-                        Marker marker = plotUserPoint(point);
-                        markerStack.push(marker);
-                    }
-                    else Toast.makeText(getActivity(), "Please select within radius", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                if(plotHole.getText() == "Plot Hole") {
+                    googleMap.setOnMapClickListener(new PlotHoleListener());
+                    plotHole.setText("Cancel");
                 }
                 else {
-                    Location location2 = new Location("");
-                    location2.setLatitude(markerStack.peek().getPosition().latitude);
-                    location2.setLongitude(markerStack.peek().getPosition().longitude);
-
-                    if(location.distanceTo(location2) <= TotalsData.getAverageDistance()) {
-                        Marker marker = plotUserPoint(point);
-                        markerStack.push(marker);
-                    }
-                    else Toast.makeText(getActivity(), "Please select within radius", Toast.LENGTH_SHORT).show();
+                    googleMap.setOnMapClickListener(new UserPointsListener());
+                    plotHole.setText("Plot Hole");
                 }
             }
         });
+
+        //calculateBounds();
+        googleMap.setOnMapClickListener(new UserPointsListener());
 
 
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -242,6 +231,47 @@ public class MapFragment extends Fragment {
 //        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
 //                .setNegativeButton("No", dialogClickListener).show();
 //    }
+    private class UserPointsListener implements GoogleMap.OnMapClickListener {
+
+        @Override
+        public void onMapClick(LatLng point) {
+            //lstLatLngs.add(point);
+            Location location = new Location("");
+            location.setLatitude(point.latitude);
+            location.setLongitude(point.longitude);
+            if (markerStack.empty()) {
+                if (mCurrentLocation.distanceTo(location) <= TotalsData.getAverageDistance()) {
+                    Marker marker = plotUserPoint(point);
+                    markerStack.push(marker);
+                } else
+                    Toast.makeText(getActivity(), "Please select within radius", Toast.LENGTH_SHORT).show();
+            } else {
+                Location location2 = new Location("");
+                location2.setLatitude(markerStack.peek().getPosition().latitude);
+                location2.setLongitude(markerStack.peek().getPosition().longitude);
+
+                if (location.distanceTo(location2) <= TotalsData.getAverageDistance()) {
+                    Marker marker = plotUserPoint(point);
+                    markerStack.push(marker);
+                } else
+                    Toast.makeText(getActivity(), "Please select within radius", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class PlotHoleListener implements GoogleMap.OnMapClickListener {
+
+        @Override
+        public void onMapClick(LatLng point) {
+            if(hole != null) hole.remove();
+            MarkerOptions holeOptions = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(latitude + ", " + longitude);
+            hole = googleMap.addMarker(holeOptions);
+            googleMap.setOnMapClickListener(new UserPointsListener());
+            plotHole.setText("Plot Hole");
+        }
+    }
+
+
     private void removeUserPoints() {
         FileOutputStream outputStream;
         String text = "";
@@ -309,6 +339,7 @@ public class MapFragment extends Fragment {
     }
 
     private void plotTransferredPointsFromFile() {
+        Log.e(TAG, "in plottffromfile");
         try {
             InputStream inputStream = getActivity().openFileInput("transferred_points.txt");
 
@@ -329,9 +360,9 @@ public class MapFragment extends Fragment {
             }
         }
         catch (FileNotFoundException e) {
-            Log.i(TAG, "File not found: " + e.toString());
+            Log.e(TAG, "File not found: " + e.toString());
         } catch (IOException e) {
-            Log.i(TAG, "Can not read file: " + e.toString());
+            Log.e(TAG, "Can not read file: " + e.toString());
         }
     }
 
@@ -374,7 +405,7 @@ public class MapFragment extends Fragment {
 
         gameId = TotalsData.getGameId();
         removeUserPoints();
-        removeTransferredPoints();
+        //removeTransferredPoints();
         plotTransferredPointsFromFile();
         plotUserPointsFromFile();
     }
