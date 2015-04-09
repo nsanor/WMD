@@ -30,6 +30,7 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
+        Log.e(TAG, "in onCreate");
 
         logText = (TextView)findViewById(R.id.log_text);
         logText.setMovementMethod(new ScrollingMovementMethod());
@@ -77,6 +78,7 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
     private void clearLog() {
         FileOutputStream outputStream;
         String text = "";
+        Log.e(TAG, "in clearLog");
 
         try {
             outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
@@ -91,6 +93,7 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
 
 
     private void refreshText() {
+        Log.e(TAG, "In refreshText, filename = " + filename);
         logText.setText("");
         try {
             InputStream inputStream = openFileInput(filename);
@@ -107,7 +110,7 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
                 }
 
                 inputStream.close();
-                logText.append(stringBuilder.toString() + "\n");
+                logText.setText(stringBuilder.toString() + "\n");
             }
         }
         catch (FileNotFoundException e) {
@@ -119,6 +122,7 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        Log.e(TAG, "in onitemselected");
         if(adapterView.getItemAtPosition(i).equals("Bluetooth Log")) filename = "my_log.txt";
         else filename = "transferred_points.txt";
         refreshText();

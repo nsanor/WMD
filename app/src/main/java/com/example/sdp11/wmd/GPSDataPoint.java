@@ -12,11 +12,10 @@ public class GPSDataPoint {
     private double time;
     private Location loc;
 
-    public GPSDataPoint(double latitude, double longitude, double time) {
+    public GPSDataPoint(double latitude, double longitude) {
         this.throwId = TotalsData.getThrowId();
         this.latitude = latitude;
         this.longitude = longitude;
-        this.time = time;
         this.loc = new Location("");
         this.loc.setLatitude(latitude);
         this.loc.setLongitude(longitude);

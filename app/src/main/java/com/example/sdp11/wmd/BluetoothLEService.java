@@ -185,11 +185,12 @@ public class BluetoothLEService extends Service {
     };
 
     private void processData() {
+        Log.e(TAG, "In processData");
         double initialDirection = calculateInitialDirection();
         double finalDirection = calculateFinalDirection();
         double throwQuality = calculateThrowQuality();
-        double totalDistance = gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
-        double totalTime = gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
+        double totalDistance = 1; //gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
+        double totalTime = 1; //gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
 
         MainActivity.dataSource.createThrow(initialDirection, finalDirection, totalDistance, throwQuality, totalTime);
     }
@@ -214,11 +215,11 @@ public class BluetoothLEService extends Service {
 
     //Cycle through all transferred GPS and IMU data
     public void parseTransferredData() {
-        if(allInput.contains("ZQK")) {
+        if(allInput.contains("FF")) {
             String strings[] = allInput.split("\n");
             for(String s: strings) {
-                if(s.startsWith("$GPRMC")) parseGPS(s);
-                else parseIMU(s);
+                if(s.startsWith("$")) parseGPS(s);
+//                else parseIMU(s);
             }
             processData();
             allInput = "";
@@ -257,25 +258,49 @@ public class BluetoothLEService extends Service {
 //        //Log.e(TAG, "Input String at end: " + inputString);
 //    }
 
+    //OLD
+//    private void parseGPS(String i) {
+//        double latDeg, latMin, latitude, lonDeg, lonMin, longitude;
+//        double time;
+//        String input[] = i.split(",");
+//
+//        //Figure out time!!
+//        if ((input.length >= 7) && i.startsWith("$GPRMC")) {
+//            time = Double.parseDouble(input[1]);
+//            latDeg =Double.parseDouble(input[3].substring(0, 2));
+//            latMin =Double.parseDouble(input[3].substring(2));
+//            latitude = latDeg + (latMin / 60);
+//            if (input[4].equals(String.valueOf("S"))) latitude = -1 * latitude;
+//            lonDeg =Double.parseDouble(input[5].substring(0, 3));
+//            lonMin =Double.parseDouble(input[5].substring(3));
+//            longitude = (lonDeg + (lonMin / 60)) * -1;
+//            if (input[6].equals(String.valueOf("E"))) longitude = -1 * longitude;
+//            //return new inputDataPoint(latitude, longitude, 1);
+//            writeTransferredPoints(latitude + ", " + longitude + Separator);
+//            GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, time);
+//            gpsData.add(gpsdataPoint);
+//        }
+//        else Log.e(TAG, "Failed in parseGPS");
+//    }
+
     private void parseGPS(String i) {
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude;
-        double time;
         String input[] = i.split(",");
+        Log.e(TAG, "In parseGPS");
 
         //Figure out time!!
-        if ((input.length >= 7) && i.startsWith("$GPRMC")) {
-            time = Double.parseDouble(input[1]);
-            latDeg =Double.parseDouble(input[3].substring(0, 2));
-            latMin =Double.parseDouble(input[3].substring(2));
+        if ((input.length >= 4) && i.startsWith("$")) {
+            latDeg = Double.parseDouble(input[0].substring(1, 3));
+            latMin = Double.parseDouble(input[0].substring(3));
             latitude = latDeg + (latMin / 60);
-            if (input[4].equals(String.valueOf("S"))) latitude = -1 * latitude;
-            lonDeg =Double.parseDouble(input[5].substring(0, 3));
-            lonMin =Double.parseDouble(input[5].substring(3));
+            if (input[1].equals(String.valueOf("S"))) latitude = -1 * latitude;
+            lonDeg = Double.parseDouble(input[2].substring(0, 3));
+            lonMin = Double.parseDouble(input[2].substring(3));
             longitude = (lonDeg + (lonMin / 60)) * -1;
-            if (input[6].equals(String.valueOf("E"))) longitude = -1 * longitude;
-            //return new inputDataPoint(latitude, longitude, 1);
+            if (input[3].equals(String.valueOf("E"))) longitude = -1 * longitude;
+            Log.e(TAG, "Writing to log: " + latitude + ", " + longitude + Separator);
             writeTransferredPoints(latitude + ", " + longitude + Separator);
-            GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, time);
+            GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude);
             gpsData.add(gpsdataPoint);
         }
         else Log.e(TAG, "Failed in parseGPS");
@@ -306,6 +331,8 @@ public class BluetoothLEService extends Service {
         FileOutputStream outputStream;
         String text = "";
 
+        Log.e(TAG, "in clearTransferredPoints");
+
         try {
             outputStream = openFileOutput(transferredFilename, Context.MODE_PRIVATE);
             outputStream.write(text.getBytes());
@@ -327,19 +354,6 @@ public class BluetoothLEService extends Service {
 
         try {
             outputStream = openFileOutput(logFilename, Context.MODE_APPEND);
-            outputStream.write(text.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void clearLog() {
-        FileOutputStream outputStream;
-        String text = "";
-
-        try {
-            outputStream = openFileOutput(logFilename, Context.MODE_PRIVATE);
             outputStream.write(text.getBytes());
             outputStream.close();
         } catch (Exception e) {

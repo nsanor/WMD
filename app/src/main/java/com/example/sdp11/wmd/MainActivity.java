@@ -81,32 +81,16 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private static DataFragment dataFragment;
     private static MapFragment mapFragment;
 
-    private String testStrings[] = {"$GPRMC,180338.600,A,",
-            "4104.5010,N,08130.65",
-            "33,W,2.67,356.61,190",
-            "215,,,A*7D\n$GPRMC,1",
-            "80338.600,A,4104.501",
-            "0,N,08130.6533,W,2.6",
-            "7,356.61,190215,,,A*",
-            "7D\n$GPRMC,180338.60",
-            "0,A,4104.5010,N,0813",
-            "0.6533,W,2.67,356.61",
-            ",190215,,,A*7D\n$GPR",
-            "MC,180338.600,A,4104",
+    private String testStrings[] = {"$4104.5010,N,08130.6",
+            "533,W\n$4104.5010,N,",
+            "08130.6533,W\n$4104.",
+            "5010,N,08130.6533,W\n",
+            "$4104.5010,N,08130.",
+            "6533,W\n$4104.5010,N",
+            ",08130.6533,W\n$4104",
             ".5010,N,08130.6533,W",
-            ",2.67,356.61,190215,",
-            ",,A*7D\n$GPRMC,18033",
-            "8.600,A,4104.5010,N,",
-            "08130.6533,W,2.67,35",
-            "6.61,190215,,,A*7D\n",
-            "$GPRMC,180338.600,A,",
-            "4104.5010,N,08130.65",
-            "33,W,2.67,356.61,190",
-            "215,,,A*7D\n$GPRMC,1",
-            "80338.600,A,4104.501",
-            "0,N,08130.6533,W,2.6",
-            "7,356.61,190215,,,A*",
-            "7D\nZQK"};
+            "\n$4104.5010,N,08130",
+            ".6533,W\nFF",};
 
     private static final String Separator = System.getProperty("line.separator");
 //    private String bufferedText = "";
@@ -182,8 +166,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         if (mBluetoothLEService != null) {
-            final boolean result = mBluetoothLEService.connect(mDeviceAddress);
-            Log.i(TAG, "Connect request result=" + result);
+            //final boolean result = mBluetoothLEService.connect(mDeviceAddress);
+            //Log.i(TAG, "Connect request result=" + result);
         }
     }
 
@@ -211,7 +195,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 finish();
             }
             // Automatically connects to the device upon successful start-up initialization.
-            mBluetoothLEService.connect(mDeviceAddress);
+            //mBluetoothLEService.connect(mDeviceAddress);
         }
 
         @Override

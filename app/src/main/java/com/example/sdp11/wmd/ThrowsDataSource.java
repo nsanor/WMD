@@ -125,7 +125,7 @@ public class ThrowsDataSource {
         else {
             Log.e(TAG, "Cursor empty");
             TotalsData.setGameId(1);
-            TotalsData.setAverageDistance(0);
+            TotalsData.setAverageDistance(10);
             TotalsData.setAverageAngle(0);
             TotalsData.setAverageTime(0);
             TotalsData.setThrowCount(0);
