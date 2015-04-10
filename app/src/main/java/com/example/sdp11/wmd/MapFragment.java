@@ -66,6 +66,7 @@ public class MapFragment extends Fragment {
 
     private String userPointsFilename = "user_points.txt";
     private String transferredPointsFilename = "transferred_points.txt";
+    private String holeLocationFilename = "hole_location.txt";
 
     private Marker hole;
 
@@ -78,7 +79,6 @@ public class MapFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,6 +89,16 @@ public class MapFragment extends Fragment {
         LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
 
         View view = localInflater.inflate(R.layout.fragment_map, container, false);
+
+        if(savedInstanceState != null) {
+            Log.e(TAG, "restoring from sis");
+            String coords = savedInstanceState.getString("Hole");
+            String point[] = coords.split(",");
+            LatLng p = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
+            if(hole != null) hole.remove();
+            MarkerOptions holeOptions = new MarkerOptions().position(p).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(latitude + ", " + longitude);
+            hole = googleMap.addMarker(holeOptions);
+        }
 
         // Gets the MapView from the XML layout and creates it
         mapView = (MapView) view.findViewById(R.id.mapview);
@@ -271,7 +281,6 @@ public class MapFragment extends Fragment {
         }
     }
 
-
     private void removeUserPoints() {
         FileOutputStream outputStream;
         String text = "";
@@ -309,6 +318,48 @@ public class MapFragment extends Fragment {
         boolean pointsToRemove = (!transferredPoints.empty());
         if(pointsToRemove){
             while(!transferredPoints.empty()) transferredPoints.pop().remove();
+        }
+    }
+
+    private void writeHoleLocationToFile() {
+        FileOutputStream outputStream;
+        String text = hole.getPosition().latitude + ", " + hole.getPosition().longitude;
+        Log.e(TAG, "writing to hole file");
+
+        try {
+            outputStream = getActivity().openFileOutput(holeLocationFilename, Context.MODE_PRIVATE);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void plotHoleLocationFromFile() {
+        try {
+            InputStream inputStream = getActivity().openFileInput(holeLocationFilename);
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString;
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    Log.e(TAG, "restoring from file");
+                    String point[] = receiveString.split(",");
+                    LatLng p = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
+                    if(hole != null) hole.remove();
+                    MarkerOptions holeOptions = new MarkerOptions().position(p).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(latitude + ", " + longitude);
+                    hole = googleMap.addMarker(holeOptions);
+                }
+
+                inputStream.close();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.i(TAG, "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.i(TAG, "Can not read file: " + e.toString());
         }
     }
 
@@ -408,11 +459,14 @@ public class MapFragment extends Fragment {
         //removeTransferredPoints();
         plotTransferredPointsFromFile();
         plotUserPointsFromFile();
+        plotHoleLocationFromFile();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.e(TAG, "onsis");
+        outState.putString("Hole", hole.getPosition().latitude + ", " + hole.getPosition().longitude);
     }
 
     @Override
@@ -421,6 +475,7 @@ public class MapFragment extends Fragment {
         super.onPause();
 
         cp = googleMap.getCameraPosition();
+        writeHoleLocationToFile();
 //        googleMap = null;
 
     }

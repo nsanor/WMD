@@ -75,6 +75,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     private boolean mConnected = false;
 
+    private Fragment mContent;
+
 
 
     private static ConnectFragment connectFragment;
@@ -101,10 +103,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        if( savedInstanceState != null ){
-//            getActionBar().selectTab(savedInstanceState.getInt(tabState));
-//        }
 
         buildGoogleApiClient();
         createLocationRequest();
