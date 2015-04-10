@@ -201,6 +201,7 @@ public class BluetoothLEService extends Service {
         if(allInput.contains("FF")) {
             String strings[] = allInput.split("\\$");
             for(String s: strings) {
+                Log.e(TAG, s);
                 if(s.length() >= 4) parseGPS(s);
                 else Log.e(TAG, "Not a valid string");
             }
@@ -241,8 +242,8 @@ public class BluetoothLEService extends Service {
 
         //Figure out time!!
         if ((input.length == 4)) {
-            latDeg = Double.parseDouble(input[0].substring(1, 3));
-            latMin = Double.parseDouble(input[0].substring(3));
+            latDeg = Double.parseDouble(input[0].substring(0, 2));
+            latMin = Double.parseDouble(input[0].substring(2));
             latitude = latDeg + (latMin / 60);
             if (input[1].equals(String.valueOf("S"))) latitude = -1 * latitude;
             lonDeg = Double.parseDouble(input[2].substring(0, 3));
