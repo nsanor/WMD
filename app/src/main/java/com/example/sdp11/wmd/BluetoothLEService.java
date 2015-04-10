@@ -199,9 +199,9 @@ public class BluetoothLEService extends Service {
     //Cycle through all transferred GPS and IMU data
     public void parseTransferredData() {
         if(allInput.contains("FF")) {
-            String strings[] = allInput.split("\n");
+            String strings[] = allInput.split("\\$");
             for(String s: strings) {
-                if(s.startsWith("$")) parseGPS(s);
+                if(s.length() >= 4) parseGPS(s);
                 else Log.e(TAG, "Not a valid string");
             }
             processData();
@@ -209,37 +209,6 @@ public class BluetoothLEService extends Service {
         }
         else Log.e(TAG, "No Termination character");
     }
-
-//    private void combineStrings(String input) {
-//        //Log.e(TAG, "Input String at beginning: " + inputString);
-//
-//        if(input.contains("\n")) {
-//            //Log.e(TAG, "newline present");
-//            String data[] = input.split("\n");
-//            //for(String i: data) Log.e(TAG, i);
-//            //Start of a new line
-//            if(data.length > 1) {
-//                //Log.e(TAG, "New line, needs split");
-//                inputString += data[0].trim();
-//                parseGPS(inputString);
-//                inputString = data[1].trim();
-//            }
-//
-//            //else Log.e(TAG, "Error splitting");
-//        }
-//        else {
-//            inputString += input.trim();
-//            //Log.e(TAG, "No newline present");
-//            //If there are two characters after the star (full string)
-//            if(inputString.contains("*") && (inputString.length() - inputString.indexOf("*") - 1) >= 2){//if(inputString.length() - inputString.replace(",", "").length() >= 12) {
-//                //Log.e(TAG, "Full string");
-//                parseGPS(inputString);
-//                inputString = "";
-//            }
-//
-//        }
-//        //Log.e(TAG, "Input String at end: " + inputString);
-//    }
 
     //OLD
 //    private void parseGPS(String i) {
@@ -271,7 +240,7 @@ public class BluetoothLEService extends Service {
         String input[] = i.split(",");
 
         //Figure out time!!
-        if ((input.length >= 4) && i.startsWith("$")) {
+        if ((input.length == 4)) {
             latDeg = Double.parseDouble(input[0].substring(1, 3));
             latMin = Double.parseDouble(input[0].substring(3));
             latitude = latDeg + (latMin / 60);

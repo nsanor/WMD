@@ -84,15 +84,15 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private static MapFragment mapFragment;
 
     private String testStrings[] = {"$4104.5010,N,08130.6",
-            "533,W\n$4104.5010,N,",
-            "08130.6533,W\n$4104.",
-            "5010,N,08130.6533,W\n",
+            "533,W$4104.5010,N,",
+            "08130.6533,W$4104.",
+            "5010,N,08130.6533,W",
             "$4104.5010,N,08130.",
-            "6533,W\n$4104.5010,N",
-            ",08130.6533,W\n$4104",
+            "6533,W$4104.5010,N",
+            ",08130.6533,W$4104",
             ".5010,N,08130.6533,W",
-            "\n$4104.5010,N,08130",
-            ".6533,W\nFF",};
+            "$4104.5010,N,08130",
+            ".6533,W$FF",};
 
     private static final String Separator = System.getProperty("line.separator");
 //    private String bufferedText = "";
