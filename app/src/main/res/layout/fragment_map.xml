@@ -20,10 +20,6 @@
             style="@style/ButtonStyle"
             android:text="@string/button_hole" />
         <Button
-            android:id="@+id/button_undo"
-            style="@style/ButtonStyle"
-            android:text="@string/button_undo" />
-        <Button
             android:id="@+id/button_refresh_map"
             style="@style/ButtonStyle"
             android:text="@string/button_refresh" />

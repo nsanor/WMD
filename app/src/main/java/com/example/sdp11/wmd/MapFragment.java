@@ -90,16 +90,6 @@ public class MapFragment extends Fragment {
 
         View view = localInflater.inflate(R.layout.fragment_map, container, false);
 
-        if(savedInstanceState != null) {
-            Log.e(TAG, "restoring from sis");
-            String coords = savedInstanceState.getString("Hole");
-            String point[] = coords.split(",");
-            LatLng p = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
-            if(hole != null) hole.remove();
-            MarkerOptions holeOptions = new MarkerOptions().position(p).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(latitude + ", " + longitude);
-            hole = googleMap.addMarker(holeOptions);
-        }
-
         // Gets the MapView from the XML layout and creates it
         mapView = (MapView) view.findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
@@ -113,7 +103,6 @@ public class MapFragment extends Fragment {
 
 
         Button save = (Button) view.findViewById(R.id.button_save_points);
-        Button undo = (Button) view.findViewById(R.id.button_undo);
         Button clearUserPoints = (Button) view.findViewById(R.id.button_clear_user_points);
         Button refresh = (Button) view.findViewById(R.id.button_refresh_map);
         plotHole = (Button) view.findViewById(R.id.button_plot_hole);
@@ -154,28 +143,6 @@ public class MapFragment extends Fragment {
                 else Toast.makeText(getActivity(), "No Points To Save!", Toast.LENGTH_SHORT).show();
             }
         });
-
-        undo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!markerStack.empty()) {
-
-                    //Remove last marker that was placed
-                    Marker marker = markerStack.pop();
-                    marker.remove();
-                    //Remove the circle for that marker
-                    if(circle != null) circle.remove();
-                    //Get the next to last marker and re-add circle
-                    if (!markerStack.empty()) {
-                        marker = markerStack.peek();
-                        plotRadius(marker.getPosition(), TotalsData.getAverageDistance());
-                    }
-                    else plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
-                }
-                else Toast.makeText(getActivity(), "No Points To Undo!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -345,7 +312,6 @@ public class MapFragment extends Fragment {
                 String receiveString;
 
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    Log.e(TAG, "restoring from file");
                     String point[] = receiveString.split(",");
                     LatLng p = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
                     if(hole != null) hole.remove();
@@ -390,7 +356,8 @@ public class MapFragment extends Fragment {
     }
 
     private void plotTransferredPointsFromFile() {
-        Log.e(TAG, "in plottffromfile");
+        while(!transferredPoints.empty()) transferredPoints.pop().remove();
+
         try {
             InputStream inputStream = getActivity().openFileInput("transferred_points.txt");
 
@@ -460,13 +427,6 @@ public class MapFragment extends Fragment {
         plotTransferredPointsFromFile();
         plotUserPointsFromFile();
         plotHoleLocationFromFile();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.e(TAG, "onsis");
-        outState.putString("Hole", hole.getPosition().latitude + ", " + hole.getPosition().longitude);
     }
 
     @Override
