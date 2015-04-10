@@ -23,20 +23,14 @@ public class ThrowDataActivity extends Activity {
 
         TextView rowThrowID = (TextView)findViewById(R.id.throw_id_data);
         TextView rowGameID = (TextView)findViewById(R.id.game_id_data);
-        TextView rowInitialDirection = (TextView)findViewById(R.id.initial_direction_data);
-        TextView rowFinalDirection = (TextView)findViewById(R.id.final_direction_data);
-        TextView rowThrowQuality = (TextView)findViewById(R.id.throw_integrity_data);
         TextView rowTotalDistance = (TextView)findViewById(R.id.total_distance_data);
-        TextView rowTotalTime = (TextView)findViewById(R.id.total_time_data);
+        TextView rowTotalAngle = (TextView)findViewById(R.id.total_angle_data);
         TextView rowSyncTime = (TextView)findViewById(R.id.sync_time_data);
 
         rowThrowID.setText(String.valueOf(t.getThrowId()));
         rowGameID.setText(String.valueOf(t.getGameId()));
-        rowInitialDirection.setText(String.valueOf(t.getInitialDirection()));
-        rowFinalDirection.setText(String.valueOf(t.getFinalDirection()));
-        rowThrowQuality.setText(String.valueOf(t.getThrowQuality()));
         rowTotalDistance.setText(String.valueOf(t.getTotalDistance()));
-        rowTotalTime.setText(convertToGPSTime(t.getTotalTime()));
+        rowTotalAngle.setText(String.valueOf(t.getTotalAngle()));
         rowSyncTime.setText(convertToGPSTime(t.getSyncTime()));
     }
 

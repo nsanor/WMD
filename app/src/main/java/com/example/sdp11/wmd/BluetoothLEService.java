@@ -185,25 +185,10 @@ public class BluetoothLEService extends Service {
     };
 
     private void processData() {
-        double initialDirection = calculateInitialDirection();
-        double finalDirection = calculateFinalDirection();
-        double throwQuality = calculateThrowQuality();
-        double totalDistance = 1; //gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
-        double totalTime = 1; //gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
+        double totalDistance = 100; //gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
+        double totalAngle = 2.5; //gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
 
-        MainActivity.dataSource.createThrow(initialDirection, finalDirection, totalDistance, throwQuality, totalTime);
-    }
-
-    private double calculateInitialDirection(){
-        return -1;
-    }
-
-    private double calculateFinalDirection(){
-        return -1;
-    }
-
-    private double calculateThrowQuality(){
-        return 1.0;
+        MainActivity.dataSource.createThrow(totalDistance, totalAngle);
     }
 
     public void bufferStrings(String input) {

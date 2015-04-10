@@ -24,27 +24,6 @@
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/initial_direction_header"
-            android:text="@string/initial_direction_header"/>
-        <TextView
-            android:id="@+id/initial_direction_data"/>
-    </TableRow>
-    <TableRow>
-        <TextView
-            android:id="@+id/final_direction_header"
-            android:text="@string/final_direction_header"/>
-        <TextView
-            android:id="@+id/final_direction_data"/>
-    </TableRow>
-    <TableRow>
-        <TextView
-            android:id="@+id/throw_integrity_header"
-            android:text="@string/throw_quality_header"/>
-        <TextView
-            android:id="@+id/throw_integrity_data"/>
-    </TableRow>
-    <TableRow>
-        <TextView
             android:id="@+id/total_distance_header"
             android:text="@string/total_distance_header"/>
         <TextView
@@ -52,10 +31,10 @@
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/total_time_header"
-            android:text="@string/total_time_header"/>
+            android:id="@+id/total_angle_header"
+            android:text="@string/total_angle_header"/>
         <TextView
-            android:id="@+id/total_time_data"/>
+            android:id="@+id/total_angle_data"/>
     </TableRow>
     <TableRow>
         <TextView

@@ -109,16 +109,13 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
 
 
     private void addDemoThrows() {
-        dataSource.createThrow(1, 1, 75, 1, 180338.600);
-        dataSource.createThrow(1, 1, 78, 1, 180338.600);
-        dataSource.createThrow(1, 1, 62, 0.85, 180338.600);
-        dataSource.createThrow(1, 1, 80, 1, 180338.600);
-        dataSource.createThrow(1, 1, 20, 0.2, 180338.600);
-        dataSource.createThrow(1, 1, 82, 0.94, 180338.600);
-        dataSource.createThrow(1, 1, 75, 1, 180338.600);
-        dataSource.createThrow(1, 1, 66, 1, 180338.600);
-        dataSource.createThrow(1, 1, 59, 0.57, 180338.600);
-        dataSource.createThrow(1, 1, 70, 0.8, 180338.600);
+        dataSource.createThrow(75, 0);
+        dataSource.createThrow(78, 2.2);
+        dataSource.createThrow(65, 10.1);
+        dataSource.createThrow(100, 0);
+        dataSource.createThrow(55, 4.3);
+        dataSource.createThrow(35, 20);
+        dataSource.createThrow(75, 1.48);
     }
 
     public void refreshData() {
@@ -142,7 +139,7 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
     static class ViewHolder{
         TextView throwID;
         TextView totalDistance;
-        TextView throwQuality;
+        TextView totalAngle;
     }
 
     // Adapter for holding devices found through scanning.
@@ -208,13 +205,13 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
 
             viewHolder.throwID = (TextView) view.findViewById(R.id.row_throw_id);
             viewHolder.totalDistance = (TextView) view.findViewById(R.id.row_total_distance);
-            viewHolder.throwQuality = (TextView) view.findViewById(R.id.row_throw_quality);
+            viewHolder.totalAngle = (TextView) view.findViewById(R.id.row_throw_quality);
 
             ThrowData t = throwDataList.get(i);
 
             viewHolder.throwID.setText(String.valueOf(t.getThrowId()));
             viewHolder.totalDistance.setText(String.valueOf(t.getTotalDistance()));
-            viewHolder.throwQuality.setText(String.valueOf(t.getThrowQuality()));
+            viewHolder.totalAngle.setText(String.valueOf(t.getTotalAngle()));
 
             return view;
         }

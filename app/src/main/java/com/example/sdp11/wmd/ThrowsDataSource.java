@@ -21,17 +21,13 @@ public class ThrowsDataSource {
 
     private String[] allColumns = { DBHelper.COLUMN_THROW_ID,
             DBHelper.COLUMN_GAME_ID,
-            DBHelper.COLUMN_INITIAL_DIRECTION,
-            DBHelper.COLUMN_FINAL_DIRECTION,
             DBHelper.COLUMN_TOTAL_DISTANCE,
-            DBHelper.COLUMN_THROW_QUALITY,
-            DBHelper.COLUMN_TOTAL_TIME,
+            DBHelper.COLUMN_TOTAL_ANGLE,
             DBHelper.COLUMN_SYNC_TIME};
 
     private String[] totalsColumns = { DBHelper.COLUMN_GAME_ID,
             DBHelper.COLUMN_AVERAGE_DISTANCE,
             DBHelper.COLUMN_AVERAGE_ANGLE,
-            DBHelper.COLUMN_AVERAGE_TIME,
             DBHelper.COLUMN_THROW_COUNT};
 
     public ThrowsDataSource(Context context) {
@@ -47,15 +43,12 @@ public class ThrowsDataSource {
         database.close();
     }
 
-    public void createThrow(double initial_direction, double final_direction, double total_distance, double throw_quality, double total_time) {
+    public void createThrow(double total_distance, double total_angle) {
 
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getGameId());
-        values.put(DBHelper.COLUMN_INITIAL_DIRECTION, initial_direction);
-        values.put(DBHelper.COLUMN_FINAL_DIRECTION, final_direction);
         values.put(DBHelper.COLUMN_TOTAL_DISTANCE, total_distance);
-        values.put(DBHelper.COLUMN_THROW_QUALITY, throw_quality);
-        values.put(DBHelper.COLUMN_TOTAL_TIME, total_time);
+        values.put(DBHelper.COLUMN_TOTAL_ANGLE, total_angle);
 
         //Calculate GPS time from current time
         String now = getCurrentTime();
@@ -119,15 +112,13 @@ public class ThrowsDataSource {
             TotalsData.setGameId(c.getLong(0));
             TotalsData.setAverageDistance(c.getDouble(1));
             TotalsData.setAverageAngle(c.getDouble(2));
-            TotalsData.setAverageTime(c.getDouble(3));
-            TotalsData.setThrowCount(c.getInt(4));
+            TotalsData.setThrowCount(c.getInt(3));
         }
         else {
             Log.e(TAG, "Cursor empty");
             TotalsData.setGameId(1);
             TotalsData.setAverageDistance(10);
             TotalsData.setAverageAngle(0);
-            TotalsData.setAverageTime(0);
             TotalsData.setThrowCount(0);
         }
         c.close();
@@ -138,7 +129,6 @@ public class ThrowsDataSource {
         values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getGameId());
         values.put(DBHelper.COLUMN_AVERAGE_DISTANCE, TotalsData.getAverageDistance());
         values.put(DBHelper.COLUMN_AVERAGE_ANGLE, TotalsData.getAverageAngle());
-        values.put(DBHelper.COLUMN_AVERAGE_TIME, TotalsData.getAverageTime());
         values.put(DBHelper.COLUMN_THROW_COUNT, TotalsData.getThrowCount());
 
         long insertId = database.insert(DBHelper.TABLE_TOTALS, null,values);
@@ -148,12 +138,9 @@ public class ThrowsDataSource {
         ThrowData t = new ThrowData();
         t.setThrowId(cursor.getLong(0));
         t.setGameId(cursor.getLong(1));
-        t.setInitialDirection(cursor.getDouble(2));
-        t.setFinalDirection(cursor.getDouble(3));
-        t.setThrowQuality(cursor.getDouble(4));
-        t.setTotalDistance(cursor.getDouble(5));
-        t.setTotalTime(cursor.getDouble(6));
-        t.setSyncTime(cursor.getDouble(7));
+        t.setTotalDistance(cursor.getDouble(2));
+        t.setTotalAngle(cursor.getDouble(3));
+        t.setSyncTime(cursor.getDouble(4));
         return t;
     }
 

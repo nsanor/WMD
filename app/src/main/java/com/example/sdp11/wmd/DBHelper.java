@@ -25,18 +25,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String COLUMN_THROW_ID = "throw_id";
     public static final String COLUMN_GAME_ID = "game_id";
-    public static final String COLUMN_INITIAL_DIRECTION = "initial_direction";
-    public static final String COLUMN_FINAL_DIRECTION = "final_direction";
     public static final String COLUMN_TOTAL_DISTANCE = "total_distance";
-    public static final String COLUMN_THROW_QUALITY = "throw_integrity";
-    public static final String COLUMN_TOTAL_TIME = "total_time";
+    public static final String COLUMN_TOTAL_ANGLE = "total_angle";
+    //public static final String COLUMN_TOTAL_TIME = "total_time";
     public static final String COLUMN_SYNC_TIME = "sync_time";
 
     public static final String TABLE_TOTALS = "totals_data";
 
     public static final String COLUMN_AVERAGE_DISTANCE = "average_distance";
     public static final String COLUMN_AVERAGE_ANGLE = "average_angle";
-    public static final String COLUMN_AVERAGE_TIME = "average_time";
+    //public static final String COLUMN_AVERAGE_TIME = "average_time";
     public static final String COLUMN_THROW_COUNT = "throw_count";
 
     private static final String DATABASE_NAME = "throw_data.db";
@@ -46,11 +44,9 @@ public class DBHelper extends SQLiteOpenHelper {
             + TABLE_THROWS + " ( "
             + COLUMN_THROW_ID + " integer primary key autoincrement, "
             + COLUMN_GAME_ID + " integer not null, "
-            + COLUMN_INITIAL_DIRECTION + " integer not null, "
-            + COLUMN_FINAL_DIRECTION + " integer not null, "
             + COLUMN_TOTAL_DISTANCE + " double not null, "
-            + COLUMN_THROW_QUALITY + " double not null, "
-            + COLUMN_TOTAL_TIME + " double not null, "
+            + COLUMN_TOTAL_ANGLE + " double not null, "
+            //+ COLUMN_TOTAL_TIME + " double not null, "
             + COLUMN_SYNC_TIME + " double not null"
             + ");";
 
@@ -59,7 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + COLUMN_GAME_ID + " integer not null, "
             + COLUMN_AVERAGE_DISTANCE + " double not null, "
             + COLUMN_AVERAGE_ANGLE + " double not null, "
-            + COLUMN_AVERAGE_TIME + " double not null, "
+            //+ COLUMN_AVERAGE_TIME + " double not null, "
             + COLUMN_THROW_COUNT + " integer not null"
             + ");";
 

@@ -9,38 +9,31 @@ import android.os.Parcelable;
 public class ThrowData implements Parcelable {
     private long throwId;
     private long gameId;
-    private double initialDirection;
-    private double finalDirection;
-    private double throwQuality;
     private double totalDistance;
-    private double totalTime;
+    private double totalAngle;
     private double syncTime;
 
-    public double getTotalTime() {
-        return totalTime;
+    public double getTotalAngle() {
+        return totalAngle;
     }
 
     public ThrowData(){}
 
     public ThrowData(Parcel in) {
-        String[] data = new String[8];
+        String[] data = new String[5];
 
         in.readStringArray(data);
         this.throwId = Long.valueOf(data[0]);
         this.gameId = Long.valueOf(data[1]);
-        this.initialDirection = Double.valueOf(data[2]);
-        this.finalDirection = Double.valueOf(data[3]);
-        this.throwQuality = Double.valueOf(data[4]);
-        this.totalDistance = Double.valueOf(data[5]);
-        this.totalTime = Double.valueOf(data[6]);
-        this.syncTime = Double.valueOf(data[7]);
+        this.totalDistance = Double.valueOf(data[2]);
+        this.totalAngle = Double.valueOf(data[3]);
+        this.syncTime = Double.valueOf(data[4]);
     }
 
     public ThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, double startTime, double endTime) {
         this.throwId =throwId;
         this.totalDistance = calculateDistance(start_lat, start_long, end_lat, end_long);
-        this.totalTime = endTime - startTime;
-        this.throwQuality = 1;
+        //this.totalAngle = endTime - startTime;
     }
 
     public String convertToGPSTime(double time) {
@@ -53,7 +46,7 @@ public class ThrowData implements Parcelable {
 //    public ThrowData(RawThrowData t) {
 //        this.throwId = t.getThrowId();
 //        this.totalDistance = calculateDistance(t.getStartLat(), t.getStartLong(), t.getEndLat(), t.getEndLong());
-//        this.totalTime = t.getEndTime() - t.getStartTime();
+//        this.totalAngle = t.getEndTime() - t.getStartTime();
 //        this.throwQuality = 1;
 //    }
 
@@ -65,36 +58,12 @@ public class ThrowData implements Parcelable {
         this.throwId = throwId;
     }
 
-    public double getInitialDirection() {
-        return initialDirection;
-    }
-
-    public void setInitialDirection(double initialDirection) {
-        this.initialDirection = initialDirection;
-    }
-
-    public double getFinalDirection() {
-        return finalDirection;
-    }
-
-    public void setFinalDirection(double finalDirection) {
-        this.finalDirection = finalDirection;
-    }
-
     public double getTotalDistance() {
         return totalDistance;
     }
 
     public void setTotalDistance(double totalDistance) {
         this.totalDistance = totalDistance;
-    }
-
-    public double getThrowQuality() {
-        return throwQuality;
-    }
-
-    public void setThrowQuality(double throwQuality) {
-        this.throwQuality = throwQuality;
     }
 
     double degreesToRadians(double degrees) {
@@ -115,7 +84,7 @@ public class ThrowData implements Parcelable {
     //Will be used by the ArrayAdapter in the ListView
     @Override
     public String toString() {
-        return throwId + " | " + totalDistance + " | " + throwQuality;
+        return throwId + " | " + totalDistance + " | " + totalAngle;
     }
 
     public long getGameId() {
@@ -126,8 +95,8 @@ public class ThrowData implements Parcelable {
         this.gameId = gameId;
     }
 
-    public void setTotalTime(double totalTime) {
-        this.totalTime = totalTime;
+    public void setTotalAngle(double totalAngle) {
+        this.totalAngle = totalAngle;
     }
 
     public double getSyncTime() {
@@ -147,11 +116,8 @@ public class ThrowData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[] {String.valueOf(this.throwId),
                 String.valueOf(this.gameId),
-                String.valueOf(this.initialDirection),
-                String.valueOf(this.finalDirection),
-                String.valueOf(this.throwQuality),
                 String.valueOf(this.totalDistance),
-                String.valueOf(this.totalTime),
+                String.valueOf(this.totalAngle),
                 String.valueOf(this.syncTime)});
     }
 
