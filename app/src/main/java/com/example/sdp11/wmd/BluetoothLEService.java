@@ -11,8 +11,11 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
 import android.nfc.Tag;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import android.os.Handler;
+import android.widget.Toast;
 
 /**
  * Created by nsanor on 2/20/2015.
@@ -267,7 +271,7 @@ public class BluetoothLEService extends Service {
         double averageDistance = TotalsData.getAverageDistance();
         double averageAngle = TotalsData.getAverageAngle();
         TotalsData.setAverageDistance(((averageDistance*throwCount)+totalDistance)/throwCount+1);
-        TotalsData.setAverageAngle(((averageAngle*throwCount)+totalAngle)/throwCount+1);
+        TotalsData.setAverageAngle(((averageAngle * throwCount) + totalAngle) / throwCount + 1);
         TotalsData.updateThrowCount();
         MainActivity.dataSource.writeTotalsData();
     }

@@ -44,13 +44,13 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class MainActivity extends Activity implements ActionBar.TabListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MainActivity extends Activity implements ActionBar.TabListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
     private final static String TAG = MainActivity.class.getSimpleName();
 
     private static SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private GoogleApiClient mGoogleApiClient;
-    private static Location mCurrentLocation;
+    public static Location mCurrentLocation;
     private String mLastUpdateTime;
     private Boolean mRequestingLocationUpdates = true;
     private LocationRequest mLocationRequest;
@@ -76,8 +76,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private boolean mConnected = false;
 
     private Fragment mContent;
-
-
 
     private static ConnectFragment connectFragment;
     private static DataFragment dataFragment;
@@ -159,7 +157,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     public void onResume() {
         super.onResume();
         if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
-            startLocationUpdates();
+
         }
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
@@ -330,6 +328,33 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         //savedInstanceState.putInt("tabState", getSelectedTab());
     }
 
+//    private class MyLocationListener implements LocationListener
+//    {
+//
+//        public void onLocationChanged(final Location loc)
+//        {
+//            Log.e(TAG, "Location changed");
+//        }
+//
+//        public void onProviderDisabled(String provider)
+//        {
+//            Toast.makeText( getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT ).show();
+//        }
+//
+//
+//        public void onProviderEnabled(String provider)
+//        {
+//            Toast.makeText( getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
+//        }
+//
+//
+//        public void onStatusChanged(String provider, int status, Bundle extras)
+//        {
+//
+//        }
+//
+//    }
+
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
@@ -338,22 +363,90 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        //Log.e(TAG, "Location = " + location.getLatitude() + ", " + location.getLongitude());
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
+    public void onConnected(Bundle bundle) {
+        startLocationUpdates();
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
     }
 
     @Override
-    public void onProviderEnabled(String s) {
+    public void onConnectionSuspended(int i) {
 
     }
 
-    @Override
-    public void onProviderDisabled(String s) {
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+    }
 
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, MainActivity.this);
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks toggle the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.new_game:
+                Toast.makeText(getApplicationContext(), "New Game",
+                        Toast.LENGTH_SHORT).show();
+                //Add yes/no dialog here
+                TotalsData.updateGameId();
+                mBluetoothLEService.clearTransferredPoints();
+                return true;
+            case R.id.action_settings:
+                Toast.makeText(getApplicationContext(), "Settings",
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.about:
+//                Toast.makeText(getApplicationContext(), "About Us",
+//                        Toast.LENGTH_SHORT).show();
+                for(String s: testStrings) {
+                    mBluetoothLEService.bufferStrings(s);
+                }
+
+                return true;
+            case R.id.view_log:
+                Intent intent = new Intent(MainActivity.this, LogActivity.class);
+                MainActivity.this.startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // When the given tab is selected, switch to the corresponding page in
+        // the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -417,164 +510,4 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks toggle the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id){
-            case R.id.new_game:
-                Toast.makeText(getApplicationContext(), "New Game",
-                        Toast.LENGTH_SHORT).show();
-                //Add yes/no dialog here
-                TotalsData.updateGameId();
-                mBluetoothLEService.clearTransferredPoints();
-                return true;
-            case R.id.action_settings:
-                Toast.makeText(getApplicationContext(), "Settings",
-                        Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.about:
-//                Toast.makeText(getApplicationContext(), "About Us",
-//                        Toast.LENGTH_SHORT).show();
-                for(String s: testStrings) {
-                    mBluetoothLEService.bufferStrings(s);
-                }
-
-                return true;
-            case R.id.view_log:
-                Intent intent = new Intent(MainActivity.this, LogActivity.class);
-                MainActivity.this.startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-       mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-    }
-
-    protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
-    }
-
-    /******************************************************************************************
-    Data Processing Utilities
-    *******************************************************************************************/
-
-//    //Cycle through all transferred GPS and IMU data
-//    private void parseTransferredData(String input) {
-//        //String data[] = input.split("\n");
-//
-//        //Test
-//        String data[] = {"$GPRMC,180338.600,A,4104.5010,N,08130.6533,W,2.67,356.61,190215,,,A*7D\n",
-//                "$GPRMC,180338.800,A,4104.5012,N,08130.6533,W,2.55,358.37,190215,,,A*7D\n",
-//                "$GPRMC,180339.000,A,4104.5013,N,08130.6533,W,2.80,356.43,190215,,,A*70\n",
-//                "$GPRMC,180339.200,A,4104.5014,N,08130.6533,W,2.39,353.28,190215,,,A*7F\n",
-//                "$GPRMC,180339.400,A,4104.5016,N,08130.6533,W,2.67,352.87,190215,,,A*74\n",
-//                "$GPRMC,180339.600,A,4104.5017,N,08130.6532,W,2.82,358.80,190215,,,A*70\n"};
-//
-//        for (String s: data) {
-//            if(s.startsWith("$GPRMC") || !bufferedText.equals("")) {
-//                GPSDataPoint gps = parseGPS(s);
-//            }
-//            else {
-//                Log.i(TAG, "Implement IMU parser here");
-//            }
-//            //if(gps != null) GPSCoordinates.add(gps); //Create throw when we get sample data from IMU
-//            //dataSource.createThrow();
-//        }
-//    }
-//
-//    private GPSDataPoint parseGPS(String input) {
-//        String GPSData = bufferedText + input;
-//        String gps[] = GPSData.split(",");
-//        double latDeg, latMin, latitude, lonDeg, lonMin, longitude, time;
-//        if ((gps[0].equals("$GPRMC")) && (gps[7] != null)) {
-//            bufferedText = "";
-//            time = Double.parseDouble(gps[1]);
-//            latDeg =Double.parseDouble(gps[3].substring(0, 2));
-//            latMin =Double.parseDouble(gps[3].substring(2, 8));
-//            latitude = latDeg + (latMin / 60);
-//            if (gps[4].equals(String.valueOf('S'))) latitude = -1 * latitude;
-//            lonDeg =Double.parseDouble(gps[5].substring(0, 3));
-//            lonMin =Double.parseDouble(gps[5].substring(3, 9));
-//            longitude = lonDeg + (lonMin / 60);
-//            if (gps[6].equals(String.valueOf('W'))) longitude = -1 * longitude;
-//            //return new GPSDataPoint(latitude, longitude, 1);
-//            writeTransferredPoints(latitude + ", " + longitude + Separator);
-//            return new GPSDataPoint(latitude, longitude, 1);
-//        }
-//        else bufferedText += GPSData;
-//
-//        return null;
-//    }
-
-//    private void writeToLog(String text) {
-//        String filename = "my_log.txt";
-//        FileOutputStream outputStream;
-//        text = "[" + getCurrentTimestamp() + "] : " + text + Separator;
-//
-//        try {
-//            outputStream = openFileOutput(filename, Context.MODE_APPEND);
-//            outputStream.write(text.getBytes());
-//            outputStream.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private void writeTransferredPoints(String text) {
-//        String filename = "transferred_points.txt";
-//        FileOutputStream outputStream;
-//
-//        try {
-//            outputStream = openFileOutput(filename, Context.MODE_APPEND);
-//            outputStream.write(text.getBytes());
-//            outputStream.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

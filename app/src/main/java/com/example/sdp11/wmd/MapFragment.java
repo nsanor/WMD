@@ -115,9 +115,9 @@ public class MapFragment extends Fragment {
 
         googleMap = mapView.getMap();
         //for demo purposes, don't default to current location
-        mCurrentLocation = new Location(""); //MainActivity.getmCurrentLocation();
-        mCurrentLocation.setLatitude(41.075017);
-        mCurrentLocation.setLongitude(-81.510883);
+        mCurrentLocation = MainActivity.mCurrentLocation;
+//        mCurrentLocation.setLatitude(41.075017);
+//        mCurrentLocation.setLongitude(-81.510883);
 
         // latitude and longitude
         if(mCurrentLocation != null) {
