@@ -290,6 +290,7 @@ public class MapFragment extends Fragment {
 
     private void writeHoleLocationToFile() {
         FileOutputStream outputStream;
+        if(hole == null) return;
         String text = hole.getPosition().latitude + ", " + hole.getPosition().longitude;
         Log.e(TAG, "writing to hole file");
 

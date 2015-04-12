@@ -185,10 +185,15 @@ public class BluetoothLEService extends Service {
     };
 
     private void processData() {
-        double totalDistance = 100; //gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
+        //total distance = distance from last saved gps point to first
+        double totalDistance = gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
+
+        //total angle = angle from last to first - angle to hole
         double totalAngle = 2.5; //gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
 
         MainActivity.dataSource.createThrow(totalDistance, totalAngle);
+
+        recalcTotals(totalDistance, totalAngle);
     }
 
     public void bufferStrings(String input) {
@@ -240,7 +245,6 @@ public class BluetoothLEService extends Service {
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude;
         String input[] = i.split(",");
 
-        //Figure out time!!
         if ((input.length == 4)) {
             latDeg = Double.parseDouble(input[0].substring(0, 2));
             latMin = Double.parseDouble(input[0].substring(2));
@@ -258,8 +262,14 @@ public class BluetoothLEService extends Service {
         else Log.e(TAG, "Failed in parseGPS");
     }
 
-    private void recalcTotals() {
-
+    private void recalcTotals(double totalDistance, double totalAngle) {
+        int throwCount = TotalsData.getThrowCount();
+        double averageDistance = TotalsData.getAverageDistance();
+        double averageAngle = TotalsData.getAverageAngle();
+        TotalsData.setAverageDistance(((averageDistance*throwCount)+totalDistance)/throwCount+1);
+        TotalsData.setAverageAngle(((averageAngle*throwCount)+totalAngle)/throwCount+1);
+        TotalsData.updateThrowCount();
+        MainActivity.dataSource.writeTotalsData();
     }
 
     public void writeTransferredPoints(String text) {

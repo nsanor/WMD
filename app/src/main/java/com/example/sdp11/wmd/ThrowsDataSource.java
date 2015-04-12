@@ -127,6 +127,7 @@ public class ThrowsDataSource {
     public void writeTotalsData() {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getGameId());
+        Log.e(TAG, "Ave dist = " + TotalsData.getAverageDistance());
         values.put(DBHelper.COLUMN_AVERAGE_DISTANCE, TotalsData.getAverageDistance());
         values.put(DBHelper.COLUMN_AVERAGE_ANGLE, TotalsData.getAverageAngle());
         values.put(DBHelper.COLUMN_THROW_COUNT, TotalsData.getThrowCount());
@@ -142,6 +143,13 @@ public class ThrowsDataSource {
         t.setTotalAngle(cursor.getDouble(3));
         t.setSyncTime(cursor.getDouble(4));
         return t;
+    }
+
+    public boolean isEmpty(long gameId) {
+        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
+                allColumns, DBHelper.COLUMN_GAME_ID + " = " + gameId, null, null, null, null);
+
+        return !cursor.moveToFirst();
     }
 
     public long getMaxThrowId() {

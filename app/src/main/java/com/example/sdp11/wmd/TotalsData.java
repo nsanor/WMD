@@ -9,7 +9,6 @@ public class TotalsData {
     //Create all as static variables.
     static private double averageDistance;
     static private double averageAngle;
-    static private double averageTime;
     static private int throwCount;
     static private long throwId;
     static private long gameId;
@@ -89,11 +88,4 @@ public class TotalsData {
         TotalsData.lastLong = lastLong;
     }
 
-    public static double getAverageTime() {
-        return averageTime;
-    }
-
-    public static void setAverageTime(double averageTime) {
-        TotalsData.averageTime = averageTime;
-    }
 }

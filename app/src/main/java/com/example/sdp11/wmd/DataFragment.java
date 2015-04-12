@@ -81,6 +81,7 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
                 }
             }
         });
+
         return view;
     }
 
@@ -95,8 +96,13 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
     public void onResume() {
         dataSource.open();
         super.onResume();
-        dataSource.deleteAllThrows();
-        addDemoThrows();
+
+        if(dataSource.isEmpty(gameId)) {
+            addDemoThrows();
+            Log.e(TAG, "datasource is empty");
+        }
+        else Log.e(TAG, "datasource is not empty");
+
         refreshData();
     }
 
@@ -205,7 +211,7 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
 
             viewHolder.throwID = (TextView) view.findViewById(R.id.row_throw_id);
             viewHolder.totalDistance = (TextView) view.findViewById(R.id.row_total_distance);
-            viewHolder.totalAngle = (TextView) view.findViewById(R.id.row_throw_quality);
+            viewHolder.totalAngle = (TextView) view.findViewById(R.id.row_total_angle);
 
             ThrowData t = throwDataList.get(i);
 
