@@ -104,6 +104,11 @@ public class ThrowsDataSource {
         return ts;
     }
 
+    public void deleteTotals() {
+        //database.rawQuery("delete from sqlite_sequence where name = 'throws'", null);
+        database.delete(DBHelper.TABLE_TOTALS, null,null);
+    }
+
     public void loadTotalsData() {
 
         Cursor c = database.query(DBHelper.TABLE_TOTALS,
@@ -127,6 +132,7 @@ public class ThrowsDataSource {
     }
 
     public void writeTotalsData() {
+        deleteTotals();
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getGameId());
         Log.e(TAG, "Ave dist = " + TotalsData.getAverageDistance());
