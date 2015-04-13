@@ -69,6 +69,7 @@ public class MapFragment extends Fragment {
     private String holeLocationFilename = "hole_location.txt";
 
     private Marker hole;
+    private Marker locationMarker;
 
     public MapFragment() {
         // Required empty public constructor
@@ -115,20 +116,22 @@ public class MapFragment extends Fragment {
 
         googleMap = mapView.getMap();
         //for demo purposes, don't default to current location
-        mCurrentLocation = MainActivity.mCurrentLocation;
-//        mCurrentLocation.setLatitude(41.075017);
-//        mCurrentLocation.setLongitude(-81.510883);
+//        mCurrentLocation = MainActivity.mCurrentLocation;
+////        mCurrentLocation.setLatitude(41.075017);
+////        mCurrentLocation.setLongitude(-81.510883);
+//
+//        // latitude and longitude
+//        if(mCurrentLocation != null) {
+//            latitude = mCurrentLocation.getLatitude();
+//            longitude = mCurrentLocation.getLongitude();
+//        }
+//
+//        final MarkerOptions locMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(latitude + ", " + longitude);
+//        googleMap.addMarker(locMarker);
+//        plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
+//        currentLocation = locMarker.getPosition();
 
-        // latitude and longitude
-        if(mCurrentLocation != null) {
-            latitude = mCurrentLocation.getLatitude();
-            longitude = mCurrentLocation.getLongitude();
-        }
-
-        final MarkerOptions locMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(latitude + ", " + longitude);
-        googleMap.addMarker(locMarker);
-        plotRadius(locMarker.getPosition(), TotalsData.getAverageDistance());
-        currentLocation = locMarker.getPosition();
+        refreshCurrentLocation();
 
         //plotDemoData();
 
@@ -180,12 +183,39 @@ public class MapFragment extends Fragment {
         //CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
 //        CameraPosition cameraPosition = new CameraPosition.Builder()
 //                .target(new LatLng(latitude, longitude)).zoom(14).build();
+        refreshCamera();
+
+        return view;
+    }
+
+    private void refreshCamera() {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude)).zoom(googleMap.getMaxZoomLevel() - 3).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
+    }
 
-        return view;
+    private void refreshCurrentLocation() {
+        mCurrentLocation = MainActivity.mCurrentLocation;
+
+        if(locationMarker != null) {
+            locationMarker.remove();
+        }
+
+        if(circle != null) {
+            circle.remove();
+        }
+
+        // latitude and longitude
+        if(mCurrentLocation != null) {
+            latitude = mCurrentLocation.getLatitude();
+            longitude = mCurrentLocation.getLongitude();
+        }
+
+        MarkerOptions locationMarkerOptions = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(latitude + ", " + longitude);
+        locationMarker = googleMap.addMarker(locationMarkerOptions);
+        plotRadius(locationMarkerOptions.getPosition(), TotalsData.getAverageDistance());
+        currentLocation = locationMarkerOptions.getPosition();
     }
 
 //    public boolean getDialog(String text) {
@@ -358,6 +388,9 @@ public class MapFragment extends Fragment {
 
     private void plotTransferredPointsFromFile() {
         while(!transferredPoints.empty()) transferredPoints.pop().remove();
+
+        refreshCurrentLocation();
+        refreshCamera();
 
         try {
             InputStream inputStream = getActivity().openFileInput("transferred_points.txt");
