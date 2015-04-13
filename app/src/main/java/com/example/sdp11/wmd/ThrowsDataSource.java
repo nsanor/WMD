@@ -105,22 +105,24 @@ public class ThrowsDataSource {
     }
 
     public void loadTotalsData() {
+
         Cursor c = database.query(DBHelper.TABLE_TOTALS,
                 totalsColumns, null, null, null, null, null);
-        c.moveToFirst();
-        if(c.getCount() > 0){
-            TotalsData.setGameId(c.getLong(0));
-            TotalsData.setAverageDistance(c.getDouble(1));
-            TotalsData.setAverageAngle(c.getDouble(2));
-            TotalsData.setThrowCount(c.getInt(3));
-        }
-        else {
+        if(!c.moveToFirst()) {
             Log.e(TAG, "Cursor empty");
             TotalsData.setGameId(1);
             TotalsData.setAverageDistance(10);
             TotalsData.setAverageAngle(0);
             TotalsData.setThrowCount(0);
         }
+        else{
+            Log.e(TAG, c.getLong(0) + ", " + c.getDouble(1)+ ", " + c.getDouble(2) + ", " + c.getInt(3));
+            TotalsData.setGameId(c.getLong(0));
+            TotalsData.setAverageDistance(c.getDouble(1));
+            TotalsData.setAverageAngle(c.getDouble(2));
+            TotalsData.setThrowCount(c.getInt(3));
+        }
+
         c.close();
     }
 
@@ -145,7 +147,7 @@ public class ThrowsDataSource {
         return t;
     }
 
-    public boolean isEmpty(long gameId) {
+    public boolean isThrowsEmpty(long gameId) {
         Cursor cursor = database.query(DBHelper.TABLE_THROWS,
                 allColumns, DBHelper.COLUMN_GAME_ID + " = " + gameId, null, null, null, null);
 
@@ -154,6 +156,12 @@ public class ThrowsDataSource {
 
     public long getMaxThrowId() {
         Cursor c = database.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_THROWS, new String[] {"throw_id"});
+        c.moveToFirst();
+        return c.getInt(0);
+    }
+
+    public long getMaxThrowCount() {
+        Cursor c = database.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_TOTALS, new String[] {"throw_count"});
         c.moveToFirst();
         return c.getInt(0);
     }

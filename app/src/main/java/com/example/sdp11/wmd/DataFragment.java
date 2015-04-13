@@ -97,11 +97,11 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
         dataSource.open();
         super.onResume();
 
-        if(dataSource.isEmpty(gameId)) {
+        if(dataSource.isThrowsEmpty(gameId)) {
             addDemoThrows();
-            Log.e(TAG, "datasource is empty");
+            Log.e(TAG, "throws is empty");
         }
-        else Log.e(TAG, "datasource is not empty");
+        else Log.e(TAG, "throws is not empty");
 
         refreshData();
     }

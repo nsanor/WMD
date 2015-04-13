@@ -188,17 +188,7 @@ public class BluetoothLEService extends Service {
 
     };
 
-    private void processData() {
-        //total distance = distance from last saved gps point to first
-        double totalDistance = gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
 
-        //total angle = angle from last to first - angle to hole
-        double totalAngle = 2.5; //gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
-
-        MainActivity.dataSource.createThrow(totalDistance, totalAngle);
-
-        recalcTotals(totalDistance, totalAngle);
-    }
 
     public void bufferStrings(String input) {
         allInput += input;
@@ -266,13 +256,32 @@ public class BluetoothLEService extends Service {
         else Log.e(TAG, "Failed in parseGPS");
     }
 
+    private void processData() {
+        //total distance = distance from last saved gps point to first
+        double totalDistance = gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
+
+        //total angle = angle from last to first - angle to hole
+        double totalAngle = 2.5; //gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
+
+        MainActivity.dataSource.createThrow(totalDistance, totalAngle);
+
+        recalcTotals(totalDistance, totalAngle);
+    }
+
     private void recalcTotals(double totalDistance, double totalAngle) {
+        TotalsData.updateThrowCount();
         int throwCount = TotalsData.getThrowCount();
         double averageDistance = TotalsData.getAverageDistance();
         double averageAngle = TotalsData.getAverageAngle();
-        TotalsData.setAverageDistance(((averageDistance*throwCount)+totalDistance)/throwCount+1);
-        TotalsData.setAverageAngle(((averageAngle * throwCount) + totalAngle) / throwCount + 1);
-        TotalsData.updateThrowCount();
+        Log.e(TAG, "Totaldistance = " + totalDistance + " totalAngle = " + totalAngle);
+        Log.e(TAG, "in recalctotals: throwcount = " + throwCount + " averagedistance = " + averageDistance + " averageangle = " + averageAngle);
+        averageDistance = ((averageDistance*throwCount)+totalDistance)/ throwCount;
+        Log.e(TAG, "Average distance = " + averageDistance);
+        TotalsData.setAverageDistance(averageDistance);
+        averageAngle = ((averageAngle * throwCount) + totalAngle) / throwCount;
+        Log.e(TAG, "Average angle = " + averageAngle);
+        TotalsData.setAverageAngle(averageAngle);
+
         MainActivity.dataSource.writeTotalsData();
     }
 

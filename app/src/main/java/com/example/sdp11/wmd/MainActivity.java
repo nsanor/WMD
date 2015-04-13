@@ -414,8 +414,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 mBluetoothLEService.clearTransferredPoints();
                 return true;
             case R.id.action_settings:
-                Toast.makeText(getApplicationContext(), "Settings",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Settings",
+//                        Toast.LENGTH_SHORT).show();
+                dataSource.writeTotalsData();
                 return true;
             case R.id.about:
 //                Toast.makeText(getApplicationContext(), "About Us",
