@@ -322,7 +322,7 @@ public class MapFragment extends Fragment {
         FileOutputStream outputStream;
         if(hole == null) return;
         String text = hole.getPosition().latitude + ", " + hole.getPosition().longitude;
-        Log.e(TAG, "writing to hole file");
+        //Log.e(TAG, "writing to hole file");
 
         try {
             outputStream = getActivity().openFileOutput(holeLocationFilename, Context.MODE_PRIVATE);

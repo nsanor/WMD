@@ -135,7 +135,6 @@ public class ThrowsDataSource {
         deleteTotals();
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_GAME_ID, TotalsData.getGameId());
-        Log.e(TAG, "Ave dist = " + TotalsData.getAverageDistance());
         values.put(DBHelper.COLUMN_AVERAGE_DISTANCE, TotalsData.getAverageDistance());
         values.put(DBHelper.COLUMN_AVERAGE_ANGLE, TotalsData.getAverageAngle());
         values.put(DBHelper.COLUMN_THROW_COUNT, TotalsData.getThrowCount());

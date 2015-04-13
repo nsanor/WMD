@@ -202,12 +202,12 @@ public class BluetoothLEService extends Service {
             for(String s: strings) {
                 Log.e(TAG, s);
                 if(s.length() >= 4) parseGPS(s);
-                else Log.e(TAG, "Not a valid string");
+                //else Log.e(TAG, "Not a valid string");
             }
             processData();
             allInput = "";
         }
-        else Log.e(TAG, "No Termination character");
+        //else Log.e(TAG, "No Termination character");
     }
 
     //OLD
@@ -248,15 +248,23 @@ public class BluetoothLEService extends Service {
             lonMin = Double.parseDouble(input[2].substring(3));
             longitude = (lonDeg + (lonMin / 60)) * -1;
             if (input[3].equals(String.valueOf("E"))) longitude = -1 * longitude;
-            Log.e(TAG, "Writing to log: " + latitude + ", " + longitude + Separator);
-            writeTransferredPoints(latitude + ", " + longitude + Separator);
+
             GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude);
-            gpsData.add(gpsdataPoint);
+            if(gpsData.size() < 1) return;
+            if((gpsdataPoint.getLoc().distanceTo(MainActivity.mCurrentLocation) < 10) || (gpsdataPoint.getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc()) < 5)) {
+                Log.e(TAG, "Writing to log: " + latitude + ", " + longitude + Separator);
+                writeTransferredPoints(latitude + ", " + longitude + Separator);
+                gpsData.add(gpsdataPoint);
+            }
+            else Log.e(TAG, "Point " + latitude + ", " + longitude + " is not reliable");
+
         }
         else Log.e(TAG, "Failed in parseGPS");
     }
 
     private void processData() {
+
+        if(gpsData.size() < 1) return;
         //total distance = distance from last saved gps point to first
         double totalDistance = gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
 
