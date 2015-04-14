@@ -29,8 +29,8 @@ public class ThrowDataActivity extends Activity {
 
         rowThrowID.setText(String.valueOf(t.getThrowId()));
         rowGameID.setText(String.valueOf(t.getGameId()));
-        rowTotalDistance.setText(String.valueOf(t.getTotalDistance()));
-        rowTotalAngle.setText(String.valueOf(t.getTotalAngle()));
+        rowTotalDistance.setText(String.format("%.02f", t.getTotalDistance()));
+        rowTotalAngle.setText(String.format("%.02f", t.getTotalAngle()));
         rowSyncTime.setText(convertToGPSTime(t.getSyncTime()));
     }
 
@@ -47,7 +47,6 @@ public class ThrowDataActivity extends Activity {
     public String convertToGPSTime(double time) {
         //Subtract 4 hours to convert to Eastern time
         //if(gps) time -= 40000;
-        Log.e(TAG, String.valueOf(time));
         String temp = String.valueOf(time);
         return temp.substring(0,2) + ":" + temp.substring(2,4) + ":" + temp.substring(4);
     }

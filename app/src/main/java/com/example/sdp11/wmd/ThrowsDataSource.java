@@ -118,7 +118,7 @@ public class ThrowsDataSource {
             TotalsData.setGameId(1);
             TotalsData.setAverageDistance(10);
             TotalsData.setAverageAngle(0);
-            TotalsData.setThrowCount(0);
+            TotalsData.setThrowCount(1);
         }
         else{
             Log.e(TAG, c.getLong(0) + ", " + c.getDouble(1)+ ", " + c.getDouble(2) + ", " + c.getInt(3));
