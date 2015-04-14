@@ -81,16 +81,50 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private static DataFragment dataFragment;
     private static MapFragment mapFragment;
 
-    private String testStrings[] = {"$4104.5010,N,08130.6",
-            "533,W$4104.5010,N,",
-            "08130.6533,W$4104.",
-            "5010,N,08130.6533,W",
-            "$4104.5010,N,08130.",
-            "6533,W$4104.5010,N",
-            ",08130.6533,W$4104",
-            ".5010,N,08130.6533,W",
-            "$4104.5010,N,08130",
-            ".6533,W$FF",};
+    private String testStrings[] = {"$,,,,0.00,0.00,",
+            "060180,,,N$4104",
+            "226,W$4104.5594",
+            ",N,08130.6241,W",
+            "$4104.5537,N,08",
+            "130.6254,W$4104",
+            ".5495,N,08130.6",
+            "239,W$4104.5468",
+            ",N,08130.6196,W",
+            "130.6168,W$4104",
+            ".5474,N,08130.6",
+            "141,W$4104.5480",
+            ",N,08130.6117,W",
+            "$4104.5488,N,08",
+            "130.6098,W$4104",
+            ".5492,N,08130.6",
+            ",N,08130.6086,W",
+            "$4104.5494,N,08",
+            "130.6083,W$4104",
+            ".5491,N,08130.6",
+            "080,W$4104.5489",
+            ",N,08130.6075,W",
+            "130.6073,W$4104",
+            ".5481,N,08130.6",
+            "075,W$4104.5478",
+            ",N,08130.6074,W",
+            "$4104.5478,N,08",
+            "130.6074,W$4104",
+            ".5478,N,08130.6",
+            ",N,08130.6074,W",
+            "$4104.5478,N,08",
+            "130.6074,W$4104",
+            ".5478,N,08130.6",
+            "074,W$4104.5478",
+            ",N,08130.6074,W",
+            "130.6074,W$4104",
+            ".5478,N,08130.6",
+            "074,W$4104.5478",
+            ",N,08130.6074,W",
+            "$4104.5478,N,08",
+            "130.6074,W$4104",
+            ".5478,N,08130.6",
+            ",N,08130.6074,W",
+            "$FF"};
 
     private static final String Separator = System.getProperty("line.separator");
 //    private String bufferedText = "";
@@ -362,7 +396,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
+        //mCurrentLocation = location;
         //Log.e(TAG, "Location = " + location.getLatitude() + ", " + location.getLongitude());
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
     }
@@ -370,8 +404,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     public void onConnected(Bundle bundle) {
         startLocationUpdates();
-        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+        mCurrentLocation = new Location("");
+        mCurrentLocation.setLatitude(41.075805);
+        mCurrentLocation.setLongitude(-81.510126);//LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
     @Override

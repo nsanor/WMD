@@ -101,8 +101,6 @@ public class MapFragment extends Fragment {
         userPoints = new Stack<Marker>();
         transferredPoints = new Stack<Marker>();
 
-
-
         Button save = (Button) view.findViewById(R.id.button_save_points);
         Button clearUserPoints = (Button) view.findViewById(R.id.button_clear_user_points);
         Button refresh = (Button) view.findViewById(R.id.button_refresh_map);
@@ -273,6 +271,7 @@ public class MapFragment extends Fragment {
             if(hole != null) hole.remove();
             MarkerOptions holeOptions = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(latitude + ", " + longitude);
             hole = googleMap.addMarker(holeOptions);
+            MainActivity.mBluetoothLEService.setHoleLocation(hole);
             googleMap.setOnMapClickListener(new UserPointsListener());
             plotHole.setText("Plot Hole");
         }
@@ -461,6 +460,7 @@ public class MapFragment extends Fragment {
         plotTransferredPointsFromFile();
         plotUserPointsFromFile();
         plotHoleLocationFromFile();
+        if(hole != null) MainActivity.mBluetoothLEService.setHoleLocation(hole);
     }
 
     @Override

@@ -29,6 +29,9 @@ import java.util.UUID;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+
 /**
  * Created by nsanor on 2/20/2015.
  */
@@ -75,6 +78,7 @@ public class BluetoothLEService extends Service {
     private boolean isGPS;
 
     private String allInput = "";
+    private LatLng hole;
 
     public BluetoothGattCallback getGattCallback() {return mGattCallback;}
     public String getmBluetoothDeviceAddress() {
@@ -202,8 +206,8 @@ public class BluetoothLEService extends Service {
             String strings[] = allInput.split("\\$");
             for(String s: strings) {
                 Log.e(TAG, s);
-                if(s.length() >= 4) parseGPS(s);
-                //else Log.e(TAG, "Not a valid string");
+                if(s.length() >= 1) parseGPS(s);
+                else Log.e(TAG, "Not a valid string");
             }
             processData();
             allInput = "";
@@ -211,34 +215,9 @@ public class BluetoothLEService extends Service {
         //else Log.e(TAG, "No Termination character");
     }
 
-    //OLD
-//    private void parseGPS(String i) {
-//        double latDeg, latMin, latitude, lonDeg, lonMin, longitude;
-//        double time;
-//        String input[] = i.split(",");
-//
-//        //Figure out time!!
-//        if ((input.length >= 7) && i.startsWith("$GPRMC")) {
-//            time = Double.parseDouble(input[1]);
-//            latDeg =Double.parseDouble(input[3].substring(0, 2));
-//            latMin =Double.parseDouble(input[3].substring(2));
-//            latitude = latDeg + (latMin / 60);
-//            if (input[4].equals(String.valueOf("S"))) latitude = -1 * latitude;
-//            lonDeg =Double.parseDouble(input[5].substring(0, 3));
-//            lonMin =Double.parseDouble(input[5].substring(3));
-//            longitude = (lonDeg + (lonMin / 60)) * -1;
-//            if (input[6].equals(String.valueOf("E"))) longitude = -1 * longitude;
-//            //return new inputDataPoint(latitude, longitude, 1);
-//            writeTransferredPoints(latitude + ", " + longitude + Separator);
-//            GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude, time);
-//            gpsData.add(gpsdataPoint);
-//        }
-//        else Log.e(TAG, "Failed in parseGPS");
-//    }
-
     private void parseGPS(String i) {
         double latDeg, latMin, latitude, lonDeg, lonMin, longitude;
-        String input[] = i.split(",");
+        String input[] = i.split("\\,");
 
         if ((input.length == 4)) {
             latDeg = Double.parseDouble(input[0].substring(0, 2));
@@ -251,11 +230,19 @@ public class BluetoothLEService extends Service {
             if (input[3].equals(String.valueOf("E"))) longitude = -1 * longitude;
 
             GPSDataPoint gpsdataPoint = new GPSDataPoint(latitude, longitude);
-            if(gpsData.size() < 1) return;
-            if((gpsdataPoint.getLoc().distanceTo(MainActivity.mCurrentLocation) < 10) || (gpsdataPoint.getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc()) < 5)) {
+
+            if(gpsdataPoint.getLoc().distanceTo(MainActivity.mCurrentLocation) < 10) {
                 Log.e(TAG, "Writing to log: " + latitude + ", " + longitude + Separator);
                 writeTransferredPoints(latitude + ", " + longitude + Separator);
                 gpsData.add(gpsdataPoint);
+            }
+            else if(gpsData.size() >= 1) {
+                if(gpsdataPoint.getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc()) < 5) {
+                    Log.e(TAG, "Writing to log: " + latitude + ", " + longitude + Separator);
+                    writeTransferredPoints(latitude + ", " + longitude + Separator);
+                    gpsData.add(gpsdataPoint);
+                }
+                Log.e(TAG, "Point " + latitude + ", " + longitude + " is not reliable");
             }
             else Log.e(TAG, "Point " + latitude + ", " + longitude + " is not reliable");
 
@@ -278,6 +265,8 @@ public class BluetoothLEService extends Service {
     }
 
     private double calculateAngle() {
+
+        if(hole == null) return -1;
         GPSDataPoint startingPoint = gpsData.get(0);
         GPSDataPoint endingPoint = gpsData.get(gpsData.size()-1);
         double lat1 = Math.toRadians(startingPoint.getLatitude());
@@ -288,7 +277,17 @@ public class BluetoothLEService extends Service {
         double deltaLong = long2 - long1;
         double y = Math.sin(deltaLong) * Math.cos(lat2);
         double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLong);
-        return Math.toDegrees(Math.atan2(y, x));
+        double bearing1 =  Math.toDegrees(Math.atan2(y, x));
+
+        lat2 = Math.toRadians(hole.latitude);
+        long2 = Math.toRadians(hole.longitude);
+
+        deltaLong = long2 - long1;
+        y = Math.sin(deltaLong) * Math.cos(lat2);
+        x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLong);
+        double bearing2 =  Math.toDegrees(Math.atan2(y, x));
+
+        return bearing2 - bearing1;
     }
 
     private void recalcTotals(double totalDistance, double totalAngle) {
@@ -306,6 +305,10 @@ public class BluetoothLEService extends Service {
         TotalsData.setAverageAngle(averageAngle);
 
         MainActivity.dataSource.writeTotalsData();
+    }
+
+    public void setHoleLocation(Marker holeLocation) {
+        hole = holeLocation.getPosition();
     }
 
     public void writeTransferredPoints(String text) {
@@ -366,6 +369,7 @@ public class BluetoothLEService extends Service {
 //                new IntentFilter("my-event"));
         inputStrings = new ArrayList<String>();
         gpsData = new ArrayList<GPSDataPoint>();
+        //hole = new LatLng();
         return mBinder;
     }
 
