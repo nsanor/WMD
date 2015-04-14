@@ -2,6 +2,7 @@ package com.example.sdp11.wmd;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /**
  * Created by Student on 2/5/2015.
@@ -28,6 +29,7 @@ public class ThrowData implements Parcelable {
         this.totalDistance = Double.valueOf(data[2]);
         this.totalAngle = Double.valueOf(data[3]);
         this.syncTime = Double.valueOf(data[4]);
+        Log.e("Throw data", data[4]);
     }
 
     public ThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, double startTime, double endTime) {
@@ -35,20 +37,6 @@ public class ThrowData implements Parcelable {
         this.totalDistance = calculateDistance(start_lat, start_long, end_lat, end_long);
         //this.totalAngle = endTime - startTime;
     }
-
-    public String convertToGPSTime(double time) {
-        //Subtract 4 hours to convert to Eastern time
-        time -= 40000;
-        String temp = String.valueOf(time);
-        return temp.substring(0,2) + ":" + temp.substring(2,4) + ":" + temp.substring(4);
-    }
-
-//    public ThrowData(RawThrowData t) {
-//        this.throwId = t.getThrowId();
-//        this.totalDistance = calculateDistance(t.getStartLat(), t.getStartLong(), t.getEndLat(), t.getEndLong());
-//        this.totalAngle = t.getEndTime() - t.getStartTime();
-//        this.throwQuality = 1;
-//    }
 
     public long getThrowId() {
         return throwId;
@@ -119,6 +107,7 @@ public class ThrowData implements Parcelable {
                 String.valueOf(this.totalDistance),
                 String.valueOf(this.totalAngle),
                 String.valueOf(this.syncTime)});
+        Log.e("Throw data", String.valueOf(this.syncTime));
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

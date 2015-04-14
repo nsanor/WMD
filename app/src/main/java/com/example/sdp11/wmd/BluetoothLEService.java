@@ -2,7 +2,6 @@ package com.example.sdp11.wmd;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -18,7 +17,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.io.FileOutputStream;
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -138,9 +136,6 @@ public class BluetoothLEService extends Service {
             String data = characteristic.getStringValue(0);
             Log.e(TAG, "onCharacteristicChanged: " + data);
             writeToLog("Transferred Data: " + data);
-//            broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-//            if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
-//            lastSyncTime = System.currentTimeMillis();
             bufferStrings(data);
         }
 
@@ -221,7 +216,7 @@ public class BluetoothLEService extends Service {
             else Log.e(TAG, "Point " + latitude + ", " + longitude + " is not reliable");
 
         }
-        else Log.e(TAG, "Failed in parseGPS");
+        else Log.e(TAG, "Not a valid GPS string");
     }
 
     private void processData() {
@@ -231,7 +226,7 @@ public class BluetoothLEService extends Service {
         double totalDistance = gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
 
         //total angle = angle from last to first - angle to hole
-        double totalAngle = calculateAngle(); //gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
+        double totalAngle = calculateAngle();
 
         MainActivity.dataSource.createThrow(totalDistance, totalAngle);
 
@@ -265,18 +260,22 @@ public class BluetoothLEService extends Service {
     }
 
     private void recalcTotals(double totalDistance, double totalAngle) {
-        TotalsData.updateThrowCount();
-        int throwCount = TotalsData.getThrowCount();
+        Log.e(TAG, "Passed params: totaldistance = " + totalDistance + " totalAngle = " + totalAngle);
         double averageDistance = TotalsData.getAverageDistance();
         double averageAngle = TotalsData.getAverageAngle();
-        Log.e(TAG, "Totaldistance = " + totalDistance + " totalAngle = " + totalAngle);
-        Log.e(TAG, "in recalctotals: throwcount = " + throwCount + " averagedistance = " + averageDistance + " averageangle = " + averageAngle);
+        int throwCount = TotalsData.getThrowCount();
+        Log.e(TAG, "Initial Conditions: throwcount = " + throwCount + " averagedistance = " + averageDistance + " averageangle = " + averageAngle);
+        TotalsData.updateThrowCount();
+        throwCount = TotalsData.getThrowCount();
+
+        if(averageAngle != -1){
+            averageAngle = ((averageAngle * throwCount) + totalAngle) / throwCount;
+            TotalsData.setAverageAngle(averageAngle);
+        }
+
         averageDistance = ((averageDistance*throwCount)+totalDistance)/ throwCount;
-        Log.e(TAG, "Average distance = " + averageDistance);
         TotalsData.setAverageDistance(averageDistance);
-        averageAngle = ((averageAngle * throwCount) + totalAngle) / throwCount;
-        Log.e(TAG, "Average angle = " + averageAngle);
-        TotalsData.setAverageAngle(averageAngle);
+        Log.e(TAG, "Final Conditions: throwcount = " + throwCount + " averagedistance = " + averageDistance + " averageangle = " + averageAngle);
 
         MainActivity.dataSource.writeTotalsData();
     }

@@ -54,7 +54,7 @@ public class ThrowsDataSource {
         String now = getCurrentTime();
         values.put(DBHelper.COLUMN_SYNC_TIME, now);
 
-        long insertId = database.insert(DBHelper.TABLE_THROWS, null,values);
+        database.insert(DBHelper.TABLE_THROWS, null,values);
     }
 
     private String getCurrentTime() {
@@ -70,13 +70,17 @@ public class ThrowsDataSource {
         if(minute < 10) leadingMinute = "0";
 
         int second = now.get(Calendar.SECOND);
+        if(second < 1) leadingSecond = "00";
         if(second < 10) leadingSecond = "0";
 
         int millisecond = now.get(Calendar.MILLISECOND);
-        return leadingHour + hour + leadingMinute + minute + leadingSecond + second + "." + millisecond;
+
+        String currentTime = leadingHour + hour + leadingMinute + minute + leadingSecond + second + "." + millisecond;
+        Log.e(TAG, currentTime);
+        return currentTime;
     }
 
-    public void deleteThrow(RawThrowData t) {
+    public void deleteThrow(ThrowData t) {
         long id = t.getThrowId();
         database.delete(DBHelper.TABLE_THROWS, DBHelper.COLUMN_THROW_ID
                 + " = " + id, null);

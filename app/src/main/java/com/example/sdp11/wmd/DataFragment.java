@@ -72,7 +72,6 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
         throwDataListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> aView, View v, int pos, long id) {
                 try {
-                    //Log.e(TAG, "Original: " + adapter.getThrow(pos).getTotalTime() + ", Converted: " + convertToGPSTime(adapter.getThrow(pos).getTotalTime()));
                     Intent intent = new Intent(getActivity(), ThrowDataActivity.class);
                     intent.putExtra("Throw", adapter.getThrow(pos));
                     startActivity(intent);
@@ -83,13 +82,6 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
         });
 
         return view;
-    }
-
-    public String convertToGPSTime(double time) {
-        //Subtract 4 hours to convert to Eastern time
-        time -= 40000;
-        String temp = String.valueOf(time);
-        return temp.substring(0,2) + ":" + temp.substring(2,4) + ":" + temp.substring(4);
     }
 
     @Override

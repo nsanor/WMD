@@ -129,8 +129,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             "$FF"};
 
     private static final String Separator = System.getProperty("line.separator");
-//    private String bufferedText = "";
-//    private long lastSyncTime = 0;
 
 
     @Override
@@ -247,11 +245,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         connectFragment = (ConnectFragment)mSectionsPagerAdapter.getRegisteredFragment(0);
     }
 
-    private String getCurrentTimestamp() {
-        long time = System.currentTimeMillis();
-        Timestamp tsTemp = new Timestamp(time);
-        return tsTemp.toString();
-    }
+//    private String getCurrentTimestamp() {
+//        long time = System.currentTimeMillis();
+//        Timestamp tsTemp = new Timestamp(time);
+//        return tsTemp.toString();
+//    }
 
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
