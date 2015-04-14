@@ -216,8 +216,8 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
             ThrowData t = throwDataList.get(i);
 
             viewHolder.throwID.setText(String.valueOf(t.getThrowId()));
-            viewHolder.totalDistance.setText(String.valueOf(t.getTotalDistance()));
-            viewHolder.totalAngle.setText(String.valueOf(t.getTotalAngle()));
+            viewHolder.totalDistance.setText(String.format("%.02f", t.getTotalDistance()));
+            viewHolder.totalAngle.setText(String.format("%.02f", t.getTotalAngle()));
 
             return view;
         }
