@@ -210,7 +210,7 @@ public class MapFragment extends Fragment {
             longitude = mCurrentLocation.getLongitude();
         }
 
-        MarkerOptions locationMarkerOptions = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(latitude + ", " + longitude);
+        MarkerOptions locationMarkerOptions = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person)).title(latitude + ", " + longitude);
         locationMarker = googleMap.addMarker(locationMarkerOptions);
         plotRadius(locationMarkerOptions.getPosition(), TotalsData.getAverageDistance());
         currentLocation = locationMarkerOptions.getPosition();
@@ -269,7 +269,7 @@ public class MapFragment extends Fragment {
         @Override
         public void onMapClick(LatLng point) {
             if(hole != null) hole.remove();
-            MarkerOptions holeOptions = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(latitude + ", " + longitude);
+            MarkerOptions holeOptions = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag)).title(latitude + ", " + longitude);
             hole = googleMap.addMarker(holeOptions);
             MainActivity.mBluetoothLEService.setHoleLocation(hole);
             googleMap.setOnMapClickListener(new UserPointsListener());
@@ -345,7 +345,7 @@ public class MapFragment extends Fragment {
                     String point[] = receiveString.split(",");
                     LatLng p = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
                     if(hole != null) hole.remove();
-                    MarkerOptions holeOptions = new MarkerOptions().position(p).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(latitude + ", " + longitude);
+                    MarkerOptions holeOptions = new MarkerOptions().position(p).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag)).title(latitude + ", " + longitude);
                     hole = googleMap.addMarker(holeOptions);
                 }
 
@@ -513,7 +513,7 @@ public class MapFragment extends Fragment {
 
     private void plotRadius(LatLng point, double radius) {
         // Instantiates a new CircleOptions object and defines the center and radius
-        CircleOptions circleOptions = new CircleOptions()
+        CircleOptions circleOptions = new CircleOptions().strokeWidth(5)
                 .center(point)
                 .radius(radius); // In meters
 

@@ -61,12 +61,8 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.clear_log) {
             clearLog();
             return true;
@@ -78,7 +74,6 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
     private void clearLog() {
         FileOutputStream outputStream;
         String text = "";
-        Log.e(TAG, "in clearLog");
 
         try {
             outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
@@ -93,7 +88,6 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
 
 
     private void refreshText() {
-        Log.e(TAG, "In refreshText, filename = " + filename);
         logText.setText("");
         try {
             InputStream inputStream = openFileInput(filename);
@@ -122,7 +116,6 @@ public class LogActivity extends Activity implements AdapterView.OnItemSelectedL
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        Log.e(TAG, "in onitemselected");
         if(adapterView.getItemAtPosition(i).equals("Bluetooth Log")) filename = "my_log.txt";
         else filename = "transferred_points.txt";
         refreshText();
