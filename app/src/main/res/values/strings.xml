@@ -32,10 +32,9 @@
     <string name="connected">Connected</string>
 
     //Map Tab
-    <string name="button_save">Save</string>
+    <string name="button_save">Save Plan</string>
     <string name="button_refresh">Refresh</string>
-    <string name="button_undo">Undo</string>
-    <string name="button_clear_user_point">Clear All</string>
+    <string name="button_clear_user_point">Clear Plan</string>
     <string name="button_hole">Plot Hole</string>
 
     //Data Tab

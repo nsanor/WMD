@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.nfc.Tag;
@@ -269,11 +270,25 @@ public class BluetoothLEService extends Service {
         double totalDistance = gpsData.get(0).getLoc().distanceTo(gpsData.get(gpsData.size() - 1).getLoc());
 
         //total angle = angle from last to first - angle to hole
-        double totalAngle = 2.5; //gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
+        double totalAngle = calculateAngle(); //gpsData.get(gpsData.size() - 1).getTime() - gpsData.get(0).getTime();
 
         MainActivity.dataSource.createThrow(totalDistance, totalAngle);
 
         recalcTotals(totalDistance, totalAngle);
+    }
+
+    private double calculateAngle() {
+        GPSDataPoint startingPoint = gpsData.get(0);
+        GPSDataPoint endingPoint = gpsData.get(gpsData.size()-1);
+        double lat1 = Math.toRadians(startingPoint.getLatitude());
+        double long1 = Math.toRadians(startingPoint.getLongitude());
+        double lat2 = Math.toRadians(endingPoint.getLatitude());
+        double long2 = Math.toRadians(endingPoint.getLongitude());
+
+        double deltaLong = long2 - long1;
+        double y = Math.sin(deltaLong) * Math.cos(lat2);
+        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLong);
+        return Math.toDegrees(Math.atan2(y, x));
     }
 
     private void recalcTotals(double totalDistance, double totalAngle) {
