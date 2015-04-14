@@ -34,6 +34,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
+import junit.framework.Test;
+
 import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -269,7 +271,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 //                writeToLog("Bluetooth Disconnected.");
                 connectFragment.setConnectionStatus(null);
                 invalidateOptionsMenu();
-                //clearUI();
             } else if (mBluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics button_toggle the
                 // user interface.
@@ -447,23 +448,22 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 //Add yes/no dialog here
                 TotalsData.updateGameId();
                 mBluetoothLEService.clearTransferredPoints();
+
                 return true;
             case R.id.action_settings:
-//                Toast.makeText(getApplicationContext(), "Settings",
-//                        Toast.LENGTH_SHORT).show();
-                dataSource.writeTotalsData();
+                Toast.makeText(getApplicationContext(), "Settings",Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.about:
-//                Toast.makeText(getApplicationContext(), "About Us",
-//                        Toast.LENGTH_SHORT).show();
-                for(String s: testStrings) {
-                    mBluetoothLEService.bufferStrings(s);
-                }
-
+                Toast.makeText(getApplicationContext(), "About Us",Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.view_log:
                 Intent intent = new Intent(MainActivity.this, LogActivity.class);
                 MainActivity.this.startActivity(intent);
+                return true;
+            case R.id.add_demo:
+                for(String s: testStrings) {
+                    mBluetoothLEService.bufferStrings(s);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
