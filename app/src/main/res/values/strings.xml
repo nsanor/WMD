@@ -41,7 +41,7 @@
     <string name="throw_id_header">Throw ID</string>
     <string name="game_id_header">Game ID</string>
     <string name="total_distance_header">Total Distance</string>
-    <string name="total_angle_header">Total Angle</string>
+    <string name="total_angle_header">Angle of Difference</string>
     <string name="sync_time_header">Sync Time</string>
 
 

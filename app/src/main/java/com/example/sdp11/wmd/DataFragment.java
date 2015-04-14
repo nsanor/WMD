@@ -97,10 +97,10 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
         dataSource.open();
         super.onResume();
 
-        if(dataSource.isThrowsEmpty(gameId)) {
-            addDemoThrows();
-            //Log.e(TAG, "throws is empty");
-        }
+//        if(dataSource.isThrowsEmpty(gameId)) {
+//            addDemoThrows();
+//            //Log.e(TAG, "throws is empty");
+//        }
         //else Log.e(TAG, "throws is not empty");
 
         refreshData();
@@ -114,15 +114,15 @@ public class DataFragment extends Fragment implements View.OnClickListener, Swip
 
 
 
-    private void addDemoThrows() {
-        dataSource.createThrow(75, 0);
-        dataSource.createThrow(78, 2.2);
-        dataSource.createThrow(65, 10.1);
-        dataSource.createThrow(100, 0);
-        dataSource.createThrow(55, 4.3);
-        dataSource.createThrow(35, 20);
-        dataSource.createThrow(75, 1.48);
-    }
+//    private void addDemoThrows() {
+//        dataSource.createThrow(75, 0);
+//        dataSource.createThrow(78, 2.2);
+//        dataSource.createThrow(65, 10.1);
+//        dataSource.createThrow(100, 0);
+//        dataSource.createThrow(55, 4.3);
+//        dataSource.createThrow(35, 20);
+//        dataSource.createThrow(75, 1.48);
+//    }
 
     public void refreshData() {
         gameId = TotalsData.getGameId();
