@@ -25,7 +25,7 @@ public class ThrowDataActivity extends Activity {
         rowThrowID.setText(String.valueOf(t.getThrowId()));
         rowGameID.setText(String.valueOf(t.getGameId()));
         rowTotalDistance.setText(String.format("%.02f", t.getTotalDistance()));
-        rowTotalAngle.setText(String.format("%.02f", t.getTotalAngle()));
+        rowTotalAngle.setText((t.getTotalAngle() == 1000) ? "N/A" : String.format("%.02f", t.getTotalAngle()));
         rowSyncTime.setText(convertToGPSTime(t.getSyncTime()));
     }
 
