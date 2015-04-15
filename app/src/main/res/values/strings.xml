@@ -35,7 +35,6 @@
     </array>
 
     //Connect Tab
-    <string name="button_toggle">Toggle Bluetooth</string>
     <string name="button_search_devices">Search for Devices</string>
     <string name="connection_status">Device Disconnected</string>
     <string name="sync_status">Data Not Synced</string>

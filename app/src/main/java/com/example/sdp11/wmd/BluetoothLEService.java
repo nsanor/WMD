@@ -358,6 +358,8 @@ public class BluetoothLEService extends Service {
     public IBinder onBind(Intent intent) {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         gpsData = new ArrayList<GPSDataPoint>();
+
+
         //hole = new LatLng();
         return mBinder;
     }

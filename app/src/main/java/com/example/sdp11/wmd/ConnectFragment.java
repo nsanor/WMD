@@ -65,23 +65,6 @@ public class ConnectFragment extends Fragment{
         connectionStatus = (TextView)view.findViewById(R.id.ConnectionStatus);
         devicesHeader = (TextView)view.findViewById(R.id.DevicesFound);
 
-        Button button_toggle = (Button)view.findViewById(R.id.Toggle);
-        button_toggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!bluetoothAdapter.isEnabled()){
-                    bluetoothAdapter.enable();
-                    while (bluetoothAdapter.getState() != BluetoothAdapter.STATE_ON);
-                    Toast.makeText(getActivity(), "Bluetooth is now On!", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    bluetoothAdapter.disable();
-                    while (bluetoothAdapter.getState() != BluetoothAdapter.STATE_OFF);
-                    Toast.makeText(getActivity(), "Bluetooth is now off!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         button_search = (Button)view.findViewById(R.id.Paired);
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override

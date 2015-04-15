@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -45,6 +46,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     public static BluetoothLEService mBluetoothLEService;
 
     private static ConnectFragment connectFragment;
+    private final static int REQUEST_ENABLE_BT = 1;
 
     private String testStrings[] = {"$,,,,0.00,0.00,",
             "060180,,,N$4104",
@@ -137,9 +139,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         mBluetoothLEService = new BluetoothLEService();
         Intent gattServiceIntent = new Intent(this, BluetoothLEService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
-        //Test
-        //parseTransferredData(intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
     }
 
     @Override
@@ -157,6 +156,11 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 //            //final boolean result = mBluetoothLEService.connect(mDeviceAddress);
 //            //Log.i(TAG, "Connect request result=" + result);
 //        }
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
 
     }
 
