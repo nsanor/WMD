@@ -308,6 +308,20 @@ public class BluetoothLEService extends Service {
         }
     }
 
+    public void clearHole() {
+        FileOutputStream outputStream;
+        String text = "";
+        String holeFilename = "hole_location.txt";
+
+        try {
+            outputStream = openFileOutput(holeFilename, Context.MODE_PRIVATE);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private String getCurrentTimestamp() {
         long time = System.currentTimeMillis();
         Timestamp tsTemp = new Timestamp(time);

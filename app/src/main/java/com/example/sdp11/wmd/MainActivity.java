@@ -333,7 +333,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 //Add yes/no dialog here
                 TotalsData.updateGameId();
                 mBluetoothLEService.clearTransferredPoints();
-
+                mBluetoothLEService.clearHole();
                 return true;
             case R.id.action_settings:
                 Toast.makeText(getApplicationContext(), "Settings",Toast.LENGTH_SHORT).show();

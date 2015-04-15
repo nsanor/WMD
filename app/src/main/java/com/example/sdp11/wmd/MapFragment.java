@@ -92,6 +92,7 @@ public class MapFragment extends Fragment {
         Button clearUserPoints = (Button) view.findViewById(R.id.button_clear_user_points);
         Button refresh = (Button) view.findViewById(R.id.button_refresh_map);
         plotHole = (Button) view.findViewById(R.id.button_plot_hole);
+        plotHole.setText("Plot Hole");
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -136,6 +137,8 @@ public class MapFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 plotTransferredPointsFromFile();
+                if(hole != null) hole.remove();
+                plotHoleLocationFromFile();
             }
         });
 
@@ -261,6 +264,7 @@ public class MapFragment extends Fragment {
             MainActivity.mBluetoothLEService.setHoleLocation(hole);
             googleMap.setOnMapClickListener(new UserPointsListener());
             plotHole.setText("Plot Hole");
+            writeHoleLocationToFile();
         }
     }
 
@@ -472,7 +476,6 @@ public class MapFragment extends Fragment {
         super.onPause();
 
         cp = googleMap.getCameraPosition();
-        writeHoleLocationToFile();
 //        googleMap = null;
 
     }
