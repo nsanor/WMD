@@ -40,8 +40,8 @@ public class MapFragment extends Fragment {
     private GoogleMap googleMap;
     private CameraPosition cp;
 
-    private double latitude = 41.13747;
-    private double longitude = -81.47430700000001;
+    private double latitude = 41.076006;
+    private double longitude = -81.510206;
     private Circle circle;
     private LatLng currentLocation;
 
@@ -137,6 +137,7 @@ public class MapFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 plotTransferredPointsFromFile();
+                plotUserPointsFromFile();
                 if(hole != null) hole.remove();
                 plotHoleLocationFromFile();
             }
@@ -352,6 +353,8 @@ public class MapFragment extends Fragment {
     }
 
     private void plotUserPointsFromFile() {
+        while(!userPoints.empty()) userPoints.pop().remove();
+
         try {
             InputStream inputStream = getActivity().openFileInput("user_points.txt");
 
@@ -462,7 +465,7 @@ public class MapFragment extends Fragment {
             cp = null;
         }
 
-        removeUserPoints();
+        //removeUserPoints();
         //removeTransferredPoints();
         plotTransferredPointsFromFile();
         plotUserPointsFromFile();

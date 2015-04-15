@@ -296,8 +296,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     public void onConnected(Bundle bundle) {
         startLocationUpdates();
         mCurrentLocation = new Location("");
-        mCurrentLocation.setLatitude(41.075805);
-        mCurrentLocation.setLongitude(-81.510126);//LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mCurrentLocation.setLatitude(41.076068);
+        mCurrentLocation.setLongitude(-81.510439);//LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
     @Override
@@ -339,6 +339,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 TotalsData.updateGameId();
                 mBluetoothLEService.clearTransferredPoints();
                 mBluetoothLEService.clearHole();
+                mBluetoothLEService.clearUserPoints();
                 return true;
             case R.id.action_settings:
                 Toast.makeText(getApplicationContext(), "Settings",Toast.LENGTH_SHORT).show();

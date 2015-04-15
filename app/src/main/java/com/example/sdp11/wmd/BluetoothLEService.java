@@ -328,6 +328,20 @@ public class BluetoothLEService extends Service {
         }
     }
 
+    public void clearUserPoints() {
+        FileOutputStream outputStream;
+        String text = "";
+        String userFilename = "user_points.txt";
+
+        try {
+            outputStream = openFileOutput(userFilename, Context.MODE_PRIVATE);
+            outputStream.write(text.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private String getCurrentTimestamp() {
         long time = System.currentTimeMillis();
         Timestamp tsTemp = new Timestamp(time);
