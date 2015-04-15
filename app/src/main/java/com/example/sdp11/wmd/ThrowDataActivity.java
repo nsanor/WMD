@@ -5,11 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.sql.Timestamp;
-
-/**
- * Created by Student on 3/5/2015.
- */
 public class ThrowDataActivity extends Activity {
     private final static String TAG = ThrowDataActivity.class.getSimpleName();
 
@@ -19,7 +14,7 @@ public class ThrowDataActivity extends Activity {
         setContentView(R.layout.activity_throw_data);
 
         Bundle data = getIntent().getExtras();
-        ThrowData t = (ThrowData) data.getParcelable("Throw");
+        ThrowData t = data.getParcelable("Throw");
 
         TextView rowThrowID = (TextView)findViewById(R.id.throw_id_data);
         TextView rowGameID = (TextView)findViewById(R.id.game_id_data);

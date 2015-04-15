@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * Created by Student on 1/27/2015.
- */
 public class ThrowsDataSource {
     private final static String TAG = ThrowsDataSource.class.getSimpleName();
     private SQLiteDatabase database;
@@ -80,12 +77,6 @@ public class ThrowsDataSource {
         return currentTime;
     }
 
-    public void deleteThrow(ThrowData t) {
-        long id = t.getThrowId();
-        database.delete(DBHelper.TABLE_THROWS, DBHelper.COLUMN_THROW_ID
-                + " = " + id, null);
-    }
-
     public void deleteAllThrows() {
         //database.rawQuery("delete from sqlite_sequence where name = 'throws'", null);
         database.delete(DBHelper.TABLE_THROWS, null,null);
@@ -143,7 +134,7 @@ public class ThrowsDataSource {
         values.put(DBHelper.COLUMN_AVERAGE_ANGLE, TotalsData.getAverageAngle());
         values.put(DBHelper.COLUMN_THROW_COUNT, TotalsData.getThrowCount());
 
-        long insertId = database.insert(DBHelper.TABLE_TOTALS, null,values);
+        database.insert(DBHelper.TABLE_TOTALS, null,values);
     }
 
     private ThrowData cursorToThrow(Cursor cursor) {
@@ -156,22 +147,22 @@ public class ThrowsDataSource {
         return t;
     }
 
-    public boolean isThrowsEmpty(long gameId) {
-        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
-                allColumns, DBHelper.COLUMN_GAME_ID + " = " + gameId, null, null, null, null);
-
-        return !cursor.moveToFirst();
-    }
-
-    public long getMaxThrowId() {
-        Cursor c = database.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_THROWS, new String[] {"throw_id"});
-        c.moveToFirst();
-        return c.getInt(0);
-    }
-
-    public long getMaxThrowCount() {
-        Cursor c = database.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_TOTALS, new String[] {"throw_count"});
-        c.moveToFirst();
-        return c.getInt(0);
-    }
+//    public boolean isThrowsEmpty(long gameId) {
+//        Cursor cursor = database.query(DBHelper.TABLE_THROWS,
+//                allColumns, DBHelper.COLUMN_GAME_ID + " = " + gameId, null, null, null, null);
+//
+//        return !cursor.moveToFirst();
+//    }
+//
+//    public long getMaxThrowId() {
+//        Cursor c = database.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_THROWS, new String[] {"throw_id"});
+//        c.moveToFirst();
+//        return c.getInt(0);
+//    }
+//
+//    public long getMaxThrowCount() {
+//        Cursor c = database.rawQuery("SELECT MAX(?) FROM " + DBHelper.TABLE_TOTALS, new String[] {"throw_count"});
+//        c.moveToFirst();
+//        return c.getInt(0);
+//    }
 }

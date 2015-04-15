@@ -4,9 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/**
- * Created by Student on 2/5/2015.
- */
 public class ThrowData implements Parcelable {
     private long throwId;
     private long gameId;
@@ -30,12 +27,6 @@ public class ThrowData implements Parcelable {
         this.totalAngle = Double.valueOf(data[3]);
         this.syncTime = Double.valueOf(data[4]);
         Log.e("Throw data", data[4]);
-    }
-
-    public ThrowData(long throwId, double start_lat, double start_long, double end_lat, double end_long, double start_x_accel, double start_y_accel, double startTime, double endTime) {
-        this.throwId =throwId;
-        this.totalDistance = calculateDistance(start_lat, start_long, end_lat, end_long);
-        //this.totalAngle = endTime - startTime;
     }
 
     public long getThrowId() {

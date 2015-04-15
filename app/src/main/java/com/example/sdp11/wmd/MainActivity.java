@@ -5,18 +5,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -32,17 +27,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 
-import junit.framework.Test;
-
-import java.io.FileOutputStream;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -53,35 +38,13 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     private ViewPager mViewPager;
     private GoogleApiClient mGoogleApiClient;
     public static Location mCurrentLocation;
-    private String mLastUpdateTime;
-    private Boolean mRequestingLocationUpdates = true;
     private LocationRequest mLocationRequest;
 
     public static ThrowsDataSource dataSource;
-    public static SQLiteDatabase throwsDB;
 
     public static BluetoothLEService mBluetoothLEService;
-    private BluetoothGatt mBluetoothGatt;
-    private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics;
-
-    private int mConnectionState = STATE_DISCONNECTED;
-
-    private static final int STATE_DISCONNECTED = 0;
-    private static final int STATE_CONNECTING = 1;
-    private static final int STATE_CONNECTED = 2;
-
-    private final String LIST_NAME = "NAME";
-    private final String LIST_UUID = "UUID";
-
-    private static String mDeviceAddress = "DB:AB:7F:DD:10:0F";
-
-    private boolean mConnected = false;
-
-    private Fragment mContent;
 
     private static ConnectFragment connectFragment;
-    private static DataFragment dataFragment;
-    private static MapFragment mapFragment;
 
     private String testStrings[] = {"$,,,,0.00,0.00,",
             "060180,,,N$4104",
@@ -127,8 +90,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             ".5478,N,08130.6",
             ",N,08130.6074,W",
             "$FF"};
-
-    private static final String Separator = System.getProperty("line.separator");
 
 
     @Override
@@ -190,15 +151,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     @Override
     public void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
-
-        }
 
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        if (mBluetoothLEService != null) {
-            //final boolean result = mBluetoothLEService.connect(mDeviceAddress);
-            //Log.i(TAG, "Connect request result=" + result);
-        }
+//        if (mBluetoothLEService != null) {
+//            //final boolean result = mBluetoothLEService.connect(mDeviceAddress);
+//            //Log.i(TAG, "Connect request result=" + result);
+//        }
     }
 
     @Override
@@ -235,12 +193,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         }
     };
 
-
-
-    public static void setDeviceAddress(String address) {
-        mDeviceAddress = address;
-    }
-
     public static void getConnectTabReference() {
         connectFragment = (ConnectFragment)mSectionsPagerAdapter.getRegisteredFragment(0);
     }
@@ -255,35 +207,31 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if (mBluetoothLEService.ACTION_GATT_CONNECTED.equals(action)) {
-                mConnected = true;
+            if (BluetoothLEService.ACTION_GATT_CONNECTED.equals(action)) {
                 //updateConnectionState(R.string.connected);
-                mConnectionState = STATE_CONNECTED;
 //                writeToLog("Bluetooth Connected.");
                 connectFragment.setConnectionStatus(mBluetoothLEService.getmBluetoothDeviceAddress());
                 invalidateOptionsMenu();
-            } else if (mBluetoothLEService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                mConnected = false;
+            } else if (BluetoothLEService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 //updateConnectionState(R.string.disconnected);
-                mConnectionState = STATE_DISCONNECTED;
 //                writeToLog("Bluetooth Disconnected.");
                 connectFragment.setConnectionStatus(null);
                 invalidateOptionsMenu();
-            } else if (mBluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                // Show all the supported services and characteristics button_toggle the
-                // user interface.
-//                writeToLog("Services Discovered.");
-                displayGattServices(getSupportedGattServices());
-            } else if (mBluetoothLEService.ACTION_DATA_AVAILABLE.equals(action)) {
-                //displayData(intent.getStringExtra(EXTRA_DATA));
-                //Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
-//                writeToLog("Characteristic Changed.");
-//                writeToLog("Transferred Data: " + intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
-                //if it's been longer than 10 seconds, it's a new throw
-//                if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
-//                lastSyncTime = System.currentTimeMillis();
-//                parseTransferredData(intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
-            }
+            } //else if (BluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+//                // Show all the supported services and characteristics button_toggle the
+//                // user interface.
+////                writeToLog("Services Discovered.");
+//                //displayGattServices(getSupportedGattServices());
+//            } else if (BluetoothLEService.ACTION_DATA_AVAILABLE.equals(action)) {
+//                //displayData(intent.getStringExtra(EXTRA_DATA));
+//                //Log.e(TAG, intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+////                writeToLog("Characteristic Changed.");
+////                writeToLog("Transferred Data: " + intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+//                //if it's been longer than 10 seconds, it's a new throw
+////                if((System.currentTimeMillis() - lastSyncTime) > 10000) TotalsData.updateThrowCount();
+////                lastSyncTime = System.currentTimeMillis();
+////                parseTransferredData(intent.getStringExtra(mBluetoothLEService.EXTRA_DATA));
+//            }
         }
     };
 
@@ -296,70 +244,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
         return intentFilter;
     }
 
-    public List<BluetoothGattService> getSupportedGattServices() {
-        if (mBluetoothGatt == null) return null;
-
-        return mBluetoothGatt.getServices();
-    }
-
-    private void displayGattServices(List<BluetoothGattService> gattServices) {
-        if (gattServices == null) return;
-        String uuid = null;
-        String unknownServiceString = "unknown"; //getResources().
-        //getString(R.string.unknown_service);
-        String unknownCharaString = "unknown"; //getResources().
-        //getString(R.string.unknown_characteristic);
-        ArrayList<HashMap<String, String>> gattServiceData =
-                new ArrayList<HashMap<String, String>>();
-        ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
-                = new ArrayList<ArrayList<HashMap<String, String>>>();
-        mGattCharacteristics =
-                new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
-
-        // Loops through available GATT Services.
-        for (BluetoothGattService gattService : gattServices) {
-            HashMap<String, String> currentServiceData =
-                    new HashMap<String, String>();
-            uuid = gattService.getUuid().toString();
-            currentServiceData.put(
-                    LIST_NAME, SampleGattAttributes.
-                            lookup(uuid, unknownServiceString));
-            currentServiceData.put(LIST_UUID, uuid);
-            gattServiceData.add(currentServiceData);
-
-            ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
-                    new ArrayList<HashMap<String, String>>();
-            List<BluetoothGattCharacteristic> gattCharacteristics =
-                    gattService.getCharacteristics();
-            ArrayList<BluetoothGattCharacteristic> charas =
-                    new ArrayList<BluetoothGattCharacteristic>();
-            // Loops through available Characteristics.
-            for (BluetoothGattCharacteristic gattCharacteristic :
-                    gattCharacteristics) {
-                charas.add(gattCharacteristic);
-                HashMap<String, String> currentCharaData =
-                        new HashMap<String, String>();
-                uuid = gattCharacteristic.getUuid().toString();
-                currentCharaData.put(
-                        LIST_NAME, SampleGattAttributes.lookup(uuid,
-                                unknownCharaString));
-                currentCharaData.put(LIST_UUID, uuid);
-                gattCharacteristicGroupData.add(currentCharaData);
-            }
-            mGattCharacteristics.add(charas);
-            gattCharacteristicData.add(gattCharacteristicGroupData);
-        }
-    }
-
 //    protected void stopLocationUpdates() {
 //        LocationServices.FusedLocationApi.removeLocationUpdates(
 //                mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
 //    }
-
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        //savedInstanceState.putInt("tabState", getSelectedTab());
-    }
 
 //    private class MyLocationListener implements LocationListener
 //    {
@@ -397,7 +285,6 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     public void onLocationChanged(Location location) {
         //mCurrentLocation = location;
         //Log.e(TAG, "Location = " + location.getLatitude() + ", " + location.getLongitude());
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
     }
 
     @Override
@@ -426,8 +313,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
     }
