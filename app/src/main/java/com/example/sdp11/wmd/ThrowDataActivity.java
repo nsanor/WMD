@@ -48,8 +48,8 @@ public class ThrowDataActivity extends Activity {
         //Subtract 4 hours to convert to Eastern time
         //if(gps) time -= 40000;
         String temp = String.valueOf(time);
+        if(time < 100000) temp = "0" + temp;
         Log.e(TAG, temp);
-        Log.e(TAG, temp.substring(0,2));
         return temp.substring(0,2) + ":" + temp.substring(2,4) + ":" + temp.substring(4);
     }
 }

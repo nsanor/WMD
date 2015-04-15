@@ -235,7 +235,7 @@ public class BluetoothLEService extends Service {
 
     private double calculateAngle() {
 
-        if(hole == null) return -1;
+        if(hole == null) return 1000;
         GPSDataPoint startingPoint = gpsData.get(0);
         GPSDataPoint endingPoint = gpsData.get(gpsData.size()-1);
         double lat1 = Math.toRadians(startingPoint.getLatitude());
@@ -268,12 +268,12 @@ public class BluetoothLEService extends Service {
         TotalsData.updateThrowCount();
         throwCount = TotalsData.getThrowCount();
 
-        if(averageAngle != -1){
-            averageAngle = ((averageAngle * throwCount) + totalAngle) / throwCount;
+        if(totalAngle != 1000.0){
+            averageAngle = ((averageAngle*(throwCount-1)) + totalAngle) / throwCount;
             TotalsData.setAverageAngle(averageAngle);
         }
 
-        averageDistance = ((averageDistance*throwCount)+totalDistance)/ throwCount;
+        averageDistance = ((averageDistance*(throwCount-1))+totalDistance)/ throwCount;
         TotalsData.setAverageDistance(averageDistance);
         Log.e(TAG, "Final Conditions: throwcount = " + throwCount + " averagedistance = " + averageDistance + " averageangle = " + averageAngle);
 
