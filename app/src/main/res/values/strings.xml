@@ -17,6 +17,15 @@
     <string name="demo_menu_item">Add Demo Throw</string>
     <string name="legend_menu_item">View Map Legend</string>
 
+    //Legend Activity
+    <string name="star_label">Location of the Final GPS Point in the Throw</string>
+    <string name="person_label">Location of the User</string>
+    <string name="flag_label">Location of the Hole</string>
+    <string name="x_label">Location of the Initial GPS Point in the Throw</string>
+    <string name="red_label">Actual GPS Point from the Disc</string>
+    <string name="blue_label">Planned Final Position of the Throw</string>
+    <string name="circle_label">Maximum Throw Distance Based on Historic Data</string>
+
     //Log Activity
     <string name="clear_menu_item">Clear Log</string>
     <string name="switch_menu_item">Switch</string>
