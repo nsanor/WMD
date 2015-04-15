@@ -15,6 +15,7 @@
     <string name="about_menu_item">About</string>
     <string name="log_menu_item">View Log</string>
     <string name="demo_menu_item">Add Demo Throw</string>
+    <string name="legend_menu_item">View Map Legend</string>
 
     //Log Activity
     <string name="clear_menu_item">Clear Log</string>

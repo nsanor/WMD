@@ -350,6 +350,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                     mBluetoothLEService.bufferStrings(s);
                 }
                 return true;
+            case R.id.map_legend:
+                Intent LegendIntent = new Intent(MainActivity.this, LegendActivity.class);
+                MainActivity.this.startActivity(LegendIntent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

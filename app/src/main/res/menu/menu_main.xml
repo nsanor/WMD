@@ -2,12 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/new_game" android:title="@string/new_game_menu_item"
         android:orderInCategory="100" android:showAsAction="never" />
-    <item android:id="@+id/action_settings" android:title="@string/settings_menu_item"
+    <item android:id="@+id/add_demo" android:title="@string/demo_menu_item"
         android:orderInCategory="200" android:showAsAction="never" />
     <item android:id="@+id/view_log" android:title="@string/log_menu_item"
         android:orderInCategory="300" android:showAsAction="never" />
-    <item android:id="@+id/add_demo" android:title="@string/demo_menu_item"
+    <item android:id="@+id/map_legend" android:title="@string/legend_menu_item"
         android:orderInCategory="400" android:showAsAction="never" />
-    <item android:id="@+id/about" android:title="@string/about_menu_item"
+    <item android:id="@+id/action_settings" android:title="@string/settings_menu_item"
         android:orderInCategory="500" android:showAsAction="never" />
+    <item android:id="@+id/about" android:title="@string/about_menu_item"
+        android:orderInCategory="600" android:showAsAction="never" />
 </menu>
