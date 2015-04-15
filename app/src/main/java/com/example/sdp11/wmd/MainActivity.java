@@ -157,6 +157,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 //            //final boolean result = mBluetoothLEService.connect(mDeviceAddress);
 //            //Log.i(TAG, "Connect request result=" + result);
 //        }
+
     }
 
     @Override
@@ -210,12 +211,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
             if (BluetoothLEService.ACTION_GATT_CONNECTED.equals(action)) {
                 //updateConnectionState(R.string.connected);
 //                writeToLog("Bluetooth Connected.");
-                connectFragment.setConnectionStatus(mBluetoothLEService.getmBluetoothDeviceAddress());
+                connectFragment.setConnectionStatus(true);
                 invalidateOptionsMenu();
             } else if (BluetoothLEService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 //updateConnectionState(R.string.disconnected);
 //                writeToLog("Bluetooth Disconnected.");
-                connectFragment.setConnectionStatus(null);
+                connectFragment.setConnectionStatus(false);
                 invalidateOptionsMenu();
             } //else if (BluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
 //                // Show all the supported services and characteristics button_toggle the

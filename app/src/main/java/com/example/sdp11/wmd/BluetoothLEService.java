@@ -53,6 +53,8 @@ public class BluetoothLEService extends Service {
     private String allInput = "";
     private LatLng hole;
 
+    public boolean mConnected = false;
+
     public BluetoothGattCallback getGattCallback() {return mGattCallback;}
     public String getmBluetoothDeviceAddress() {
         return mBluetoothDeviceAddress;
@@ -68,6 +70,7 @@ public class BluetoothLEService extends Service {
                 broadcastUpdate(ACTION_GATT_CONNECTED);
                 writeToLog("Bluetooth Connected.");
                 mBluetoothDeviceAddress = gatt.getDevice().getAddress();
+                mConnected = true;
                 //Discover services
                 gatt.discoverServices();
 
@@ -75,11 +78,14 @@ public class BluetoothLEService extends Service {
                     && newState == BluetoothProfile.STATE_DISCONNECTED) {
                 broadcastUpdate(ACTION_GATT_DISCONNECTED);
                 writeToLog("Bluetooth Disconnected.");
+                Log.e(TAG, "disconnected");
+                mConnected = false;
                 //Handle a disconnect event
             }
 
             else {
-                Log.i(TAG, "Connection state changed.  New state: " + newState);
+                Log.e(TAG, "Connection state changed.  New state: " + newState);
+                mConnected = false;
             }
         }
 

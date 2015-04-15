@@ -37,6 +37,8 @@ public class ConnectFragment extends Fragment{
 
     private BluetoothAdapter bluetoothAdapter;
 
+    private boolean mConnected = false;
+
     private static final long SCAN_PERIOD = 1000;
 
     public ConnectFragment() {
@@ -84,8 +86,18 @@ public class ConnectFragment extends Fragment{
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) scanLeDevice(true);
-                else Toast.makeText(getActivity(), "Please turn Bluetooth on", Toast.LENGTH_SHORT).show();
+                if(button_search.getText().equals(getString(R.string.button_search_devices))){
+                    if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) scanLeDevice(true);
+                    else Toast.makeText(getActivity(), "Please turn Bluetooth on", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if(MainActivity.mBluetoothLEService.mConnected){
+                        setConnectionStatus(true);
+                    }
+                    else if(!MainActivity.mBluetoothLEService.mConnected){
+                        setConnectionStatus(false);
+                    }
+                }
             }
         });
 
@@ -99,6 +111,7 @@ public class ConnectFragment extends Fragment{
                 try {
                     BluetoothDevice device = listAdapter.getDevice(pos);
                     device.connectGatt(getActivity(), false, MainActivity.mBluetoothLEService.getGattCallback());
+                    mConnected = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -111,6 +124,13 @@ public class ConnectFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
+
+        if(MainActivity.mBluetoothLEService.mConnected){
+            setConnectionStatus(true);
+        }
+        else if(!MainActivity.mBluetoothLEService.mConnected){
+            setConnectionStatus(false);
+        }
     }
 
     @Override
@@ -126,20 +146,22 @@ public class ConnectFragment extends Fragment{
 
 
 
-    public void setConnectionStatus(String deviceName) {
-        if(deviceName != null) {
-            connectionStatus.setText("Device Connected: " + deviceName);
+    public void setConnectionStatus(boolean connected) {
+        if(connected) {
+            connectionStatus.setText("Device Connected!");
             devicesHeader.setVisibility(View.INVISIBLE);
-            button_search.setVisibility(View.INVISIBLE);
+            button_search.setText(getString(R.string.refresh_devices));
             listAdapter.clear();
             listAdapter.notifyDataSetChanged();
+            mConnected = true;
         }
         else {
             connectionStatus.setText("Device Disconnected");
             devicesHeader.setVisibility(View.VISIBLE);
-            button_search.setVisibility(View.VISIBLE);
+            button_search.setText(getString(R.string.button_search_devices));
             listAdapter.clear();
             listAdapter.notifyDataSetChanged();
+            mConnected = false;
         }
     }
 
@@ -245,7 +267,7 @@ public class ConnectFragment extends Fragment{
             if (deviceName != null && deviceName.length() > 0)
                 viewHolder.deviceName.setText(deviceName);
             else
-                viewHolder.deviceName.setText(R.string.unknown_device);
+                viewHolder.deviceName.setText(getString(R.string.unknown_device));
             viewHolder.deviceAddress.setText(device.getAddress());
 
             return view;

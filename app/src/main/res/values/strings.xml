@@ -47,6 +47,7 @@
     <string name="button_refresh">Refresh</string>
     <string name="button_clear_user_point">Clear Plan</string>
     <string name="button_hole">Plot Hole</string>
+    <string name="refresh_devices">Refresh Connection Status</string>
 
     //Data Tab
     <string name="throw_id_header">Throw ID</string>
