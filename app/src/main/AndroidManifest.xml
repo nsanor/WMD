@@ -79,6 +79,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.sdp11.wmd.MainActivity" />
         </activity>
+        <activity android:name=".AboutUsActivity"
+            android:label="Map Legend"
+            android:configChanges="keyboardHidden|orientation"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.sdp11.wmd.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

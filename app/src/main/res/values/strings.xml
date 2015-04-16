@@ -12,7 +12,7 @@
     <string name="title_section3">Map</string>
     <string name="new_game_menu_item">New Game</string>
     <string name="clear_all_menu_item">Clear All Data</string>
-    <string name="about_menu_item">About</string>
+    <string name="about_menu_item">About Us</string>
     <string name="log_menu_item">View Log</string>
     <string name="demo_menu_item">Add Demo Throw</string>
     <string name="legend_menu_item">View Map Legend</string>
@@ -55,6 +55,14 @@
     <string name="total_angle_header">Angle of Difference</string>
     <string name="sync_time_header">Sync Time</string>
 
+    //About Us Activity
+    <string name="about_us_string">\tDesign Team #11\n\n
+    Project Leader: Christian Wallenfelsz\n
+    Hardware Manager: Shane Gamble\n
+    Software Manager: Noah Sanor\n
+    Archivist: Brandon Linhart\n
+    Faculty Advisor: Dr. Igor Tsukerman
+    </string>
 
 
 </resources>

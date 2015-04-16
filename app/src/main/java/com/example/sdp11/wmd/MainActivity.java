@@ -298,8 +298,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
     public void onConnected(Bundle bundle) {
         startLocationUpdates();
         mCurrentLocation = new Location("");
-        mCurrentLocation.setLatitude(41.076068);
-        mCurrentLocation.setLongitude(-81.510439);//LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mCurrentLocation.setLatitude(41.075657);
+        mCurrentLocation.setLongitude(-81.509961);//LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
     @Override
@@ -365,11 +365,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                         .show();
                 return true;
             case R.id.about:
-                Toast.makeText(getApplicationContext(), "About Us",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, AboutUsActivity.class);
+                MainActivity.this.startActivity(intent);
                 return true;
             case R.id.view_log:
-                Intent intent = new Intent(MainActivity.this, LogActivity.class);
-                MainActivity.this.startActivity(intent);
+                Intent logIntent = new Intent(MainActivity.this, LogActivity.class);
+                MainActivity.this.startActivity(logIntent);
                 return true;
             case R.id.add_demo:
                 for(String s: testStrings) {
