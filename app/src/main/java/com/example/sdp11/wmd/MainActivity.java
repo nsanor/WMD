@@ -290,16 +290,16 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
 
     @Override
     public void onLocationChanged(Location location) {
-        //mCurrentLocation = location;
+        mCurrentLocation = location;
         //Log.e(TAG, "Location = " + location.getLatitude() + ", " + location.getLongitude());
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         startLocationUpdates();
-        mCurrentLocation = new Location("");
-        mCurrentLocation.setLatitude(41.075657);
-        mCurrentLocation.setLongitude(-81.509961);//LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);//new Location("");
+//        mCurrentLocation.setLatitude(41.075657);
+//        mCurrentLocation.setLongitude(-81.509961);//
     }
 
     @Override
