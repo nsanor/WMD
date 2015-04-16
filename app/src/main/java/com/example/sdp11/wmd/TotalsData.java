@@ -24,6 +24,14 @@ public class TotalsData {
 //        TotalsData.throwId = throwId;
 //    }
 
+    public static void resetData() {
+        averageDistance = 10;
+        averageAngle = 0;
+        throwCount = 1;
+        throwId = 1;
+        gameId = 1;
+    }
+
     public static void updateThrowCount(){
         TotalsData.throwCount++;
     }

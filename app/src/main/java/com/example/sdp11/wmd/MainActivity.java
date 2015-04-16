@@ -2,6 +2,7 @@ package com.example.sdp11.wmd;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -9,6 +10,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -341,8 +343,26 @@ public class MainActivity extends Activity implements ActionBar.TabListener,Goog
                 mBluetoothLEService.clearHole();
                 mBluetoothLEService.clearUserPoints();
                 return true;
-            case R.id.action_settings:
-                Toast.makeText(getApplicationContext(), "Settings",Toast.LENGTH_SHORT).show();
+            case R.id.clear_all:
+                new AlertDialog.Builder(this)
+                        .setTitle("Delete data")
+                        .setMessage("Are you sure you want to delete all throw data?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                mBluetoothLEService.clearHole();
+                                mBluetoothLEService.clearTransferredPoints();
+                                mBluetoothLEService.clearUserPoints();
+                                TotalsData.resetData();
+                                dataSource.deleteAllThrows();
+                                dataSource.deleteTotals();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
                 return true;
             case R.id.about:
                 Toast.makeText(getApplicationContext(), "About Us",Toast.LENGTH_SHORT).show();

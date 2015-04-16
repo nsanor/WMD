@@ -11,7 +11,7 @@
     <string name="title_section2">Data</string>
     <string name="title_section3">Map</string>
     <string name="new_game_menu_item">New Game</string>
-    <string name="settings_menu_item">Settings</string>
+    <string name="clear_all_menu_item">Clear All Data</string>
     <string name="about_menu_item">About</string>
     <string name="log_menu_item">View Log</string>
     <string name="demo_menu_item">Add Demo Throw</string>
